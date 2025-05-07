@@ -26,7 +26,8 @@ namespace WPR
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            throw new NotImplementedException();
+            // Return null explicitly to handle cases where no assembly is loaded
+            return null;
         }
 
         /// <summary>
@@ -38,27 +39,39 @@ namespace WPR
         private Assembly LoadXnaAssembly(AssemblyLoadContext context, AssemblyName requiredName)
         {
             // Create a new assembly name definition with matching name and version
-            AssemblyNameDefinition def = new AssemblyNameDefinition(requiredName.Name, requiredName.Version);
+            AssemblyNameDefinition def = new AssemblyNameDefinition(
+                requiredName.Name, 
+                requiredName.Version);
 
             // Copy public key token to maintain strong naming compatibility
             def.PublicKeyToken = requiredName.GetPublicKeyToken();
 
             // Use utility method to locate/save/reload MonoGame assembly as XNA substitute
-            return AssemblyUtils.SaveExistingAssemblyAsAndReload(context, "MonoGame.Framework", def);
+            return AssemblyUtils.SaveExistingAssemblyAsAndReload(
+                context,
+                "MonoGame.Framework", 
+                def);
         }
 
         /// <summary>
         /// Event handler for resolving missing XNA Framework dependencies
         /// </summary>
         /// <returns>Substitute assembly if XNA is requested, otherwise null</returns>
-        private Assembly ResolveMissingDependencies(AssemblyLoadContext assemblyLoadContext, AssemblyName assemblyName)
+        private Assembly ResolveMissingDependencies
+        (
+            AssemblyLoadContext assemblyLoadContext,
+            AssemblyName assemblyName
+        )
         {
             string assemblyNameInString = assemblyName.Name ?? "";
 
             // Check if requested assembly is part of XNA Framework we need to redirect
-            if (assemblyNameInString.Equals("Microsoft.Xna.Framework", StringComparison.OrdinalIgnoreCase) ||
-                assemblyNameInString.Equals("Microsoft.Xna.Framework.Game", StringComparison.OrdinalIgnoreCase) ||
-                assemblyNameInString.Equals("Microsoft.Xna.Framework.Graphics", StringComparison.OrdinalIgnoreCase))
+            if (assemblyNameInString.Equals("Microsoft.Xna.Framework", 
+                StringComparison.OrdinalIgnoreCase) ||
+                assemblyNameInString.Equals("Microsoft.Xna.Framework.Game", 
+                StringComparison.OrdinalIgnoreCase) ||
+                assemblyNameInString.Equals("Microsoft.Xna.Framework.Graphics", 
+                StringComparison.OrdinalIgnoreCase))
             {
                 // Load and return the corresponding MonoGame assembly
                 Assembly asm = LoadXnaAssembly(assemblyLoadContext, assemblyName);

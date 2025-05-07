@@ -9,6 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <StackPanel>
+            <Button x:Name="ProcessButton" Content="Process" Click="Button_Click"/>
+            <TextBlock x:Name="ResultText" Text="[]" />
 
+        </StackPanel>
     </Grid>
 </Page>

@@ -8,17 +8,35 @@ using System.IO;
 using System;
 using System.Runtime.Loader;
 using System.Reflection;
+using Windows.Storage;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace WPR
 {
-    class WPR
+    static class WPR
     {
-        /*static*/ void Tests()
+        public static async Task<bool> FileTouch(string FilePath)
         {
             // Initialize assembly resolver and load target assembly
             AppResolver resolver = new AppResolver();
-            AssemblyDefinition newAsm = AssemblyDefinition.ReadAssembly("C:\\temp\\FNWP72.dll");
-            
+            AssemblyDefinition newAsm = null;
+
+            // "First app start or not"?
+            if (await ApplicationData.Current.LocalFolder.TryGetItemAsync("FNWP72.dll") == null)
+            {
+
+                //AssemblyDefinition newAsm = AssemblyDefinition.ReadAssembly("C:\\temp\\FNWP72.dll");
+                newAsm = AssemblyDefinition.ReadAssembly(
+                    ApplicationData.Current.LocalFolder +
+                    "\\FNWP72.dll");
+            }
+            else
+            {
+                Debug.WriteLine("[warn] No FNWP72.dll in AppData Folder. FileTouch process stopped!");
+                return false;
+            }
+
             // Load MonoGame framework assembly for reference manipulation
             Assembly assemMono = AssemblyLoadContext.Default.LoadFromAssemblyName(
                 new AssemblyName("MonoGame.Framework"));
@@ -31,7 +49,7 @@ namespace WPR
 
             if (newAsm == null)
             {
-                return; // Exit if target assembly couldn't be loaded
+                return false; // Exit if target assembly couldn't be loaded
             }
 
             // Get type definition for patching from compatibility assembly
@@ -97,32 +115,37 @@ namespace WPR
             stream.Position = 0;
 
             // Set working directory for content loading
-            Directory.SetCurrentDirectory("C:\\temp\\");
+            //Directory.SetCurrentDirectory("C:\\temp\\");
+            Directory.SetCurrentDirectory(ApplicationData.Current.LocalFolder.Path); 
 
             // Use reflection to set TitleContainer location for MonoGame content
             Type type = typeof(TitleContainer);
             PropertyInfo? prop = type.GetProperty("Location", BindingFlags.NonPublic | BindingFlags.Static);
-            prop.GetSetMethod(true).Invoke(null, new object[] { "C:\\temp\\" });
+            prop.GetSetMethod(true).Invoke(null, new object[] 
+            { ApplicationData.Current.LocalFolder.Path 
+            });
 
             // Load and instantiate modified game assembly
             Assembly assem = AssemblyLoadContext.Default.LoadFromStream(stream);
             Type tt = assem.GetType("Mortar.TheGame");
-            Game obj = (Game)Activator.CreateInstance(tt);
+            Microsoft.Xna.Framework.Game MonoGameObj = (Game)Activator.CreateInstance(tt);
 
             try
             {
                 // Configure and run the game
-                obj.IsMouseVisible = true;
-                obj.Run();
+                MonoGameObj.IsMouseVisible = true;
+                MonoGameObj.Run();
             }
             catch (Exception ex)
             {
                 // Handle any runtime errors
-                Console.Write("[ex] Bug: " + ex.ToString());
-                Console.WriteLine(ex.StackTrace);
+                Debug.WriteLine("[ex] Bug: " + ex.ToString());
+                Debug.WriteLine(ex.StackTrace);
+                return false;
             }
 
-            Console.Write("Ok!");
+            Debug.WriteLine("FileTouch procedure: success !");
+            return true; // Indicate success
         }
     }
 }
