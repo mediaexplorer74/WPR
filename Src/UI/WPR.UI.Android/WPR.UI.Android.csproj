@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0-android35</TargetFramework>
+    <TargetFramework>net8.0-android34.0</TargetFramework>
     <AvaloniaVersion>11.0.999-cibuild0023504-beta</AvaloniaVersion>
     <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
@@ -42,25 +42,20 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Avalonia.Android" Version="11.0.999-cibuild0023504-beta" />
+	<PackageReference Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
 	<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.0.6" />
 	<PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
 	<PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.6.1.5" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.6.2.2" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.5.0" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.5.1" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\JavaBindings\Org.Libsdl.App\Org.Libsdl.App.csproj" />
     <ProjectReference Include="$(SolutionDir)\ThirdParty\assembly-store-reader\assembly-store-reader.csproj" />
-    <ProjectReference Condition=" '$(OS)' != 'Windows_NT' " Include="$(SolutionDir)\UI\WPR.UI\WPR.UI.csproj" />
+    <ProjectReference Include="$(SolutionDir)\UI\WPR.UI\WPR.UI.csproj" />
   </ItemGroup>
 </Project>

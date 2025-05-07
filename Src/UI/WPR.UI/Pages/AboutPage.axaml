@@ -8,7 +8,7 @@
              d:DesignHeight="450"
              x:Class="WPR.UI.Pages.AboutPage">
 	<StackPanel Orientation="Vertical" Margin="20">
-		<Label FontSize="30">WPR 0.0.9-alpha :: DEVELOPER EDITION ::</Label>
+		<Label FontSize="30">WPR 0.0.10-alpha :: DEVELOPER EDITION ::</Label>
 		<Label>(C) Lin Yan::MediaExplorer 2022::2025</Label>
 		<Label>License: MIT</Label>
 	</StackPanel>

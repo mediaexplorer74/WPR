@@ -1,4 +1,4 @@
-# WPR 0.0.10-alpha :: avalnia branch
+# WPR 0.0.10-alpha :: avalonia branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
@@ -20,34 +20,7 @@ WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/
 ## Bugs and mini-FAQs
 - Some games will requre touch screen. So, touch taps emulation (via mouse) is not full (or not present, idk). Example: Skulls of the Shogun.
 - Some games have not full screen (or only part of Windowed zone). Example: Zuma Revenge!
-- Some games can't install because of no WMAppManifest.xml inside xap file. Ho to fix: rename .xap to .zip, and fix WMAppManifest.xml data. For example, I used WMAppManifest.xml (from EarthWormJim.xap) to patch attributes in ZumaRevenge.xap:
-```
-<?xml version="1.0" encoding="utf-16"?>
-<Deployment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" AppPlatformVersion="7.0" xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment">
-  <App Author="Electronic Arts" Description="" Genre="apps.games" ProductID="{128459e9-47a9-df11-a844-00237de2db9e}" Publisher="ElectronicArts" RuntimeType="XNA" Title="Zuna Revenge!" Version="1.0.1.0" xmlns="">
-    <IconPath IsRelative="true" IsResource="false">PhoneGameThumb.png</IconPath>
-    <Capabilities>
-      <Capability Name="ID_CAP_NETWORKING" />
-      <Capability Name="ID_CAP_SENSORS" />
-      <Capability Name="ID_CAP_MEDIALIB" />
-      <Capability Name="ID_CAP_GAMERSERVICES" />
-      <Capability Name="ID_CAP_IDENTITY_DEVICE" />
-    </Capabilities>
-    <Tasks>
-      <DefaultTask Name="_default" />
-    </Tasks>
-    <Tokens>
-      <PrimaryToken TokenID="ZumasRevenge.GameMain" TaskName="_default">
-        <TemplateType5>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
-          <Count>0</Count>
-          <Title>Zuma Revenge!</Title>
-        </TemplateType5>
-      </PrimaryToken>
-    </Tokens>
-  </App>
-</Deployment>
-```
+- Some games can't install. More popular problems are: *Silverlight* (instead of *XNA*) flag in manifest file (and in code, of couse!) or xap file *encrypted*. 
 
 ## ToDo
 - Actualize Wiki section

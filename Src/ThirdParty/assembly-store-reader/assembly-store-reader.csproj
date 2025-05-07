@@ -1,21 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>net9.0-android35</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>net8.0-windows10.0.26100.0</TargetFrameworks>
-  </PropertyGroup>
-  
   <PropertyGroup>
+    <Company>Microsoft Corporation</Company>
+    <Copyright>2021 Microsoft Corporation</Copyright>
     <Version>0.0.1</Version>
     <OutputType>Library</OutputType>
-    <!--TargetFrameworks>net8.0-windows10.0.26100.0;net9.0-android35</TargetFrameworks-->
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Xamarin.Android.AssemblyStoreReader</RootNamespace>
-   	<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net9.0-android35'">21</SupportedOSPlatformVersion>
+	<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

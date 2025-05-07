@@ -1,19 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>net9.0-android35</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>net8.0-windows10.0.26100.0</TargetFrameworks>
-  </PropertyGroup>
-
-
     <PropertyGroup>
-        <!--TargetFramework>netstandard2.0</TargetFramework-->
+        <TargetFramework>netstandard2.0</TargetFramework>
         <Description>A library to easily display Material Design icons in an Avalonia App.</Description>
     </PropertyGroup>
-
     <ItemGroup>
         <EmbeddedResource Include="Assets\*.svg" />
     </ItemGroup>

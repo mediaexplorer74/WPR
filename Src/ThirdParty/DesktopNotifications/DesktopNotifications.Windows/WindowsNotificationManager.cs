@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.IO;
-using System.Xml;
-using System.Diagnostics;
-using static DesktopNotifications.Windows.WindowsNotificationManager;
-//using Windows.UI.Notifications;
-
-
-#if !__ANDROID__
-//using Windows.UI.Notifications;
-//using XmlDocument = Windows.Data.Xml.Dom.XmlDocument;
-#endif
-
+using Windows.UI.Notifications;
+using XmlDocument = Windows.Data.Xml.Dom.XmlDocument;
 
 #if NETSTANDARD
-  //using System.IO;
-//  using System.Xml;
+using System.IO;
+using System.Xml;
 #else
-//using Microsoft.Toolkit.Uwp.Notifications;
+using System.Diagnostics;
+using Microsoft.Toolkit.Uwp.Notifications;
 #endif
 
 namespace DesktopNotifications.Windows
@@ -30,14 +21,11 @@ namespace DesktopNotifications.Windows
         private readonly TaskCompletionSource<string>? _launchActionPromise;
         private readonly Dictionary<ToastNotification, Notification> _notifications;
 
-//#if NETSTANDARD
+#if NETSTANDARD
         private readonly ToastNotifier _toastNotifier;
-        public enum ToastDismissalReason { UserCanceled, TimedOut, ApplicationHidden };
-
-        //#else
-        //private readonly ToastNotifierCompat _toastNotifier;
-        private enum ToastActivationType { Foreground };
-//#endif
+#else
+        private readonly ToastNotifierCompat _toastNotifier;
+#endif
 
         /// <summary>
         /// </summary>
@@ -47,7 +35,6 @@ namespace DesktopNotifications.Windows
             _applicationContext = applicationContext ?? WindowsApplicationContext.FromCurrentProcess();
             _launchActionPromise = new TaskCompletionSource<string>();
 
-            /*
 #if !NETSTANDARD
             if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
             {
@@ -59,13 +46,12 @@ namespace DesktopNotifications.Windows
                 }
             }
 #endif
-            */
 
-//#if NETSTANDARD
+#if NETSTANDARD
             _toastNotifier = ToastNotificationManager.CreateToastNotifier(_applicationContext.AppUserModelId);
-//#else
-//            _toastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
-//#endif
+#else
+            _toastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
+#endif
 
             _notifications = new Dictionary<ToastNotification, Notification>();
         }
@@ -131,7 +117,7 @@ namespace DesktopNotifications.Windows
 
         private static XmlDocument GenerateXml(Notification notification)
         {
-//#if NETSTANDARD
+#if NETSTANDARD
             var sw = new StringWriter();
             var xw = XmlWriter.Create(sw, new XmlWriterSettings
             {
@@ -191,9 +177,9 @@ namespace DesktopNotifications.Windows
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xmlStr);
 
-            //return xmlDoc;
+            return xmlDoc;
 
-//#else
+#else
             var builder = new ToastContentBuilder();
 
             builder.AddText(notification.Title);
@@ -212,7 +198,7 @@ namespace DesktopNotifications.Windows
 
             return builder.GetXml();
 
-//#endif
+#endif
         }
 
 #if !NETSTANDARD
@@ -280,117 +266,11 @@ namespace DesktopNotifications.Windows
 
         private void ToastNotificationOnActivated(ToastNotification sender, object args)
         {
-            var activationArgs = /*(ToastActivatedEventArgs)*/args;
+            var activationArgs = (ToastActivatedEventArgs)args;
             var notification = _notifications[sender];
-            //var actionId = GetActionId(activationArgs.Arguments);
+            var actionId = GetActionId(activationArgs.Arguments);
 
-            //NotificationActivated?.Invoke(this, new NotificationActivatedEventArgs(notification, actionId));
-        }
-
-        //nested class
-        public class ToastDismissedEventArgs
-        {
-            public ToastDismissalReason Reason;
-        }
-    }
-
-    
-
-    internal class ToastFailedEventArgs
-    {
-    }
-
-    internal class ToastNotificationActivatedEventArgsCompat
-    {
-        internal string Argument;
-    }
-
-    internal class ToastContentBuilder
-    {
-        public ToastContentBuilder()
-        {
-        }
-
-        internal void AddAppLogoOverride(Uri uri)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void AddAudio(Uri uri)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void AddButton(string title, object foreground, string actionId)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void AddText(string? title)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal XmlDocument GetXml()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class XmlDocument
-    {
-        internal void LoadXml(object xmlStr)
-        {
-            //
-        }
-    }
-
-    internal class ScheduledToastNotification
-    {
-        private XmlDocument xmlContent;
-        private DateTimeOffset deliveryTime;
-
-        public ScheduledToastNotification(XmlDocument xmlContent, DateTimeOffset deliveryTime)
-        {
-            this.xmlContent = xmlContent;
-            this.deliveryTime = deliveryTime;
-        }
-
-        public DateTimeOffset? ExpirationTime { get; set; }
-    }
-
-    internal class ToastNotificationManager
-    {
-        internal static ToastNotifier? CreateToastNotifier(string appUserModelId)
-        {
-            return default;
-        }
-    }
-
-    internal class ToastNotifier
-    {
-        internal void AddToSchedule(ScheduledToastNotification toastNotification)
-        {
-            //
-        }
-
-        internal void Show(ToastNotification toastNotification)
-        {
-            //
-        }
-    }
-
-    internal class ToastNotification
-    {
-        internal DateTimeOffset? ExpirationTime;
-        internal Action<ToastNotification, object> Activated;
-        internal Action<ToastNotification, ToastDismissedEventArgs> Dismissed;
-        internal Action<ToastNotification, ToastFailedEventArgs> Failed;
-        private XmlDocument xmlContent;
-
-        public ToastNotification(XmlDocument xmlContent)
-        {
-            this.xmlContent = xmlContent;
+            NotificationActivated?.Invoke(this, new NotificationActivatedEventArgs(notification, actionId));
         }
     }
 }
