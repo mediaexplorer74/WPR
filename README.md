@@ -6,12 +6,10 @@ Template for future "WPR UWP". Almost empty project at now (but with some origin
 *CAUTION*: WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
 
-
 ## Architecture
-### [Microsoft.Phone](Src/Microsoft.Phone) Microsoft.Phone module
+### [Microsoft.Phone](Src/Microsoft.Phone) Microsoft.Phone
 ### [Microsoft.Xna.Framework.GamerServices](Src/Microsoft.Xna.Framework.GamerServices) Online Gamer Services model
 ### [WPR.MonoGameCompabilityPatch](Src/WPR.MonoGameCompabilityPatch) XNA / Monogame "Edit/Patch" module
-### [WPR.Droid](Src/WPR.Droid) - Android module (minSdkVersion="26")
 ### [WPR](Src/WPR) - "Universal Windows" module (min. Win. build = 16299, for "Andromeda"-like devices...)
 
 ## Install&Dev fast intro
