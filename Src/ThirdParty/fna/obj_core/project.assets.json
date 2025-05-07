@@ -1,13 +1,11 @@
 {
   "version": 3,
   "targets": {
-    ".NETStandard,Version=v2.1": {},
-    "net8.0": {}
+    "net8.0-windows10.0.26100": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    ".NETStandard,Version=v2.1": [],
-    "net8.0": []
+    "net8.0-windows10.0.26100": []
   },
   "packageFolders": {
     "C:\\Users\\Admin\\.nuget\\packages\\": {},
@@ -16,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
       "projectName": "FNA",
-      "projectPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+      "projectPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\obj_core\\",
+      "outputPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev-0.0.10\\Src\\ThirdParty\\fna\\obj_core\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [
@@ -32,8 +30,7 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net8.0",
-        "netstandard2.1"
+        "net8.0-windows10.0.26100.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -41,12 +38,8 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
-          "projectReferences": {}
-        },
-        "netstandard2.1": {
-          "targetAlias": "netstandard2.1",
+        "net8.0-windows10.0.26100": {
+          "targetAlias": "net8.0-windows10.0.26100.0",
           "projectReferences": {}
         }
       },
@@ -63,8 +56,8 @@
       "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
-      "net8.0": {
-        "targetAlias": "net8.0",
+      "net8.0-windows10.0.26100": {
+        "targetAlias": "net8.0-windows10.0.26100.0",
         "imports": [
           "net461",
           "net462",
@@ -76,32 +69,21 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.Windows.SDK.NET.Ref",
+            "version": "[10.0.26100.57, 10.0.26100.57]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.Windows.SDK.NET.Ref.Windows": {
             "privateAssets": "all"
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300-preview.0.25177.5/PortableRuntimeIdentifierGraph.json"
-      },
-      "netstandard2.1": {
-        "targetAlias": "netstandard2.1",
-        "imports": [
-          "net461",
-          "net462",
-          "net47",
-          "net471",
-          "net472",
-          "net48",
-          "net481"
-        ],
-        "assetTargetFallback": true,
-        "warn": true,
-        "frameworkReferences": {
-          "NETStandard.Library": {
-            "privateAssets": "all"
-          }
-        },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300-preview.0.25177.5\\RuntimeIdentifierGraph.json"
       }
     }
   }

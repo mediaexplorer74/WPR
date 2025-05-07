@@ -1,14 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFrameworks>net9.0-android35</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFrameworks>net8.0-windows10.0.26100.0</TargetFrameworks>
+  </PropertyGroup>
+
   <PropertyGroup>
-	<TargetFrameworks>net8.0-windows10.0.26100.0</TargetFrameworks>
 	<Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
+  
+<ItemGroup>
     <PackageReference Include="DesktopNotifications" Version="1.3.1" />
     <PackageReference Include="DesktopNotifications.Avalonia" Version="1.3.1" />
     <PackageReference Include="DesktopNotifications.FreeDesktop" Version="1.3.1" />
     <PackageReference Include="DesktopNotifications.Windows" Version="1.3.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
   </ItemGroup>
+  
+<ItemGroup>
+  <ProjectReference Condition=" '$(OS)' != 'Windows_NT' " Include="..\..\ThirdParty\DesktopNotifications\DesktopNotifications.Android\DesktopNotifications.Android.csproj" />
+  <ProjectReference Condition=" '$(OS)' == 'Windows_NT' " Include="..\..\ThirdParty\DesktopNotifications\DesktopNotifications.Windows\DesktopNotifications.Windows.csproj" />
+</ItemGroup>
 </Project>
