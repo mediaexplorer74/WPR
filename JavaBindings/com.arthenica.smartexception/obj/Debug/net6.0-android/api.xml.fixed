@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<api api-source="JavaTypeSystem">
-  <package name="com.arthenica.smartexception" jni-name="com/arthenica/smartexception">
-    <interface abstract="true" deprecated="not deprecated" final="false" name="ClassLoader" static="false" visibility="public" jni-signature="Lcom/arthenica/smartexception/ClassLoader;" />
-    <interface abstract="true" deprecated="not deprecated" final="false" name="PackageLoader" static="false" visibility="public" jni-signature="Lcom/arthenica/smartexception/PackageLoader;" />
-    <interface abstract="true" deprecated="not deprecated" final="false" name="StackTraceElementSerializer" static="false" visibility="public" jni-signature="Lcom/arthenica/smartexception/StackTraceElementSerializer;" />
-  </package>
-</api>

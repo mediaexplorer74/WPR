@@ -1,7 +1,0 @@
-==== Cycle 1 ====
-
-The class '[Class] com.arthenica.smartexception.java.Exceptions' was removed because the Java base type 'java.lang.Object' could not be found.
-The class '[Class] com.arthenica.smartexception.java.JavaClassLoader' was removed because the Java base type 'java.lang.Object' could not be found.
-The class '[Class] com.arthenica.smartexception.java.JavaPackageLoader' was removed because the Java base type 'java.lang.Object' could not be found.
-The class '[Class] com.arthenica.smartexception.java.JavaStackTraceElementSerializer' was removed because the Java base type 'java.lang.Object' could not be found.
-

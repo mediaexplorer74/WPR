@@ -1,3 +1,0 @@
-com/arthenica/smartexception/ClassLoader = Com.Arthenica.Smartexception.IClassLoader
-com/arthenica/smartexception/PackageLoader = Com.Arthenica.Smartexception.IPackageLoader
-com/arthenica/smartexception/StackTraceElementSerializer = Com.Arthenica.Smartexception.IStackTraceElementSerializer
