@@ -5,11 +5,11 @@
     <LangVersion>latest</LangVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D9FE235D-3985-4936-8C6D-AE5815A963B9}</ProjectGuid>
+    <ProjectGuid>{8D9DA93C-B970-47DB-B367-392EC0034E93}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.Phone</RootNamespace>
-    <AssemblyName>Microsoft.Phone</AssemblyName>
+    <RootNamespace>WPR.MonoGameCompabilityPatch</RootNamespace>
+    <AssemblyName>WPR.MonoGameCompabilityPatch</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
@@ -121,25 +121,18 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Info\DeviceExtendedProperties.cs" />
-    <Compile Include="Net\NetworkInformation\NetworkInterface.cs" />
-    <Compile Include="Net\NetworkInformation\NetworkInterfaceType.cs" />
+    <Compile Include="GraphicsDeviceManager2.cs" />
+    <Compile Include="Graphics\SpriteBatch2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shell\DeactivatedEventArgs.cs" />
-    <Compile Include="Shell\DeactivationReason.cs" />
-    <Compile Include="Shell\PhoneApplicationService.cs" />
-    <Compile Include="Shell\StartupMode.cs" />
-    <Compile Include="Tasks\ChooserBase.cs" />
-    <Compile Include="Tasks\SaveRingtoneTask.cs" />
-    <Compile Include="Tasks\TaskEventArgs.cs" />
-    <Compile Include="Tasks\TaskResult.cs" />
-    <EmbeddedResource Include="Properties\Microsoft.Phone.rd.xml" />
+    <EmbeddedResource Include="Properties\WPR.MonoGameCompabilityPatch.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>
     <PackageReference Include="MonoGame.Framework.WindowsUniversal" Version="3.8.1.303" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
