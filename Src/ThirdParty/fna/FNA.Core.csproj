@@ -1,8 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
+  <!--PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup-->
+  
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net8.0-android</TargetFrameworks>
     <Platforms>x64</Platforms>
   </PropertyGroup>
+
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
     <AssemblyName>FNA</AssemblyName>

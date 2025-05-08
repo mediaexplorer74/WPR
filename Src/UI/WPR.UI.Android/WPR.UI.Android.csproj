@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-android34.0</TargetFramework>
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
     <AvaloniaVersion>11.0.999-cibuild0023504-beta</AvaloniaVersion>
     <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
@@ -14,6 +15,7 @@
 	<RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
 	<XamarinGoogleGuavaListenableFutureOptOut>true</XamarinGoogleGuavaListenableFutureOptOut>
 	<XamarinGoogleGuavaOptOut>true</XamarinGoogleGuavaOptOut>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
   <Target Name="CopyPremadeDb" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild">
 	<ItemGroup>
@@ -42,15 +44,26 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+    <WarningLevel>0</WarningLevel>
+    <AndroidCreatePackagePerAbi>True</AndroidCreatePackagePerAbi>
+    <AndroidUseAapt2>True</AndroidUseAapt2>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+    <AndroidCreatePackagePerAbi>True</AndroidCreatePackagePerAbi>
+    <AndroidUseAapt2>True</AndroidUseAapt2>
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
-	<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.0.6" />
-	<PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
-	<PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.5.0" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.5.1" />
+     <PackageReference Include="Avalonia" Version="11.0.0" />
+     <PackageReference Include="Avalonia.Android" Version="11.0.0"/>
+     <!--PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" /-->
+    <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.0.6" />
+	  <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
+	  <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.6.1.5" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.6.2.2" />
   </ItemGroup>
   
   <ItemGroup>

@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using WPR.Common;
 using System.Collections.Generic;
 
+
 #if !DEBUG
 using Xamarin.Android.AssemblyStore;
 #else
