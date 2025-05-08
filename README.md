@@ -1,5 +1,6 @@
-# WPR 0.0.7-alpha :: DEVELOPER EDITION ::
-WPR is a WP7-8 XNA app runner. This is only fork of [WPR](https://github.com/8212369/WPR), not the original. 
+# WPR - master branch
+ 
+WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
 This is  my little "Avalonia Android/Desktop framework" research + micro-development that I made in 2023 year.
 
@@ -74,6 +75,12 @@ git clone --recursive https://github.com/mediaexplorer74/WPR
 ## This runner existence :: words from the [author/owner/main developer](https://github.com/8212369/) 
 " It's for fun. If you are nostaglia mostly about achievements earning like me, you can try it out. There are some old games that is not released on Android or iOS, or some games that seems superior than Android or iOS version (I prefer Skulls of the Shogun on WP actually).
  However, resolution scaling is not yet implemented (game renders either in 480x800 or so...), but it's fun!" :: Lin Yan (8212369)
+
+
+## Credits
+- Tyler Jaacks (https://github.com/TylerJaacks) - for cool attempt to complete "net5/6 -> net8" upgrade 
+- Hector47 (https://github.com/Hector47) for try to add some online services and more 
+- All the people who supports this/that veery strange [W]indows[P]hone[R]unner story (see/look at [Original WPR issues](https://github.com/8212369/WPR/issues)  :)
 
 
 ## :: ::
