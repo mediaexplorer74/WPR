@@ -1,7 +1,16 @@
 # WPR 0.0.7-alpha :: DEVELOPER EDITION ::
 WPR is a WP7-8 XNA app runner. This is only fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-This is only my little "Avalonia Android/Desktop framework" research + micro-development (or re-development?)))
+This is  my little "Avalonia Android/Desktop framework" research + micro-development that I made in 2023 year.
+
+*CAUTION*: after 2-3 years, the scr code is obsolete in *master* branch (great problems with VS 2022Preview compatibility! ).
+
+More modern src code is in another branches:
+
+- Avalonia (W+A, but mulfuntion)
+- avalonia-win  (Windows only, ok)
+- avalonia-and  (Android only, damaged)
+- dev, xf, uwp and uno (Experimental / draft / internal dev use only)  
 
 ## "User" Features
 - Installing WP7-8 **decrypted** XNA XAPs locally on your machine. Most encripted XAP files are unusable :(
@@ -72,5 +81,5 @@ AS IS. No support. Developers / Geeks only. "DIY mode"
 
 
 ## ::
-[m][e] 2023
+[m][e] 2023 -> 2025
 
