@@ -33,7 +33,7 @@ Template for future "WPR UWP". Almost empty project at now (but with some origin
 - Transfer all "patcher parts" (modules) from *avalonia-win* branch (& port .NET 8 to UWP) 
 - Do test builds (conditional framework's builds according to platform specifics).
 - Realize another "multi-platform WPR-world" (Say Hello to Xbox! =)
-  
+- Realize "plan B" (online store of pre-converted xaps to/for symplify game run)  if dynamic-load-assembly failed forever ...
 
 ## Credits
 - Tyler Jaacks (https://github.com/TylerJaacks) - for net5/6 -> net8 upgrade !
@@ -43,8 +43,8 @@ Template for future "WPR UWP". Almost empty project at now (but with some origin
 # Contribute!
 There's still a TON of things missing from this proof-of-concept (MVP) and areas of improvement 
 which I just haven't had the time to get to yet.
-- UI Improvements (for GTK, for example, or for each one of supported mutli-platforms)))
-- New features (toasts, etc..))
+- UI Improvements (fsome Modern UI needed... not metro-styled ... xboxapp-like someone... idk)
+- New features (app notifications / toasts, etc..)
 - Additional Language Packages
 - Media Transferring Support: screenshots, etc. (for the brave)
 
