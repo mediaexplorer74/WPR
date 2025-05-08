@@ -4,4 +4,31 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WPR">
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Converters -->
+            <local:DateTimeConverter x:Key="DateTimeConverter"/>
+            <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <local:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter"/>
+
+            <!--App-Wide Styles-->
+            <SolidColorBrush x:Key="TimestampForeground" Color="#666666"/>
+            <SolidColorBrush x:Key="UserBubbleColor" Color="#0078D4"/>
+            <SolidColorBrush x:Key="BotBubbleColor" Color="White"/>
+
+            <!-- Hover effects to Chat Bubble-->
+            <Style TargetType="Border" x:Key="ChatBubbleStyle">
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="15"/>
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <!--Setter Property="Transitions">
+                    <TransitionCollection>
+                        <EntranceThemeTransition/>
+                    </TransitionCollection>
+                </Setter-->
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+
+
 </Application>

@@ -50,7 +50,7 @@ namespace WPR
             // we need to copy the database to ApplicationData.Current.LocalFolder
             
             // "First app start or not"?
-            if (await ApplicationData.Current.LocalFolder.TryGetItemAsync("FNWP72.dll") == null)
+            /*if (await ApplicationData.Current.LocalFolder.TryGetItemAsync("FNWP72.dll") == null)
             {
                 StorageFile databaseFile = default;
 
@@ -66,7 +66,7 @@ namespace WPR
                 {
                     Debug.WriteLine("[ex] FNWP72.dll file copy error: " + ex.Message);
                 }
-            }
+            }*/
             
             //**************************************************************************
 

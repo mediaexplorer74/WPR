@@ -1,7 +1,7 @@
 ﻿// Import necessary namespaces for assembly manipulation and loading
 using System;
 using System.Reflection;
-using System.Runtime.Loader;
+//using System.Runtime.Loader;
 using Mono.Cecil;
 
 namespace WPR
@@ -10,21 +10,22 @@ namespace WPR
     /// Custom AssemblyLoadContext to handle runtime resolution of XNA Framework assemblies
     /// by redirecting them to MonoGame equivalents.
     /// </summary>
-    internal class AppResolver : AssemblyLoadContext, IDisposable
+    internal class AppResolver : /*AssemblyLoadContext,*/ IDisposable
     {
         // Constructor subscribes to the Resolving event to handle missing assembly loads
         public AppResolver()
         {
-            this.Resolving += this.ResolveMissingDependencies;
+            //RnD: Uncomment the following line to enable assembly resolution
+            //AssemblyLoadContext.Default.Resolving += this.ResolveMissingDependencies;
         }
 
         // Cleanup: Unsubscribe from the Resolving event to prevent memory leaks
         public void Dispose()
         {
-            this.Resolving -= this.ResolveMissingDependencies;
+            //AssemblyLoadContext.Default.Resolving -= this.ResolveMissingDependencies;
         }
 
-        protected override Assembly Load(AssemblyName assemblyName)
+        protected /*override*/ Assembly Load(AssemblyName assemblyName)
         {
             // Return null explicitly to handle cases where no assembly is loaded
             return null;
@@ -36,11 +37,11 @@ namespace WPR
         /// <param name="context">The AssemblyLoadContext requesting the resolution</param>
         /// <param name="requiredName">Identity of the requested assembly</param>
         /// <returns>Loaded MonoGame assembly or null</returns>
-        private Assembly LoadXnaAssembly(AssemblyLoadContext context, AssemblyName requiredName)
+        /*private Assembly LoadXnaAssembly(AssemblyLoadContext context, AssemblyName requiredName)
         {
             // Create a new assembly name definition with matching name and version
             AssemblyNameDefinition def = new AssemblyNameDefinition(
-                requiredName.Name, 
+                requiredName.Name,
                 requiredName.Version);
 
             // Copy public key token to maintain strong naming compatibility
@@ -49,15 +50,15 @@ namespace WPR
             // Use utility method to locate/save/reload MonoGame assembly as XNA substitute
             return AssemblyUtils.SaveExistingAssemblyAsAndReload(
                 context,
-                "MonoGame.Framework", 
+                "MonoGame.Framework",
                 def);
-        }
+        }*/
 
         /// <summary>
         /// Event handler for resolving missing XNA Framework dependencies
         /// </summary>
         /// <returns>Substitute assembly if XNA is requested, otherwise null</returns>
-        private Assembly ResolveMissingDependencies
+       /* private Assembly ResolveMissingDependencies
         (
             AssemblyLoadContext assemblyLoadContext,
             AssemblyName assemblyName
@@ -66,11 +67,11 @@ namespace WPR
             string assemblyNameInString = assemblyName.Name ?? "";
 
             // Check if requested assembly is part of XNA Framework we need to redirect
-            if (assemblyNameInString.Equals("Microsoft.Xna.Framework", 
+            if (assemblyNameInString.Equals("Microsoft.Xna.Framework",
                 StringComparison.OrdinalIgnoreCase) ||
-                assemblyNameInString.Equals("Microsoft.Xna.Framework.Game", 
+                assemblyNameInString.Equals("Microsoft.Xna.Framework.Game",
                 StringComparison.OrdinalIgnoreCase) ||
-                assemblyNameInString.Equals("Microsoft.Xna.Framework.Graphics", 
+                assemblyNameInString.Equals("Microsoft.Xna.Framework.Graphics",
                 StringComparison.OrdinalIgnoreCase))
             {
                 // Load and return the corresponding MonoGame assembly
@@ -80,6 +81,6 @@ namespace WPR
 
             // Let other resolution mechanisms handle non-XNA assemblies
             return null;
-        }
+        }*/
     }
 }

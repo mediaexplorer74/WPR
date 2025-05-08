@@ -1,7 +1,7 @@
 ﻿// Import necessary namespaces for assembly manipulation and loading
 using System;
 using System.Reflection;
-using System.Runtime.Loader;
+//using System.Runtime.Loader;
 using Mono.Cecil;
 
 namespace WPR
@@ -10,7 +10,8 @@ namespace WPR
     internal class AssemblyUtils
     {
         // Method to clone an assembly with a new name and reload it into the context
-        public static Assembly? SaveExistingAssemblyAsAndReload(AssemblyLoadContext context, String currentName, AssemblyNameDefinition newName)
+        /*public static Assembly? SaveExistingAssemblyAsAndReload(AssemblyLoadContext context, 
+            String currentName, AssemblyNameDefinition newName)
         {
             // Parse the original assembly name to create a reference
             AssemblyNameReference reference = AssemblyNameReference.Parse(currentName);
@@ -41,9 +42,15 @@ namespace WPR
 
             // Load the newly created assembly from hardcoded output path
             // NOTE: This path should be parameterized for production use
-            return context.LoadFromAssemblyPath(
-                "C:\\development\\WPR\\WPR\\bin\\Debug\\net6.0\\" +
-                            $"{newName.Name}.dll");
-        }
+            //var ddd = context.LoadFromAssemblyPath(
+            //    "C:\\development\\WPR\\WPR\\bin\\Debug\\net6.0\\" +
+            //                $"{newName.Name}.dll");
+
+            AssemblyName assemblyName = new AssemblyName();
+            assemblyName.Name = $"{newName.Name}.dll";
+            Assembly ddd = context.LoadFromAssemblyName(assemblyName);
+
+            return ddd; // Return the loaded assembly
+        }*/
     }
 }

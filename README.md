@@ -5,6 +5,11 @@ Template for future "WPR UWP". Almost empty project at now (but with some origin
 
 *CAUTION*: WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
+## Status
+- UWP failed to switch "full-trast" mode. So, Load.Assembly can't process normally… :(
+
+## Screenshot
+![WPR UWP](Images/sshot01.png)
 
 ## Architecture
 ### [Microsoft.Phone](Src/Microsoft.Phone) Microsoft.Phone
@@ -18,18 +23,17 @@ Template for future "WPR UWP". Almost empty project at now (but with some origin
 * Install Xamarin / MAUI, Web dev. workloads (for brave and future Xamarin Forms / MAUI experiments...)
 
   
-
 ## Changelog
 ### v1.0.*
 
 
 ## TODO
+- Research article set: https://stefanwick.com/2018/04/06/uwp-with-desktop-extension-part-1/,  https://stefanwick.com/2018/04/06/uwp-with-desktop-extension-part-2/ ….
+- Try to fix app package...
+- Transfer all "patcher parts" (modules) from *avalonia-win* branch (& port .NET 8 to UWP) 
 - Do test builds (conditional framework's builds according to platform specifics).
-- Try to inject "WPR kernel" from original WPR (https://github.com/8212369/WPR) 's "zero commit"... 
-- Realize another "multi-platform WPR-world"... =)
+- Realize another "multi-platform WPR-world" (Say Hello to Xbox! =)
   
-Provide a sample application.
-
 
 ## Credits
 - Tyler Jaacks (https://github.com/TylerJaacks) - for net5/6 -> net8 upgrade !
@@ -57,5 +61,5 @@ As is. No support. For geeks / devs only! DIY.
 ## ..
 With best wishes,
 
-  [m][e] 2025
+  [m][e] May, 8 2025
 

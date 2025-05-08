@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="WPR.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#000000">
+
+    <StackPanel Padding="20">
+        <TextBlock Text="Version: xx.xx.xx" FontSize="24" FontWeight="Bold"/>
+
+        <!-- Daily Limit Control -->
+        <!--StackPanel>
+            <TextBlock Text="Daily Request Limit" FontWeight="SemiBold"/>
+            <TextBox x:Name="LimitTextBox" InputScope="Number"/>
+            <Button Content="Set Daily Limit" Click="SetLimit_Click" Margin="0,10,0,0"/>
+        </StackPanel-->
+
+        <!-- API Key Limits -->
+        <StackPanel Margin="0,20,0,0">
+            <TextBlock Text="WPR UWP (Experimental)" FontWeight="SemiBold"/>
+            <!--Button Content="Check API Limits" Click="CheckApiLimits_Click" 
+                    Margin="0,5,0,0" Padding="15,8"/-->
+           
+        </StackPanel>
+    </StackPanel>
+
+    <!-- BottomAppBar -->
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.PrimaryCommands>
+
+                <AppBarToggleButton
+                x:Name="Home"
+                x:Uid="Home"
+                Click="Home_Click"
+                Icon="Home"
+                Label="Home"/>
+            </CommandBar.PrimaryCommands>
+
+            
+        </CommandBar>
+    </Page.BottomAppBar>
+
+</Page>

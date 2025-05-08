@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<Package
-  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
-  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
-  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
-  xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
-  IgnorableNamespaces="uap mp uap3 iot">
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" 
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" 
+  IgnorableNamespaces="uap mp desktop rescap">
 
   <Identity
     Name="ME.WPRUWPv1"
@@ -22,7 +21,8 @@
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.16299.0" MaxVersionTested="10.0.19041.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.16299.0" MaxVersionTested="10.0.19041.0" />
   </Dependencies>
 
   <Resources>
@@ -39,24 +39,22 @@
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="WPR"
         BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="landscape"/>
           <uap:Rotation Preference="portrait"/></uap:InitialRotationPreference>
       </uap:VisualElements>
+     <Extensions>
+        <uap:Extension Category="windows.appService">
+          <uap:AppService Name="SampleInteropService" />
+        </uap:Extension>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="FullTrust\FullTrust.exe" />
+      </Extensions>
     </Application>
   </Applications>
-
   <Capabilities>
     <Capability Name="internetClient" />
-    <uap3:Capability Name="userNotificationListener"/>
-    <uap:Capability Name="removableStorage"/>
-    <uap:Capability Name="picturesLibrary"/>
-    <uap:Capability Name="musicLibrary"/>
-    <iot:Capability Name="lowLevelDevices"/>
-    <Capability Name="codeGeneration"/>
-    <uap:Capability Name="videosLibrary"/>
-    <DeviceCapability Name="lowLevel"/>
+    <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>

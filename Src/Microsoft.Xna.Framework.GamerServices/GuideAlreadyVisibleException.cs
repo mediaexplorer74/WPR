@@ -18,7 +18,7 @@ namespace Microsoft.Xna.Framework.GamerServices
         }
 
         protected GuideAlreadyVisibleException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
+            : base()//(info, context)
         {
         }
 
