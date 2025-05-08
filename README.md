@@ -1,9 +1,13 @@
 # WPR - uwp branch
 ![Logo](Images/logo.png)
- 
+
+WPR is a WP7-8 XNA app runner.
+
+*CAUTION*:  This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
+
+## About 
 Template for future "WPR UWP". Almost empty project at now (but with some original WPR parts)
 
-*CAUTION*: WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
 ## Status
 - UWP failed to switch "full-trast" mode. So, Load.Assembly can't process normally… :(
