@@ -4,16 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:WPR.UI.Properties"
              xmlns:nst="clr-namespace:WPR.UI.Views"
+             xmlns:vm="clr-namespace:WPR.UI.ViewModels"
 			 mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="1520"
              x:Class="WPR.UI.Pages.ApplicationListingPage">
 	<Panel>
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
-				<RowDefinition />
+				<RowDefinition/>
 			</Grid.RowDefinitions>
-			<TextBox Grid.Row="0" Name="searchBarTextBox" Text="{Binding SearchText}" Margin="10,10,10,0" Watermark="{x:Static p:Resources.SearchForAppSearchBar}" Background="Transparent"/>
-			<ListBox Grid.Row="1" Name="appListBox" Margin="10 10" VerticalAlignment="Stretch" Items="{Binding Applications}" SelectedItem="{Binding ChoosenApp}" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Visible">
+			<TextBox Grid.Row="0" Name="searchBarTextBox" Text="{Binding SearchText}" 
+               Margin="10,10,10,0" 
+               Watermark="{x:Static p:Resources.SearchForAppSearchBar}" Background="Transparent"/>
+			<ListBox Grid.Row="1" Name="appListBox" Margin="10 10" VerticalAlignment="Stretch" Items="{Binding Applications}" 
+               SelectedItem="{Binding ChoosenApp}" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Visible">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Run" 
+                              Command="{Binding $parent[ListBox].((vm:ApplicationListingPageViewModel)DataContext).RunAppCommand}" 
+                              CommandParameter="{Binding}"/>
+                    <MenuItem Header="Delete item" 
+                              Command="{Binding $parent[ListBox].((vm:ApplicationListingPageViewModel)DataContext).DeleteAppCommand}" 
+                              CommandParameter="{Binding}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel />
@@ -40,5 +54,9 @@
 				Background="BlueViolet"
 				ToolTip.Tip="{x:Static p:Resources.InstallNewAppToolTip}"
 				/>
-	</Panel>
+    <!--ContextMenu>
+		<MenuItem Header="Run" Command="{Binding RunAppCommand}" CommandParameter="{Binding #appListBox.RightTappedItem}"/>
+		<MenuItem Header="Delete item" Command="{Binding DeleteAppCommand}" CommandParameter="{Binding #appListBox.RightTappedItem}"/>
+	</ContextMenu-->
+  </Panel>
 </UserControl>
