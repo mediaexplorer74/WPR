@@ -1,10 +1,11 @@
-# WPR 0.0.10-alpha :: avalonia branch
+# WPR 0.0.11-alpha :: avalonia branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-## Screenshot
-![](Images/screenshot.png)
+## Screenshots
+![](Images/sshot01.png)
+![](Images/sshot02.png)
 
 ## Status
 - I started experimenting with .NET 8 & Avalonia 11. 
@@ -12,16 +13,18 @@ WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/
 - Asphalt 5 improved a little (but I have not accelemometer at now... so, 50 / 50 ! )
 - AirShip_Challenge -- only black screen (cryptographic functions emulation damaged.. idk)
 - BulletAsylum -- 50 / 50 (strange memory viol. access when start level + change song /music play! )
-- I tried to "do return/comeback" all Android-related parts of WPR code… epic fail at now... but "Avalonia-On-Android-Rails show" must go on ! ;)
-- Thinking of/about switch from Avalonia to Uno / Xamarin Forms / MAUI...
-
+- With help of WindSurf (and ChatGPT 4 AI) I tried to repair all Android-related parts of WPR code... 
+- Desktop notifications repaired for Windows... but not Android… 
+- Some experimental "UI improvements applied ("Two small Run and Uninstall" icons added to main/larg icon in app/game list).
+- App Uninstall item added to popup/context menu.
+- All AI-generated things not tested yet (no Android device, and Android emulator errors because of my veeeey poor hardware)
 
 ## Tech. details
 - Newest VS 2022 Preview used to "assemble" (build) this "dev branch"
-- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR-0.0.7 (however, some reduced Windows 11 Tiny is goode choice even for 15-year-old retro-notebooks... Sony Vaio, etc.)))
+- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR (however, some reduced Windows 11 Tiny is goode choice even for 15-year-old retro-notebooks... Sony Vaio, etc.)))
 
 ## Bugs and mini-FAQs
-- Some games will requre touch screen. So, touch taps emulation (via mouse) is not full (or not present, idk). Example: Skulls of the Shogun.
+- Some games will requre touch screen. In WPR 0.0.7, touch taps emulation (via mouse) is not full (or not present, idk). Example: Skulls of the Shogun.
 - Some games have not full screen (or only part of Windowed zone). Example: Zuma Revenge!
 - Some games can't install because of no WMAppManifest.xml inside xap file. Ho to fix: rename .xap to .zip, and fix WMAppManifest.xml data. For example, I used WMAppManifest.xml (from EarthWormJim.xap) to patch attributes in ZumaRevenge.xap:
 ```
@@ -55,7 +58,6 @@ WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/
 ## ToDo
 - Actualize Wiki section
 - Transtale Readme to RU and CN
-- Fix avalonia milti-platform deas...
 - Fix resolution scaling...
 - Port this "app creature" into Xamarin Forms or Uno "multi-platform engine" :)
 
@@ -71,5 +73,6 @@ WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/
 AS IS. No support. Developers / Geeks only. "DIY mode"
 
 ## ::
-[M][E] 2025
+[m][e] 2025
 
+![](Images/footer.png)

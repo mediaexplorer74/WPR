@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 #if __ANDROID__
-//using Com.Arthenica.Ffmpegkit;
+using Com.Arthenica.Ffmpegkit;
 #else
 using FFMpegCore;
 #endif
@@ -49,7 +49,7 @@ namespace WPR
         {
 #if __MOBILE__
             // I love this kit. Ignore so that the exception stack of Mono is not corrupted
-            //FFmpegKitConfig.IgnoreSignal(Signal.Sigxcpu);
+            FFmpegKitConfig.IgnoreSignal(Signal.Sigxcpu);
 #endif
 
             var fileEnum = Directory.EnumerateFiles(rootFolder, "*.wma", 
@@ -95,17 +95,17 @@ namespace WPR
                     }
 
 #if __ANDROID__
-                    FFmpegSession? session = await new FFMPEGConvertSession().Convert(filename, newFilename);
+                    var session = await new FFMPEGConvertSession().Convert(filename, newFilename);
 
                     if (session == null)
                     {
                         continue;
                     }
 
-                    //if (!ReturnCode.IsSuccess(session.ReturnCode)) 
-                    //{
-                    //    continue;
-                    //}
+                    if (!ReturnCode.IsSuccess(session.ReturnCode)) 
+                    {
+                        continue;
+                    }
 #else
                     bool ok = await FFMpegArguments
                         .FromFileInput(filename)
@@ -129,26 +129,5 @@ namespace WPR
                 }
             }
         } 
-    }
-
-    internal class FFmpegKit
-    {
-        internal static object ExecuteAsync(string v, FFMPEGConvertSession fFMPEGConvertSession)
-        {
-            return default;
-        }
-       
-    }
-
-    internal class FFMPEGConvertSession
-    {
-    }
-
-    public class FFmpegSession
-    {
-    }
-
-    internal interface IFFmpegSessionCompleteCallback
-    {
     }
 }

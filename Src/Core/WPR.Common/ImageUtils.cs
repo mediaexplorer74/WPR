@@ -1,71 +1,68 @@
-﻿using Avalonia.Media.Imaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 #if __ANDROID__
-  using Android.Graphics;
+using Android.Graphics;
+#else
+using System.Drawing;
 #endif
 
 namespace WPR.Common
 {
     public static class ImageUtils
     {
-        public static List<String> SplitAndSave(string storePath, string filenameFormat,
+        public static List<String> SplitAndSave(string storePath, string filenameFormat, 
             Stream originalImageStream,
             int rowCount, int columnCount)
         {
-
 #if __ANDROID__
-                Bitmap? originalBitmap = BitmapFactory.DecodeStream(originalImageStream);
-                if (originalBitmap == null)
+            Bitmap? originalBitmap = BitmapFactory.DecodeStream(originalImageStream);
+            if (originalBitmap == null)
+            {
+                return new List<String>();
+            }
+
+            int tileSizeX = originalBitmap.Width / columnCount;
+            int tileSizeY = originalBitmap.Height / rowCount;
+
+            List<string> pathList = new List<string>();
+
+            Directory.CreateDirectory(storePath);
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                for (int j = 0; j < columnCount; j++)
                 {
-                    return new List<String>();
-                }
+                    string imagePath = System.IO.Path.Combine(storePath, 
+                        String.Format(filenameFormat, i, j));
 
-                int tileSizeX = originalBitmap.Width / columnCount;
-                int tileSizeY = originalBitmap.Height / rowCount;
-
-                List<string> pathList = new List<string>();
-
-                Directory.CreateDirectory(storePath);
-
-                for (int i = 0; i < rowCount; i++)
-                {
-                    for (int j = 0; j < columnCount; j++)
+                    Bitmap? tempBitmap = Bitmap.CreateBitmap(originalBitmap, 
+                        j * tileSizeX, i * tileSizeY, tileSizeX, tileSizeY);
+                    if (tempBitmap == null)
                     {
-                        string imagePath = System.IO.Path.Combine(storePath, 
-                            String.Format(filenameFormat, i, j));
-
-                        Bitmap? tempBitmap = Bitmap.CreateBitmap(originalBitmap, 
-                            j * tileSizeX, i * tileSizeY, tileSizeX, tileSizeY);
-                        if (tempBitmap == null)
-                        {
-                            Debug.WriteLine("Can't create splitted bitmap on Android!");
-                            Log.Error(LogCategory.Common, "Can't create splitted bitmap on Android!");
-                            return pathList;
-                        }
-
-                        using (FileStream fs = new FileStream(imagePath, FileMode.OpenOrCreate))
-                        {
-                            tempBitmap.Compress(Bitmap.CompressFormat.Png, 100, fs);
-                            pathList.Add(imagePath);
-                        }
+                        Debug.WriteLine("Can't create splitted bitmap on Android!");
+                        Log.Error(LogCategory.Common, "Can't create splitted bitmap on Android!");
+                        return pathList;
                     }
 
+                    using (FileStream fs = new FileStream(imagePath, FileMode.OpenOrCreate))
+                    {
+                        tempBitmap.Compress(Bitmap.CompressFormat.Png, 100, fs);
+                        pathList.Add(imagePath);
+                    }
                 }
 
-                return pathList;
-#else
+            }
 
-            // Fix for CS1069: Ensure System.Drawing.Image is properly referenced
-            System.Drawing.Image originalImage = System.Drawing.Image.FromStream(originalImageStream);
+            return pathList;
+#else
+            Image originalImage = Image.FromStream(originalImageStream);
             int tileSizeX = originalImage.Width / columnCount;
             int tileSizeY = originalImage.Height / rowCount;
 
-            System.Drawing.Bitmap img = new System.Drawing.Bitmap(tileSizeX, tileSizeY,
+            Bitmap img = new Bitmap(tileSizeX, tileSizeY, 
             System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             var graphicsDrawer = System.Drawing.Graphics.FromImage(img);
 
@@ -82,9 +79,9 @@ namespace WPR.Common
                     graphicsDrawer.Clear(System.Drawing.Color.Transparent);
                     graphicsDrawer.DrawImage(originalImage,
                         new System.Drawing.Rectangle(0, 0, tileSizeX, tileSizeY),
-                        new System.Drawing.Rectangle(j * tileSizeX, i * tileSizeY,
+                        new System.Drawing.Rectangle(j * tileSizeX, i * tileSizeY, 
                         tileSizeX, tileSizeY),
-                        System.Drawing.GraphicsUnit.Pixel);
+                        GraphicsUnit.Pixel);
 
                     img.Save(imagePath, System.Drawing.Imaging.ImageFormat.Png);
                     pathList.Add(imagePath);

@@ -1,13 +1,13 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {},
-    "net8.0-android34.0": {}
+    ".NETStandard,Version=v2.1": {},
+    "net8.0": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    "net8.0": [],
-    "net8.0-android34.0": []
+    ".NETStandard,Version=v2.1": [],
+    "net8.0": []
   },
   "packageFolders": {
     "C:\\Users\\Admin\\.nuget\\packages\\": {},
@@ -16,11 +16,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\mediaexplorer74\\WPR-avalonia\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
       "projectName": "FNA",
-      "projectPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+      "projectPath": "C:\\Users\\Admin\\source\\repos\\mediaexplorer74\\WPR-avalonia\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia\\Src\\ThirdParty\\fna\\obj_core\\",
+      "outputPath": "C:\\Users\\Admin\\source\\repos\\mediaexplorer74\\WPR-avalonia\\Src\\ThirdParty\\fna\\obj_core\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [
@@ -33,7 +33,7 @@
       ],
       "originalTargetFrameworks": [
         "net8.0",
-        "net8.0-android"
+        "netstandard2.1"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -45,8 +45,8 @@
           "targetAlias": "net8.0",
           "projectReferences": {}
         },
-        "net8.0-android34.0": {
-          "targetAlias": "net8.0-android",
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
           "projectReferences": {}
         }
       },
@@ -81,10 +81,10 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300-preview.0.25177.5/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
       },
-      "net8.0-android34.0": {
-        "targetAlias": "net8.0-android",
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
         "imports": [
           "net461",
           "net462",
@@ -96,21 +96,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.Android.Ref.34",
-            "version": "[34.0.154, 34.0.154]"
-          }
-        ],
         "frameworkReferences": {
-          "Microsoft.Android": {
-            "privateAssets": "all"
-          },
-          "Microsoft.NETCore.App": {
+          "NETStandard.Library": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300-preview.0.25177.5/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301\\RuntimeIdentifierGraph.json"
       }
     }
   }
