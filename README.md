@@ -3,14 +3,8 @@
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-## Screenshots
-![WPR main screen](Images/sshot01.png)
-![Acedia menu](Images/sshot02.png)
-![Acedia gmeplay](Images/sshot03.png)
-![Mirror's Edge](Images/sshot04.png)
-![AirShip_Challenge](Images/sshot05.png)
-![Asphalt 5](Images/sshot06.png)
-
+## Screenshot(s)
+![](Images/screenshot.png)
 
 ## Status
 - I started experimenting with .NET 8 & Avalonia 11. 
