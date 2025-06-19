@@ -1,10 +1,11 @@
-# WPR 0.0.10-alpha :: avalonia-win branch
+# WPR 0.0.11-alpha :: avalonia-win branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-## Screenshot(s)
-![](Images/screenshot.png)
+## Screenshots
+![](Images/sshot01.png)
+![](Images/sshot02.png)
 
 ## Status
 - I started experimenting with .NET 8 & Avalonia 11. 
@@ -13,14 +14,13 @@ WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/
 - AirShip_Challenge -- only black screen (cryptographic functions emulation damaged.. idk)
 - BulletAsylum -- 50 / 50 (strange memory viol. access when start level + change song /music play! )
 - All Android-related parts of WPR code are deleted. Android code available only in/at obsolete *master* branch.
-- Thinking of/about switch from Avalonia to Uno / Xamarin Forms / MAUI...
-- Desktop notification damaged , sadly
-- Android deals not repaired
-- Some Trae AI experimental refactoring applied (Main windows UI only...)
+- Desktop notifications repaired (by only for Windows... not Android)… Android part not of soltion repaired yet, so only WPR-Windows "touched by me" at now...
+- Some Trae AI experimental "UI improvements applied ("Two small Run and Uninstall" icons added to main/larg icon in app/game list).
+- App Uninstall item added to popup/context menu.
 
 ## Tech. details
 - Newest VS 2022 Preview used to "assemble" (build) this "dev branch"
-- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR-0.0.7 (however, some reduced Windows 11 Tiny is goode choice even for 15-year-old retro-notebooks... Sony Vaio, etc.)))
+- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR (however, some reduced Windows 11 Tiny is goode choice even for 15-year-old retro-notebooks... Sony Vaio, etc.)))
 
 ## Bugs and mini-FAQs
 - Some games will requre touch screen. In WPR 0.0.7, touch taps emulation (via mouse) is not full (or not present, idk). Example: Skulls of the Shogun.

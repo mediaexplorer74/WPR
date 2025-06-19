@@ -137,13 +137,13 @@ namespace WPR.UI.ViewModels
         }
             
             private async Task RunApplicationAsync(ApplicationItemViewModel app) {
-                //await
-                ApplicationLaunchRequest.Ask(app.Model);
+               ApplicationLaunchRequest.Ask(app.Model);
             }
             
             private async Task DeleteApplicationAsync(ApplicationItemViewModel app) {
+                // Optional: Show confirmation dialog here before uninstalling
                 ApplicationContext.Current.Applications.Remove(app.Model);
-                //ApplicationContext.Current.Save();
+                await ApplicationContext.Current.SaveChangesAsync(); // Persist the uninstall
                 Applications.Remove(app);
                 UpdateApplications();
             }

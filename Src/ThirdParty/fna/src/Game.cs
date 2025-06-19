@@ -610,6 +610,7 @@ namespace Microsoft.Xna.Framework
                 catch (Exception ex2)
                 {
                     Debug.WriteLine("[ex2] Game (gameTime) error: " + ex2.Message);
+					Exit();
                 }
             }
 
