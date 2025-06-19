@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\FNA.Core.csproj": {}
+    "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\FNA.Core.csproj": {
+    "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
         "projectName": "FNA",
-        "projectPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+        "projectPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-dev\\Src\\ThirdParty\\fna\\obj_core\\",
+        "outputPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\obj_core\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -72,7 +72,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300-preview.0.25177.5/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         },
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
@@ -92,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300-preview.0.25177.5\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     }

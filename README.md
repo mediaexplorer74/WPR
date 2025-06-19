@@ -1,16 +1,10 @@
-# WPR 0.0.9-alpha :: dev branch
+# WPR 0.0.10-alpha :: avalonia-win branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-## Screenshots
-![WPR main screen](Images/sshot01.png)
-![Acedia menu](Images/sshot02.png)
-![Acedia gmeplay](Images/sshot03.png)
-![Mirror's Edge](Images/sshot04.png)
-![AirShip_Challenge](Images/sshot05.png)
-![Asphalt 5](Images/sshot06.png)
-
+## Screenshot(s)
+![](Images/screenshot.png)
 
 ## Status
 - I started experimenting with .NET 8 & Avalonia 11. 
@@ -20,7 +14,9 @@ WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/
 - BulletAsylum -- 50 / 50 (strange memory viol. access when start level + change song /music play! )
 - All Android-related parts of WPR code are deleted. Android code available only in/at obsolete *master* branch.
 - Thinking of/about switch from Avalonia to Uno / Xamarin Forms / MAUI...
-- Desktop notification improved ("game icon big preview")))
+- Desktop notification damaged , sadly
+- Android deals not repaired
+- Some Trae AI experimental refactoring applied (Main windows UI only...)
 
 ## Tech. details
 - Newest VS 2022 Preview used to "assemble" (build) this "dev branch"

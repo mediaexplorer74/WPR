@@ -85,8 +85,8 @@ namespace WPR
             // Run on separate thread to not affect the UI
             //await Task.Run(() =>
             //{
-            //using (Game? obj = Activator.CreateInstance(mainType!) as Game)
-            using (Game obj = Activator.CreateInstance(mainType) as Game)
+            //using (Game obj = Activator.CreateInstance(mainType) as Game)
+            using (Game? obj = Activator.CreateInstance(mainType!) as Game)
             {
                 //RnD
                 //obj.IsMouseVisible = true;
@@ -144,8 +144,8 @@ namespace WPR
 
                     try
                     {
-                       //PhoneApplicationService.Current!.HandleApplicationExit();
-                        PhoneApplicationService.Current.HandleApplicationExit();
+                       //PhoneApplicationService.Current.HandleApplicationExit();
+                        PhoneApplicationService.Current!.HandleApplicationExit();
                     }
                     catch (Exception ex)
                     {

@@ -31,9 +31,13 @@ namespace Microsoft.Xna.Framework.Graphics
 				{
 					if (value.IsDisposed)
 					{
-						throw new ObjectDisposedException(
-							value.GetType().ToString()
-						);
+						//RnD
+						//throw new ObjectDisposedException(
+						//	value.GetType().ToString()
+						//);
+
+						//my
+						goto L1;
 					}
 					if (!ignoreTargets)
 					for (int i = 0; i < value.GraphicsDevice.renderTargetCount; i += 1)
@@ -48,6 +52,7 @@ namespace Microsoft.Xna.Framework.Graphics
 					}
 				}
 #endif
+				L1:
 				textures[index] = value;
 				modifiedSamplers[index] = true;
 			}
