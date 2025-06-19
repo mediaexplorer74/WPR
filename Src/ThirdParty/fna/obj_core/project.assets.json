@@ -16,11 +16,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\mediaexplorer74\\WPR-avalonia-win\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
       "projectName": "FNA",
-      "projectPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
+      "projectPath": "C:\\Users\\Admin\\source\\repos\\mediaexplorer74\\WPR-avalonia-win\\Src\\ThirdParty\\fna\\FNA.Core.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\source\\repos\\!WPR\\WPR-avalonia-win-0.0.10\\Src\\ThirdParty\\fna\\obj_core\\",
+      "outputPath": "C:\\Users\\Admin\\source\\repos\\mediaexplorer74\\WPR-avalonia-win\\Src\\ThirdParty\\fna\\obj_core\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [
