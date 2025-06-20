@@ -8,7 +8,7 @@
 		xmlns:ic="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
         x:Class="WPR.UI.Views.MainWindowDesktop"
         Icon="/Assets/avalonia-logo.ico"
-        Title="WPR 0.0.11-alpha"
+        Title="WPR 0.0.12-alpha"
 		TransparencyLevelHint="AcrylicBlur"
 		Background= "Transparent"
 		Name="MainWindow">

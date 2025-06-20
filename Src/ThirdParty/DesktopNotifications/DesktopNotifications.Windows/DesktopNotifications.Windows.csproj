@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<LangVersion>8.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>A cross-platform C# library for native desktop "toast" notifications.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/pr8x/DesktopNotifications</PackageProjectUrl>
-		<TargetFrameworks>net8.0-windows10.0.26100.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(OS)' == 'Windows_NT'">
@@ -21,7 +21,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DesktopNotifications\DesktopNotifications.csproj" />
-		<PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Condition="'$(TargetFramework)' != 'netstandard2.0'" Version="7.0.2" />
 		<PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.Contracts" Condition="'$(TargetFramework)' == 'netstandard2.0'" Version="10.0.22621.2" />
 	</ItemGroup>

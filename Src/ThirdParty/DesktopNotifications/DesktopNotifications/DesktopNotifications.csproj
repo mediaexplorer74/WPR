@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>A cross-platform C# library for native desktop "toast" notifications.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/pr8x/DesktopNotifications</PackageProjectUrl>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net8.0-windows10.0.26100.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Xamarin.Android.AssemblyStoreReader</RootNamespace>
-    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net8.0-android'">26</SupportedOSPlatformVersion>
   </PropertyGroup> 
 </Project>

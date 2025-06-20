@@ -29,6 +29,8 @@ namespace WPR.UI.Views
 
                 try
                 {
+                    //TODO: fix notification mechanizm
+                    if (NativeUI.NotificationManager != null)
                     _ = NativeUI.NotificationManager.ShowNotification(new DesktopNotifications.Notification()
                     {
                         Title = Properties.Resources.LaunchingInProcess,

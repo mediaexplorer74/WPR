@@ -1,13 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.windsurf.wpr.ui.android">
-    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
-    <application android:label="WPR" android:icon="@mipmap/icon">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.wpr.android" android:versionName="0.0.12">
+ <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+      <uses-permission android:name="android.permission.INTERNET"/>
+	<application android:label="WPR" android:icon="@drawable/icon">
+		<activity android:name=".MainActivity" android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+				<action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="conveyence" />
+			</intent-filter>
+		</activity>
+	</application>
 </manifest>

@@ -58,7 +58,8 @@ namespace WPR.Common
 
             return pathList;
 #else
-            Image originalImage = Image.FromStream(originalImageStream);
+            //TODO
+            /*Image originalImage = Image.FromStream(originalImageStream);
             int tileSizeX = originalImage.Width / columnCount;
             int tileSizeY = originalImage.Height / rowCount;
 
@@ -66,11 +67,11 @@ namespace WPR.Common
             System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             var graphicsDrawer = System.Drawing.Graphics.FromImage(img);
 
-            Directory.CreateDirectory(storePath);
+            Directory.CreateDirectory(storePath);*/
 
             List<String> pathList = new List<String>();
 
-            for (int i = 0; i < rowCount; i++)
+            /*for (int i = 0; i < rowCount; i++)
             {
                 for (int j = 0; j < columnCount; j++)
                 {
@@ -87,7 +88,7 @@ namespace WPR.Common
                     pathList.Add(imagePath);
                 }
 
-            }
+            }*/
 
             return pathList;
 #endif

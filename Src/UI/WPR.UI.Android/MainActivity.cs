@@ -2,11 +2,13 @@ using Android.App;
 using Android.Content.PM;
 using Avalonia;
 using Avalonia.Android;
-using Avalonia.ReactiveUI;
+using Avalonia.Markup.Xaml;
+//using Avalonia.ReactiveUI;
 
 namespace WPR.UI.Android
 {
-    [Activity(Label = "WPR", Theme = "@style/AppTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
+    //[Activity(Label = "WPR", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
+    [Activity(Label = "WPR.Android", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MainActivity : AvaloniaMainActivity<App>
     {
     }
@@ -27,8 +29,8 @@ namespace WPR.UI.Android
         }
 
         public static AppBuilder BuildAvaloniaApp()
-            => AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .UseReactiveUI();
+            => AppBuilder.Configure<App>();
+                //.UsePlatformDetect()
+                //.UseReactiveUI();
     }
 }

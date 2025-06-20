@@ -25,7 +25,6 @@ namespace Microsoft.Phone.Shell
         {
             try
             {
-                // DEBUG / TEST; Uncomment it after tests!
                 _Activated?.Invoke(this, new ActivatedEventArgs(!anew));
             }
             catch (Exception ex)
@@ -40,9 +39,6 @@ namespace Microsoft.Phone.Shell
         {
             try
             {
-                /*Deactivated?.Invoke(this, new DeactivatedEventArgs());
-                Closing?.Invoke(this, new ClosingEventArgs());*/
-
                 var dArgs = new DeactivatedEventArgs();
                 Deactivated?.Invoke(this, dArgs);
 
