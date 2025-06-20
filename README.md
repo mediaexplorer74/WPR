@@ -27,7 +27,7 @@ NOTE: *avalonia* branch used as +- "master" one. It constists of Windows (tested
 - Actualize Wiki section
 - Transtale Readme to RU and CN
 - Fix resolution scaling...
-- Port this "app creature" into Xamarin Forms or Uno "multi-platform engine" :)
+- Try to port this "app creature" (in)to modern "multi-platform engine" such as MAUI... :)
 
 ## Credits
 - Tyler Jaacks (https://github.com/TylerJaacks) - for net5/6 -> net8 upgrade !
