@@ -3,7 +3,7 @@
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-NOTE: *avalonia* branch used as +- "master" one. It constists of Windows target (tested) & Android (not tested yet). If you interested in development, look at (see) *dev* branch that consists also experimental things (i.e., iOS & WebBrowser target stubs, Tests, etc.).  
+NOTE: *avalonia* branch used as +- "master" one. It constists of Windows (tested) & Android (not tested yet) targets. If you interested in development, look at (see) *dev* branch that also consists of some experimental things (i.e., iOS & WebBrowser target stubs, Tests, etc.).  
 
 ## Screenshots
 ![](Images/sshot01.png)
