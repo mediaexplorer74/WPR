@@ -1,4 +1,5 @@
 ﻿// Import necessary namespaces for assembly manipulation and loading
+using System;
 using System.Reflection;
 using System.Runtime.Loader;
 using Mono.Cecil;

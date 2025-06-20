@@ -22,12 +22,15 @@ sealed class Program
 using System.Reflection;
 using WPR;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil;
 using System.Runtime.Loader;
 using System.Runtime;
-using Microsoft.Xna.Framework.Graphics;
+
 using WPR.MonoGameCompability;
 using System.Diagnostics;
+using System.IO;
+using System;
 
 namespace WPR
 {

@@ -12,5 +12,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WPR.UI\WPR.UI.csproj" />
+    <ProjectReference Include="..\Microsoft.Phone\Microsoft.Phone.csproj" />
+    <ProjectReference Include="..\Microsoft.Xna.Framework.GamerServices\Microsoft.Xna.Framework.GamerServices.csproj" />
+    <ProjectReference Include="..\WPR.Common\WPR.Common.csproj" />
+    <ProjectReference Include="..\WPR.MonoGameCompabilityPatch\WPR.MonoGameCompability.csproj" />
+    <ProjectReference Include="..\WPR.WindowsCompability\WPR.WindowsCompability.csproj" />
   </ItemGroup>
 </Project>

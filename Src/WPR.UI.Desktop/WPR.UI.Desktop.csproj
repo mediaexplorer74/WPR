@@ -5,7 +5,9 @@
     One for Windows with net8.0-windows TFM, one for MacOS with net8.0-macos and one with net8.0 TFM for Linux.-->
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -19,14 +21,16 @@
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Mono.Cecil" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WPR.UI\WPR.UI.csproj" />
     <ProjectReference Include="..\Microsoft.Phone\Microsoft.Phone.csproj" />
     <ProjectReference Include="..\Microsoft.Xna.Framework.GamerServices\Microsoft.Xna.Framework.GamerServices.csproj" />
     <ProjectReference Include="..\WPR.Common\WPR.Common.csproj" />
     <ProjectReference Include="..\WPR.MonoGameCompabilityPatch\WPR.MonoGameCompability.csproj" />
-    <ProjectReference Include="..\WPR.UI\WPR.UI.csproj" />
     <ProjectReference Include="..\WPR.WindowsCompability\WPR.WindowsCompability.csproj" />
   </ItemGroup>
 </Project>

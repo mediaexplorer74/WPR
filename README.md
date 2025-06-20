@@ -1,9 +1,9 @@
-# WPR 0.0.12-alpha :: dev branch
+# WPR 0.0.12-alpha :: commit0 branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-*CAUTION*: this *dev* branch is for internal dev use. 
+*CAUTION*: this *commit0* branch is for internal dev use. Main goal is research of "minimal MONOGAME NET8 multiptatform app sample" only. It's not for production. 
 
 ## Details (steps) of my experiments
 - I found Fruit_Ninja_v1.1.0.0.xap and renamed it (in)to Fruit_Ninja_v1.1.0.0.zip

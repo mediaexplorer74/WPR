@@ -17,6 +17,13 @@ namespace WPR.MonoGameCompability.Graphics
 
         }
 
+        public SpriteBatch2(GraphicsDevice device)
+            : base(device)
+        {
+
+        }
+
+       
         public void Begin(SpriteSortMode sortMode, BlendState blendState)
         {
             base.Begin(sortMode: sortMode, blendState: blendState, transformMatrix: Matrix.Identity);

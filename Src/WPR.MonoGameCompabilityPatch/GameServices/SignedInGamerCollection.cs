@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.GamerServices;
+using System.Collections.Generic;
 
 namespace WPR.MonoGameCompability.GamerServices
 {

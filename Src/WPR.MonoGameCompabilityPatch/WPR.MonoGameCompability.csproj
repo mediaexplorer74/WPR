@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>4.0.0</Version>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
@@ -19,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Xna.Framework.GamerServices\Microsoft.Xna.Framework.GamerServices.csproj" />
     <ProjectReference Include="..\WPR.Common\WPR.Common.csproj" />
-    <ProjectReference Include="..\WPR.WindowsCompability\WPR.WindowsCompability.csproj" />
   </ItemGroup>
 
 </Project>

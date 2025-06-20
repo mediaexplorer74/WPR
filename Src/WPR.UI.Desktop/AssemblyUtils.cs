@@ -9,7 +9,7 @@ namespace WPR
     internal class AssemblyUtils
     {
         // Method to clone an assembly with a new name and reload it into the context
-        public static Assembly? SaveExistingAssemblyAsAndReload(AssemblyLoadContext context, String currentName, AssemblyNameDefinition newName)
+        public static Assembly? SaveExistingAssemblyAsAndReload(AssemblyLoadContext context, string currentName, AssemblyNameDefinition newName)
         {
             // Parse the original assembly name to create a reference
             AssemblyNameReference reference = AssemblyNameReference.Parse(currentName);
