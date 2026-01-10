@@ -1,0 +1,124 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="Demo.MainWindow"
+		SizeToContent="WidthAndHeight"
+		Title="Demo">
+	<Window.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="Grid.Column" Value="0" />
+			<Setter Property="Margin" Value="5" />
+		</Style>
+		<Style Selector="TextBlock.h1">
+			<Setter Property="FontSize" Value="16" />
+		</Style>
+		<Style Selector="Grid > i|Icon">
+			<Setter Property="FontSize" Value="24" />
+			<Setter Property="Grid.Column" Value="1" />
+			<Setter Property="Margin" Value="5" />
+		</Style>
+		<Style Selector="StackPanel > i|Icon">
+			<Setter Property="FontSize" Value="24" />
+			<Setter Property="Margin" Value="5" />
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="FontSize" Value="24" />
+			<Setter Property="Grid.Column" Value="2" />
+			<Setter Property="Margin" Value="5" />
+			<Setter Property="IsEnabled" Value="{Binding #ButtonToggle.IsChecked}" />
+		</Style>
+	</Window.Styles>
+
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="File">
+				<MenuItem Header="About" i:MenuItem.Icon="fa-solid fa-circle-info" />
+				<MenuItem Header="Quit" Command="{Binding Close}" i:MenuItem.Icon="fa-solid fa-right-from-bracket" />
+			</MenuItem>
+		</Menu>
+
+		<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto, Auto" Margin="4">
+			<!--Font Awesome-->
+			<Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="4">
+				<TextBlock Text="FontAwesome" Grid.Row="0" Grid.ColumnSpan="2" Classes="h1" />
+				<!--GitHub-->
+				<TextBlock Text="fa-brands fa-github" Grid.Row="1" />
+				<i:Icon Value="fa-brands fa-github" Grid.Row="1" Foreground="BlueViolet" />
+				<Button i:Attached.Icon="fa-brands fa-github" Grid.Row="1" Foreground="BlueViolet" />
+
+				<!--Address Card-->
+				<TextBlock Text="fa-solid fa-address-card" Grid.Row="2" />
+				<i:Icon Value="fa-solid fa-address-card" Grid.Row="2" />
+				<Button i:Attached.Icon="fa-solid fa-address-card" Grid.Row="2" />
+
+				<TextBlock Text="fa-regular fa-address-card" Grid.Row="3" />
+				<i:Icon Value="fa-regular fa-address-card" Grid.Row="3" />
+				<Button i:Attached.Icon="fa-regular fa-address-card" Grid.Row="3" />
+
+				<TextBlock Text="fa-solid fa(-circle)-info" Grid.Row="4" />
+				<i:Icon Value="fa-solid fa-info" Grid.Row="4" Foreground="DodgerBlue" />
+				<Button i:Attached.Icon="fa-solid fa-circle-info" Grid.Row="4" Foreground="DodgerBlue" />
+			</Grid>
+
+			<!--Material Design-->
+			<Grid Grid.Column="1" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="32,4,4,4">
+				<TextBlock Text="Material Design" Grid.Row="0" Grid.ColumnSpan="2" Classes="h1" />
+				<!--GitHub-->
+				<TextBlock Text="mdi-github" Grid.Row="1" />
+				<i:Icon Value="mdi-github" Grid.Row="1" Foreground="BlueViolet" />
+				<Button i:Attached.Icon="mdi-github" Grid.Row="1" Foreground="BlueViolet" />
+
+				<!--map-marker-->
+				<TextBlock Text="mdi-map-marker" Grid.Row="2" />
+				<i:Icon Value="mdi-map-marker" Grid.Row="2" />
+				<Button i:Attached.Icon="mdi-map-marker" Grid.Row="2" />
+
+				<TextBlock Text="mdi-map-marker-outline" Grid.Row="3" />
+				<i:Icon Value="mdi-map-marker-outline" Grid.Row="3" />
+				<Button i:Attached.Icon="mdi-map-marker-outline" Grid.Row="3" />
+
+				<TextBlock Text="mdi-information(-variant)" Grid.Row="4" />
+				<i:Icon Value="mdi-information-variant" Grid.Row="4" Foreground="DodgerBlue" />
+				<Button i:Attached.Icon="mdi-information" Grid.Row="4" Foreground="DodgerBlue" />
+			</Grid>
+
+			<!--Animations-->
+			<Grid Grid.Column="2" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="32,4,4,4">
+				<TextBlock Text="Animations" Grid.Row="0" Grid.ColumnSpan="2"  Classes="h1" />
+
+				<TextBlock Text="fa-spinner (Pulse)" Grid.Row="1" />
+				<i:Icon Value="fa-spinner" Animation="Pulse" Grid.Row="1" />
+				<Button Grid.Row="1">
+					<i:Icon Value="fa-spinner" Animation="Pulse" />
+				</Button>
+
+				<TextBlock Text="fa-sync (Spin)" Grid.Row="2" />
+				<i:Icon Value="fa-sync" Animation="Spin" Grid.Row="2" />
+				<Button Grid.Row="2">
+					<i:Icon Value="fa-sync" Animation="Spin" />
+				</Button>
+
+				<TextBlock Text="mdi-cog (Spin)" Grid.Row="3" />
+				<i:Icon Value="mdi-cog" Animation="Spin" Grid.Row="3" />
+				<Button Grid.Row="3">
+					<i:Icon Value="fa-cog" Animation="Spin" />
+				</Button>
+
+				<TextBlock Text="mdi-progress-helper (Pulse)" Grid.Row="4" />
+				<i:Icon Value="mdi-progress-helper" Animation="Pulse" Grid.Row="4" />
+				<Button Grid.Row="4">
+					<i:Icon Value="mdi-progress-helper" Animation="Pulse" />
+				</Button>
+			</Grid>
+
+			<!--Actions-->
+			<DockPanel Margin="4" Grid.Row="1">
+				<ToggleSwitch Name="ButtonToggle" OffContent="Buttons disabled" OnContent="Buttons enabled" IsChecked="True" />
+			</DockPanel>
+		</Grid>
+	</DockPanel>
+</Window>

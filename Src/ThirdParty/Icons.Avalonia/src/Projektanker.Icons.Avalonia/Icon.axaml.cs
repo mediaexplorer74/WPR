@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 
 namespace Projektanker.Icons.Avalonia
 {
-    public class Icon : TemplatedControl
+    public partial class Icon : TemplatedControl
     {
         public static readonly DirectProperty<Icon, DrawingImage> DrawingImageProperty =
             AvaloniaProperty.RegisterDirect<Icon, DrawingImage>(nameof(DrawingImage), o => o.DrawingImage);
@@ -17,19 +16,10 @@ namespace Projektanker.Icons.Avalonia
         public static readonly StyledProperty<IconAnimation> AnimationProperty =
             AvaloniaProperty.Register<Icon, IconAnimation>(nameof(Animation));
 
-        private DrawingImage _drawingImage;
+        private DrawingImage _drawingImage = new DrawingImage();
 
         static Icon()
         {
-            ValueProperty.Changed
-                .Select(e => e.Sender)
-                .OfType<Icon>()
-                .Subscribe(icon => icon.OnValueChanged());
-
-            ForegroundProperty.Changed
-                .Select(e => e.Sender)
-                .OfType<Icon>()
-                .Subscribe(icon => icon.OnForegroundChanged());
         }
 
         public DrawingImage DrawingImage
@@ -52,15 +42,24 @@ namespace Projektanker.Icons.Avalonia
 
         private void OnValueChanged()
         {
-            var iconProvider = AvaloniaLocator.Current.GetService<IIconReader>();
-            string path = iconProvider.GetIconPath(Value);
-            var drawing = new GeometryDrawing()
+            // Try to interpret Value as path data; if that fails, produce an empty drawing.
+            try
             {
-                Geometry = Geometry.Parse(path),
-                Brush = Foreground ?? new SolidColorBrush(0),
-            };
+                string path = Value ?? string.Empty;
+                Geometry geometry = Geometry.Parse(path);
 
-            DrawingImage = new DrawingImage { Drawing = drawing };
+                var drawing = new GeometryDrawing()
+                {
+                    Geometry = geometry,
+                    Brush = Foreground ?? new SolidColorBrush(0),
+                };
+
+                DrawingImage = new DrawingImage { Drawing = drawing };
+            }
+            catch
+            {
+                DrawingImage = new DrawingImage { Drawing = new GeometryDrawing() };
+            }
         }
 
         private void OnForegroundChanged()

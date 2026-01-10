@@ -20,7 +20,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
-using System.Diagnostics;
 #endregion
 
 namespace Microsoft.Xna.Framework
@@ -1049,8 +1048,6 @@ namespace Microsoft.Xna.Framework
 					}
 					else if (evt.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST)
 					{
-						//RnD
-						/*
 						game.IsActive = false;
 
 						if (SDL.SDL_GetCurrentVideoDriver() == "x11")
@@ -1060,7 +1057,6 @@ namespace Microsoft.Xna.Framework
 
 						// Give the screensaver back, we're not that important now.
 						SDL.SDL_EnableScreenSaver();
-						*/
 					}
 
 					// Window Resize
@@ -2835,15 +2831,7 @@ namespace Microsoft.Xna.Framework
 					if (	game.Window != null &&
 						evt->window.windowID == SDL.SDL_GetWindowID(game.Window.Handle)	)
 					{
-						try
-						{
-							game.RedrawWindow();
-						}
-						catch (Exception ex)
-						{
-							Debug.WriteLine("[ex] game.RedrawWindow ex. : "
-								+ ex.Message);
-						}
+						game.RedrawWindow();
 						return 0;
 					}
 				}

@@ -1,12 +1,9 @@
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using System.IO;
-using System.Threading.Tasks;
-using ReactiveUI;
-using System;
 
 using WPR.Models;
 using WPR.Common;
-using System.Reactive;
+using System;
 
 namespace WPR.UI.ViewModels
 {
@@ -18,23 +15,12 @@ namespace WPR.UI.ViewModels
         public int IconSize => 90;
         public int Height => 160;
 
-        public ReactiveCommand<Unit, Unit> RunAppCommand { get; }
-        public ReactiveCommand<Unit, Unit> UninstallAppCommand { get; }
-
-        // Event that will be triggered when app needs to be uninstalled
-        public event EventHandler<ApplicationItemViewModel>? UninstallRequested;
-
         public ApplicationItemViewModel(Application app)
         {
             _App = app;
-            RunAppCommand = ReactiveCommand.Create(() => RunApp());
-            UninstallAppCommand = ReactiveCommand.Create(() => UninstallApp());
         }
 
         internal Application App => _App;
-        
-        // Property to expose the application model for easier access
-        public Application Model => _App;
 
         public string? Name => _App.Name;
         public string? Tooltip
@@ -49,34 +35,55 @@ namespace WPR.UI.ViewModels
         {
             get
             {
-                _Icon = default;
-
                 if (_Icon == null)
                 {
-                    try
+                    var iconRelative = _App.IconPath ?? string.Empty;
+                    var iconFull = Configuration.Current!.DataPath(iconRelative);
+
+                    if (File.Exists(iconFull))
                     {
-                        var iconpath = Configuration.Current!.DataPath(_App.IconPath);
-                        var fs = new FileStream(iconpath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                        _Icon = Bitmap.DecodeToWidth(fs,
-                            IconSize);
+                        try
+                        {
+                            using var fs = new FileStream(iconFull, FileMode.Open, FileAccess.Read, FileShare.Read);
+                            _Icon = Bitmap.DecodeToWidth(fs, IconSize);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(/*LogCategory.UI*/default, $"Failed to load icon '{iconFull}': {ex}");
+                            _Icon = LoadDefaultIcon();
+                        }
                     }
-                    catch { }
+                    else
+                    {
+                        Log.Error(/*LogCategory.UI*/default, $"Icon not found: {iconFull}");
+                        _Icon = LoadDefaultIcon();
+                    }
                 }
 
                 return _Icon;
             }
         }
 
-        private void RunApp()
-        {
-            // Logic to run the application
-            WPR.UI.ApplicationLaunchRequest.Ask(_App);
-        }
+        private static readonly byte[] OnePixelPng =
+            Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAn0B9lqzWgAAAABJRU5ErkJggg==");
 
-        private void UninstallApp()
+        private  Bitmap LoadDefaultIcon()
         {
-            // Trigger the uninstall event so the parent view model can handle it
-            UninstallRequested?.Invoke(this, this);
+            var bytes = Properties.Resources.DefaultIconPng;
+            if (bytes == null || bytes.Length == 0)
+            {
+                Bitmap DefIcon = default;
+
+                try
+                {
+                    // use a known-valid 1x1 PNG and decode to the desired width
+                    DefIcon = Bitmap.DecodeToWidth(new MemoryStream(OnePixelPng), IconSize); 
+                }
+                catch { }
+
+                return DefIcon;
+            }
+            return Bitmap.DecodeToWidth(new MemoryStream(bytes), IconSize);
         }
     }
 }

@@ -28,12 +28,12 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         protected virtual void Dispose(bool disposing)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void Update(TimeSpan elapsedAnimationTime, bool loop)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public ReadOnlyCollection<Matrix> BoneTransforms

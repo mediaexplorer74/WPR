@@ -9,7 +9,6 @@
 
 #region Using Statements
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 #endregion
@@ -70,17 +69,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 
 			GraphicsDevice = graphicsDevice;
-
-			//RnD
-			//if (format != SurfaceFormat.Color)
-			//{
-				//if (width > 640) //800
-				//	width = 640;
-				//if (height > 480) 
-				//	width = 480;
-			//}
-
-            Width = width;
+			Width = width;
 			Height = height;
 			LevelCount = mipMap ? CalculateMipLevels(width, height) : 1;
 
@@ -121,41 +110,17 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 			else
 			{
-				//Experimental! RnD / TEMP
-
-				
-
-				if (format == SurfaceFormat.Bgra4444)
-				{
-                    format = SurfaceFormat.Color;
-                }
-
-				//if (format != SurfaceFormat.Color)
-				//{
-				//format = SurfaceFormat.Dxt5;//.NormalizedByte2;
-                //}
-
-                //TEST: Low-memory devices
-                //format = SurfaceFormat.Dxt5;
-
-                Format = format;
-            }
-
-			try
-			{
-				texture = FNA3D.FNA3D_CreateTexture2D(
-					GraphicsDevice.GLDevice,
-					Format,
-					Width,
-					Height,
-					LevelCount,
-					(byte)((this is IRenderTarget) ? 1 : 0)
-				);
+				Format = format;
 			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] FNA3D.FNA3D_CreateTexture2D ex:" + ex.Message);
-			}
+
+			texture = FNA3D.FNA3D_CreateTexture2D(
+				GraphicsDevice.GLDevice,
+				Format,
+				Width,
+				Height,
+				LevelCount,
+				(byte) ((this is IRenderTarget) ? 1 : 0)
+			);
 		}
 
 		#endregion
@@ -187,15 +152,13 @@ namespace Microsoft.Xna.Framework.Graphics
 			);
 		}
 
-		public void SetData<T>
-		(
+		public void SetData<T>(
 			int level,
 			Rectangle? rect,
 			T[] data,
 			int startIndex,
 			int elementCount
-		) where T : struct 
-		{
+		) where T : struct {
 			if (data == null)
 			{
 				throw new ArgumentNullException("data");
@@ -225,64 +188,27 @@ namespace Microsoft.Xna.Framework.Graphics
 				h = Math.Max(Height >> level, 1);
 			}
 			int elementSize = Marshal.SizeOf(typeof(T));
-			
 			int requiredBytes = (w * h * GetFormatSize(Format)) / GetBlockSizeSquared(Format);
-			
 			int availableBytes = elementCount * elementSize;
-			
 			if (requiredBytes > availableBytes)
 			{
-                Debug.WriteLine("[warn] The region you are trying to upload is larger " +
-                    "than the amount of data you provided.");
-
-                //throw new ArgumentOutOfRangeException("rect", 
-				//	"The region you are trying to upload is larger " +
-				//	"than the amount of data you provided.");
-				
-				return;				
+				throw new ArgumentOutOfRangeException("rect", "The region you are trying to upload is larger than the amount of data you provided.");
 			}
 
-			
-
-            try
-			{
-				// 1. try to alloc mem...
-                GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-
-				// 2. try to set texture 2D-data...
-                try
-                {
-                    FNA3D.FNA3D_SetTextureData2D(
-                    GraphicsDevice.GLDevice,
-                    texture,
-                    x,
-                    y,
-                    w,
-                    h,
-                    level,
-                    handle.AddrOfPinnedObject() + startIndex * elementSize,
-                    elementCount * elementSize
-                );
-                }
-                catch (Exception ex2)
-                {
-                    Debug.WriteLine("Texture2D ex: " + ex2.Message);
-                }
-
-				// 3. free mem...
-                handle.Free();
-
-
-            }
-			catch (Exception ex)
-			{
-                Debug.WriteLine("[warn] Cannot allocate the amount of data you provided: " 
-					+ ex.Message);
-                return;
-			}		
-			
+			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			FNA3D.FNA3D_SetTextureData2D(
+				GraphicsDevice.GLDevice,
+				texture,
+				x,
+				y,
+				w,
+				h,
+				level,
+				handle.AddrOfPinnedObject() + startIndex * elementSize,
+				elementCount * elementSize
+			);
+			handle.Free();
 		}
-
 
 		public void SetDataPointerEXT(
 			int level,

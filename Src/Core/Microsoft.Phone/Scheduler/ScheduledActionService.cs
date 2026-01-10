@@ -24,8 +24,7 @@ namespace Microsoft.Phone.Scheduler
         {
             if (Actions.ContainsKey(action.Name!))
             {
-                throw new ArgumentException(
-                    $"The task with the name: {action.Name} has already been scheduled!");
+                throw new ArgumentException($"The task with the name: {action.Name} has already been scheduled!");
             }
 
             Actions.Add(action.Name!, action);

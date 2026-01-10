@@ -1,14 +1,16 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:WPR.UI"
-             x:Class="WPR.UI.App">
+             x:Class="WPR.UI.App"
+             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+             >
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
     <Application.Styles>
-        <FluentTheme Mode="Dark"/>
-		<StyleInclude Source="avares://DialogHost.Avalonia/Styles.xaml"/>
+        <FluentTheme/>
+        <dialogHostAvalonia:DialogHostStyles />
 
 		<Style Selector="Label">
 			<Setter Property="Foreground" Value="White" />

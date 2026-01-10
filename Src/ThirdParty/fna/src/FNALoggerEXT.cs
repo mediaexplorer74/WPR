@@ -11,7 +11,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
 using System;
-using System.Diagnostics;
 #endregion
 
 namespace Microsoft.Xna.Framework
@@ -96,7 +95,6 @@ namespace Microsoft.Xna.Framework
 		{
 			string err = UTF8_ToManaged(msg);
 			LogError(err);
-			Debug.WriteLine("FNA3DLogError ex.: " + msg);
 			throw new InvalidOperationException(err);
 		}
 

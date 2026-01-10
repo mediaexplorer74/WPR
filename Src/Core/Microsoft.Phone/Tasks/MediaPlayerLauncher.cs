@@ -10,7 +10,7 @@ namespace Microsoft.Phone.Tasks
     {
         public MediaLocationType Location { get; set; }
 
-        public Uri? Media { get; set; }
+        public Uri Media { get; set; }
 
         public MediaPlaybackControls Controls { get; set; }
 

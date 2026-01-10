@@ -42,24 +42,24 @@ namespace WPR.UI
                     (result == MessageBox.Avalonia.Enums.ButtonResult.Yes) ? 1 : 0;
             };
 
-            WPR.WindowsCompability.MessageBox.ShowSimpleImpl = async (title, caption, button) =>
+            System.Windows.MessageBox.ShowSimpleImpl = async (title, caption, button) =>
             {
                 MessageBox.Avalonia.Enums.ButtonEnum buttonImpl = MessageBox.Avalonia.Enums.ButtonEnum.Ok;
                 switch (button)
                 {
-                    case WPR.WindowsCompability.MessageBoxButton.OK:
+                    case System.Windows.MessageBoxButton.OK:
                         buttonImpl = MessageBox.Avalonia.Enums.ButtonEnum.Ok;
                         break;
 
-                    case WPR.WindowsCompability.MessageBoxButton.OKCancel:
+                    case System.Windows.MessageBoxButton.OKCancel:
                         buttonImpl = MessageBox.Avalonia.Enums.ButtonEnum.OkCancel;
                         break;
 
-                    case WPR.WindowsCompability.MessageBoxButton.YesNoCancel:
+                    case System.Windows.MessageBoxButton.YesNoCancel:
                         buttonImpl = MessageBox.Avalonia.Enums.ButtonEnum.YesNoCancel;
                         break;
 
-                    case WPR.WindowsCompability.MessageBoxButton.YesNo:
+                    case System.Windows.MessageBoxButton.YesNo:
                         buttonImpl = MessageBox.Avalonia.Enums.ButtonEnum.YesNo;
                         break;
 
@@ -73,19 +73,19 @@ namespace WPR.UI
                 switch (result)
                 {
                     case MessageBox.Avalonia.Enums.ButtonResult.Ok:
-                        return WPR.WindowsCompability.MessageBoxResult.OK;
+                        return System.Windows.MessageBoxResult.OK;
 
                     case MessageBox.Avalonia.Enums.ButtonResult.Yes:
-                        return WPR.WindowsCompability.MessageBoxResult.Yes;
+                        return System.Windows.MessageBoxResult.Yes;
 
                     case MessageBox.Avalonia.Enums.ButtonResult.No:
-                        return WPR.WindowsCompability.MessageBoxResult.No;
+                        return System.Windows.MessageBoxResult.No;
 
                     case MessageBox.Avalonia.Enums.ButtonResult.Cancel:
-                        return WPR.WindowsCompability.MessageBoxResult.Cancel;
+                        return System.Windows.MessageBoxResult.Cancel;
 
                     default:
-                        return WPR.WindowsCompability.MessageBoxResult.None;
+                        return System.Windows.MessageBoxResult.None;
                 }
             };
         }

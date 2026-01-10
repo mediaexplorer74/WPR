@@ -20,7 +20,6 @@
 
 #region Using Statements
 using System;
-using System.Diagnostics;
 using System.IO;
 #endregion
 
@@ -45,16 +44,7 @@ namespace Microsoft.Xna.Framework
 			{
 				return File.OpenRead(safeName);
 			}
-
-			try
-			{
-				return File.OpenRead(Path.Combine(TitleLocation.Path, safeName));
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] Exception : " + ex.Message);
-			}
-			return default;
+			return File.OpenRead(Path.Combine(TitleLocation.Path, safeName));
 		}
 
 		#endregion

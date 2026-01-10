@@ -42,9 +42,7 @@ namespace Microsoft.Xna.Framework
 			{
 				if (value == null)
 				{
-					//RnD
-					//throw new ArgumentNullException();
-					value = default;
+					throw new ArgumentNullException();
 				}
 				INTERNAL_content = value;
 			}
@@ -242,7 +240,6 @@ namespace Microsoft.Xna.Framework
 
 		public Game()
 		{
-			//RnD
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
 			LaunchParameters = new LaunchParameters();
@@ -340,7 +337,6 @@ namespace Microsoft.Xna.Framework
 					ContentTypeReaderManager.ClearTypeCreators();
 				}
 
-				//RnD
 				AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
 
 				isDisposed = true;
@@ -413,61 +409,14 @@ namespace Microsoft.Xna.Framework
 				hasInitialized = true;
 			}
 
-			try
-			{
-				BeginRun();
-			}
-			catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] Game - BeginRun ex: " + ex.Message);
-            }
+			BeginRun();
+			BeforeLoop();
 
-			try
-			{
-				BeforeLoop();
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] Game - BeforeLoop ex: " + ex.Message);
-			}
+			gameTimer = Stopwatch.StartNew();
+			RunLoop();
 
-			try
-			{
-				gameTimer = Stopwatch.StartNew();
-			}
-			catch (Exception ex) 
-			{
-                Debug.WriteLine("[ex] Game - StartNow ex: " + ex.Message);
-            }
-
-			try
-			{
-				RunLoop();
-			}
-			catch (Exception ex)
-			{
-                Debug.WriteLine("[ex] Game - RunLoop ex: " + ex.Message);
-                Debug.WriteLine( "StackTrace: " + ex.StackTrace.ToString() );
-				throw;
-            }
-
-			try 
-			{
-				EndRun();
-			} 
-			catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] Game - EndRun ex: " + ex.Message);
-            }
-
-			try
-			{
-				AfterLoop();
-			}
-			catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] Game - AfterLoop ex: " + ex.Message);
-            }
+			EndRun();
+			AfterLoop();
 		}
 
 		public void Tick()
@@ -533,15 +482,7 @@ namespace Microsoft.Xna.Framework
 					stepCount += 1;
 
 					AssertNotDisposed();
-
-					try
-					{
-						Update(gameTime);
-					}
-					catch (Exception ex)
-					{
-						Debug.WriteLine("[ex] Game (gameTime) error: " + ex.Message);
-					}
+					Update(gameTime);
 				}
 
 				// Every update after the first accumulates lag
@@ -599,20 +540,8 @@ namespace Microsoft.Xna.Framework
 
 				accumulatedElapsedTime = TimeSpan.Zero;
 				AssertNotDisposed();
-
-                // Plan A
-                //Update(gameTime);
-                // Plan B
-                try
-                {
-                    Update(gameTime);
-                }
-                catch (Exception ex2)
-                {
-                    Debug.WriteLine("[ex2] Game (gameTime) error: " + ex2.Message);
-					Exit();
-                }
-            }
+				Update(gameTime);
+			}
 
 			// Draw unless the update suppressed it.
 			if (suppressDraw)
@@ -627,25 +556,9 @@ namespace Microsoft.Xna.Framework
 				 */
 				if (BeginDraw())
 				{
-					try
-					{
-						Draw(gameTime);
-					}
-					catch (Exception ex)
-					{
-						Debug.WriteLine("[ex] Game Draw ex. : " + ex.Message);
-					}
-
-					try
-                    {
-                        EndDraw();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("[ex] Game EndDraw ex. : " + ex.Message);
-                    }
-					                    
-                }
+					Draw(gameTime);
+					EndDraw();
+				}
 			}
 		}
 
@@ -736,17 +649,7 @@ namespace Microsoft.Xna.Framework
 				Services.GetService(typeof(IGraphicsDeviceService));
 			if (graphicsDeviceService != null)
 			{
-				graphicsDeviceService.DeviceDisposing += (o, e) =>
-				{
-					try
-					{
-						UnloadContent();
-					}
-					catch (Exception ex)
-					{
-						Debug.WriteLine("[ex] UnloadContent ex. : " + ex.Message);
-					}
-				};
+				graphicsDeviceService.DeviceDisposing += (o, e) => UnloadContent();
 				if (graphicsDeviceService.GraphicsDevice != null)
 				{
 					LoadContent();
@@ -779,61 +682,23 @@ namespace Microsoft.Xna.Framework
 
 		protected virtual void Update(GameTime gameTime)
 		{
-			try
+			lock (updateableComponents)
 			{
-				lock (updateableComponents)
+				for (int i = 0; i < updateableComponents.Count; i += 1)
 				{
-					for (int i = 0; i < updateableComponents.Count; i += 1)
-					{
-						currentlyUpdatingComponents.Add(updateableComponents[i]);
-					}
+					currentlyUpdatingComponents.Add(updateableComponents[i]);
 				}
 			}
-			catch (Exception ex)
+			foreach (IUpdateable updateable in currentlyUpdatingComponents)
 			{
-				Debug.WriteLine("[ex] Game - Update - Lock: " + ex.Message);
-			}
-
-			try
-			{
-				foreach (IUpdateable updateable in currentlyUpdatingComponents)
+				if (updateable.Enabled)
 				{
-					if (updateable.Enabled)
-					{
-						try
-						{
-							updateable.Update(gameTime);
-						}
-						catch (Exception ex)
-						{
-							Debug.WriteLine("[ex] ComponentsUpdate ex.: " + ex.Message);
-							throw;
-						}
-					}
+					updateable.Update(gameTime);
 				}
 			}
-			catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] Game - Update components: " + ex.Message);
-            }
+			currentlyUpdatingComponents.Clear();
 
-			try
-			{
-				currentlyUpdatingComponents.Clear();
-			}
-			catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] Game - Components clear: " + ex.Message);
-            }
-
-			try
-			{
-				FrameworkDispatcher.Update();
-			}
-			catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] Game - FrameworkDispatcher Update : " + ex.Message);
-            }
+			FrameworkDispatcher.Update();
 		}
 
 		protected virtual void OnExiting(object sender, EventArgs args)
@@ -908,14 +773,7 @@ namespace Microsoft.Xna.Framework
 				graphicsDeviceManager.CreateDevice();
 			}
 
-			try
-			{
-				Initialize();
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] Game init ex. : " + ex.Message);
-			}
+			Initialize();
 
 			/* We need to do this after virtual Initialize(...) is called.
 			 * 1. Categorize components into IUpdateable and IDrawable lists.
@@ -1135,8 +993,7 @@ namespace Microsoft.Xna.Framework
 		private void OnUnhandledException(
 			object sender,
 			UnhandledExceptionEventArgs args
-		) 
-		{
+		) {
 			ShowMissingRequirementMessage(args.ExceptionObject as Exception);
 		}
 

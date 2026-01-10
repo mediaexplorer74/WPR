@@ -12,7 +12,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 #endregion
 
 namespace Microsoft.Xna.Framework.Audio
@@ -449,9 +448,7 @@ namespace Microsoft.Xna.Framework.Audio
 				}
 				if (data_signature != "data")
 				{
-					//throw new NotSupportedException("Specified wave file is not supported.");
-					Debug.WriteLine("[ex] SoundEffect: " + "Specified wave file is not supported.");
-					//return; // RnD
+					throw new NotSupportedException("Specified wave file is not supported.");
 				}
 
 				int waveDataLength = reader.ReadInt32();

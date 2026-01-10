@@ -28,17 +28,8 @@ namespace WPR.XnaCompability
 
         public static void RequestOrientationChange(int width, int height)
         {
-            DisplayOrientation device_orientation = default;
-
-            if (width > height)
-            {
-                device_orientation = DisplayOrientation.LandscapeRight; 
-            }
-            else
-            {
-                device_orientation = DisplayOrientation.Portrait;
-            }
-            RequestOrientation?.Invoke(device_orientation);
+            RequestOrientation?.Invoke((width > height) ? DisplayOrientation.LandscapeRight 
+                : DisplayOrientation.Portrait);
         }
     }
 }

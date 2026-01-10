@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using WPR.UI.ViewModels;
 using WPR.UI.Views;
@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using WPR.Models;
 using WPR.Common;
 using Avalonia.Platform.Storage;
+using DialogHostAvalonia;
 
 namespace WPR.UI.Pages
 {
@@ -50,28 +51,28 @@ namespace WPR.UI.Pages
 
                     ViewModel!.InstallationSetProgress += progress => Dispatcher.UIThread.InvokeAsync(()
                         => InstallProgressWindow.Progress = progress);
-                    
+
                     ViewModel!.DeleteExistingAppInteraction!.RegisterHandler(
                         context => Dispatcher.UIThread.InvokeAsync(async () =>
-                    {
                         {
-                            Application app = context.Input;
+                            {
+                                Application app = context.Input;
 
-                            MessageBox.Avalonia.Enums.ButtonResult result = 
-                              await MessageBoxUtils.GetMessageDialogResult(
-                                title: Properties.Resources.ApplicationAlreadyInstalled,
-                                text: String.Format(
-                                    Properties.Resources.ApplicationAlreadyInstalledDescription, app.Name),
-                                icon: MessageBox.Avalonia.Enums.Icon.Question,
-                                buttons: MessageBox.Avalonia.Enums.ButtonEnum.YesNo);
+                                MessageBox.Avalonia.Enums.ButtonResult result =
+                                  await MessageBoxUtils.GetMessageDialogResult(
+                                    title: Properties.Resources.ApplicationAlreadyInstalled,
+                                    text: String.Format(
+                                        Properties.Resources.ApplicationAlreadyInstalledDescription, app.Name),
+                                    icon: MessageBox.Avalonia.Enums.Icon.Question,
+                                    buttons: MessageBox.Avalonia.Enums.ButtonEnum.YesNo);
 
-                            context.SetOutput(result == MessageBox.Avalonia.Enums.ButtonResult.Yes);
-                        }
-                    }));
+                                context.SetOutput(result == MessageBox.Avalonia.Enums.ButtonResult.Yes);
+                            }
+                        }));
 
                     InstallProgressWindow.WhenAnyValue(v => v.IsVisible)
                     .Subscribe
-                    (async v => 
+                    (async v =>
                     {
                         if (!v)
                         {
@@ -80,7 +81,7 @@ namespace WPR.UI.Pages
 
                         var err = await ViewModel!.InstallRequestCommand.Execute(
                             await result[0].OpenReadAsync());
-                            
+
                         string errUserStr = LocaleUtils.GetDisplayName(err);
                         bool failed = err != ApplicationInstallError.None;
 
@@ -91,10 +92,10 @@ namespace WPR.UI.Pages
 
                         ViewModel!.UpdateApplicationList(ViewModel!.SearchText);
 
-                        DialogHost.DialogHost.Close(null);
+                        DialogHost.Close(null);
                     });
 
-                    await DialogHost.DialogHost.Show(InstallProgressWindow);
+                    await DialogHost.Show(InstallProgressWindow);
                 }
             };
         }

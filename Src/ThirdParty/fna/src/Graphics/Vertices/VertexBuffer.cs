@@ -9,7 +9,6 @@
 
 #region Using Statements
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -176,19 +175,14 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 			if (data.Length < (startIndex + elementCount))
 			{
-				//throw new ArgumentOutOfRangeException(
-				//	"elementCount",
-				//	"This parameter must be a valid index within the array.");
-                Debug.WriteLine(
-                    "[ex] FNACore - VertexBuffer elementCount error: " +
-                    "This parameter must be a valid index within the array."
-                );
-            }
+				throw new ArgumentOutOfRangeException(
+					"elementCount",
+					"This parameter must be a valid index within the array."
+				);
+			}
 			if (BufferUsage == BufferUsage.WriteOnly)
 			{
-				throw new NotSupportedException(
-					"Calling GetData on a resource that was created with " +
-					"BufferUsage.WriteOnly is not supported.");
+				throw new NotSupportedException("Calling GetData on a resource that was created with BufferUsage.WriteOnly is not supported.");
 			}
 
 			int elementSizeInBytes = Marshal.SizeOf(typeof(T));
@@ -200,15 +194,13 @@ namespace Microsoft.Xna.Framework.Graphics
 			{
 				throw new ArgumentOutOfRangeException(
 					"vertexStride",
-					"The vertex stride is too small for the type of data requested. " +
-					"This is not allowed."
+					"The vertex stride is too small for the type of data requested. This is not allowed."
 				);
 			}
 			if (	elementCount > 1 &&
 				(elementCount * vertexStride) > (VertexCount * VertexDeclaration.VertexStride)	)
 			{
-				throw new InvalidOperationException(
-					"The array is not the correct size for the amount of data requested.");
+				throw new InvalidOperationException("The array is not the correct size for the amount of data requested.");
 			}
 
 			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);

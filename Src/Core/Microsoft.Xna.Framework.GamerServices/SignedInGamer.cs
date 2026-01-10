@@ -53,7 +53,6 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         internal SignedInGamer()
         {
-            //
         }
 
         public IAsyncResult BeginGetAchievements(AsyncCallback? callback, Object? asyncState)
@@ -111,8 +110,8 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public AchievementCollection GetAchievements() => this.EndGetAchievements(this.BeginGetAchievements(null, null));
 
-        public IAsyncResult BeginAwardAchievement(string achievementKey, AsyncCallback? callback,
-            object? state)
+        public IAsyncResult BeginAwardAchievement(string achievementKey, AsyncCallback callback,
+            object state)
         {
             return Task.Run(async () =>
             {
@@ -145,8 +144,8 @@ namespace Microsoft.Xna.Framework.GamerServices
                         {
                             Title = Properties.Resources.AchievementUnlocked,
                             Body = $"{achievements[0].GamerScore}G - {achievements[0].Name}",
-                            // TODO: ImagePath = Configuration.Current!.DataPath(achievements[0]._IconPath),
-                            // TODO: SoundUri = "AchievementUnlocked"
+                            ImagePath = Configuration.Current!.DataPath(achievements[0]._IconPath),
+                            SoundUri = "AchievementUnlocked"
                         }, DateTime.Now + TimeSpan.FromDays(1));
                     } catch (Exception ex)
                     {
@@ -170,31 +169,24 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public void EndAwardAchievement(IAsyncResult result)
         {
-            //
         }
 
-        public void AwardAchievement(string achievementKey)
-        {
-            EndAwardAchievement(BeginAwardAchievement(achievementKey, null, null));
-        }
+        public void AwardAchievement(string achievementKey) => EndAwardAchievement(BeginAwardAchievement(achievementKey, null, null));
 
         public FriendCollection GetFriends()
         {
-            //throw new NotImplementedException();
-            return default; 
+            throw new NotImplementedException();
         }
 
         public bool IsFriend(Gamer gamer)
         {
-            //throw new NotImplementedException();
-            return default;
+            throw new NotImplementedException();
         }
         public AvatarDescription Avatar
         {
             get
             {
-                return default;
-                //throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -202,18 +194,11 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
             get
             {
-                return default;
-                //throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
-        public bool IsGuest
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsGuest => false;
 
         public bool IsSignedInToLive
         {
@@ -227,8 +212,7 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
             get
             {
-                return default;
-                //throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -240,11 +224,9 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public GamerPresence Presence
         {
-            //TODO
             get
             {
-                return default;
-                //throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -252,8 +234,7 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
             get
             {
-                return default;
-                //throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 

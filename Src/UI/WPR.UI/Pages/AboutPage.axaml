@@ -2,14 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:p="clr-namespace:WPR.UI.Properties"
-             mc:Ignorable="d" 
-             d:DesignWidth="800" 
-             d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="WPR.UI.Pages.AboutPage">
 	<StackPanel Orientation="Vertical" Margin="20">
-		<Label FontSize="30">WPR 0.0.12-alpha :: DEVELOPER EDITION ::</Label>
-		<Label>(C) Lin Yan::MediaExplorer 2022::2025</Label>
-		<Label>License: MIT</Label>
+		<Label FontSize="30" FontStyle="Oblique">WPR 0.0.15</Label>
+		<Label>(C) 2022 林杨 （8212369)</Label>
+		<Label>and 2026 MediaExplorer</Label>
 	</StackPanel>
 </UserControl>

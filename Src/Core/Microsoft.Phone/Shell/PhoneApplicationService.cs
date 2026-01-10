@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Microsoft.Phone.Shell
 {
@@ -23,32 +22,14 @@ namespace Microsoft.Phone.Shell
 
         public void HandleApplicationStart(bool anew)
         {
-            try
-            {
-                _Activated?.Invoke(this, new ActivatedEventArgs(!anew));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] HandleApplicationStart ex. :" + ex.Message);
-            }
-
+            _Activated?.Invoke(this, new ActivatedEventArgs(!anew));
             _AppActivated = true;
         }
 
         public void HandleApplicationExit()
         {
-            try
-            {
-                var dArgs = new DeactivatedEventArgs();
-                Deactivated?.Invoke(this, dArgs);
-
-                var cArgs = new ClosingEventArgs();
-                Closing?.Invoke(this, cArgs);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] PhoneApplicationService - HandleApplicationExit ex.: " + ex.Message);
-            }
+            Deactivated?.Invoke(this, new DeactivatedEventArgs());
+            Closing?.Invoke(this, new ClosingEventArgs());
 
             // Recycle
             Current = new PhoneApplicationService();
@@ -62,16 +43,7 @@ namespace Microsoft.Phone.Shell
             {
                 if (_AppActivated)
                 {
-                    try
-                    {
-                        value?.Invoke(this, new ActivatedEventArgs(false));
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("[ex] AppActivated Exception : " + ex.Message);
-
-                        _Activated += value;
-                    }
+                    value?.Invoke(this, new ActivatedEventArgs(false));
                 } else
                 {
                     _Activated += value;

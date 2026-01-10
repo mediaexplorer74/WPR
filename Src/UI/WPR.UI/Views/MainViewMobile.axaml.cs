@@ -12,8 +12,7 @@ namespace WPR.UI.Views
             InitializeComponent();
 
             _Navigator = new MainViewNavigator();
-            _Navigator.SetupNavigation(this.Get<TabControl>("navigationControl"), 
-                this.Get<TransitioningContentControl>("contentControl"));
+            _Navigator.SetupNavigation(this.Get<TabControl>("navigationControl"), this.Get<TransitioningContentControl>("contentControl"));
         }
     }
 }

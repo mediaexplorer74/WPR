@@ -9,7 +9,6 @@
 
 #region Using Statements
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -172,35 +171,26 @@ namespace Microsoft.Xna.Framework.Graphics
 			);
 		}
 
-		public void GetData<T>
-		(
+		public void GetData<T>(
 			int offsetInBytes,
 			T[] data,
 			int startIndex,
 			int elementCount
-		) where T : struct 
-		{
+		) where T : struct {
 			if (data == null)
 			{
 				throw new ArgumentNullException("data");
 			}
 			if (data.Length < (startIndex + elementCount))
 			{
-				//throw new InvalidOperationException(
-				//	"The array specified in the data parameter is not the correct size for the amount of data requested.");
-				Debug.WriteLine( "[ex] IndexBuffer: " + 
-					"The array specified in the data parameter is not the correct size for the amount of data requested.");
+				throw new InvalidOperationException("The array specified in the data parameter is not the correct size for the amount of data requested.");
 			}
 			if (BufferUsage == BufferUsage.WriteOnly)
 			{
-				//throw new NotSupportedException(
-				//	"This IndexBuffer was created with a usage type of BufferUsage.WriteOnly. " +
-				//	"Calling GetData on a resource that was created with BufferUsage.WriteOnly is not supported."
-				//);
-				Debug.WriteLine
-				(  "[ex] IndexBuffer: " +
-                    "This IndexBuffer was created with a usage type of BufferUsage.WriteOnly. " +
-                	"Calling GetData on a resource that was created with BufferUsage.WriteOnly is not supported." );
+				throw new NotSupportedException(
+					"This IndexBuffer was created with a usage type of BufferUsage.WriteOnly. " +
+					"Calling GetData on a resource that was created with BufferUsage.WriteOnly is not supported."
+				);
 			}
 
 			int elementSizeInBytes = Marshal.SizeOf(typeof(T));

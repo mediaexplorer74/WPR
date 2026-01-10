@@ -59,7 +59,6 @@ namespace Microsoft.Xna.Framework.GamerServices.TrueAchievements
 
             var icons = document.DocumentNode.QuerySelectorAll(".ach-panels li");
             string currentStoreImages = Configuration.Current!.DataPath($"Database/Achievements/{productId}");
-
             List<String> imagePaths = ImageUtils.SplitAndSave(currentStoreImages,
                 "achievement{0}.png", imageDataStream,
                 icons.Count, 1);

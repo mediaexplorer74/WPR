@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <CheckEolWorkloads>false</CheckEolWorkloads>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Skia" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\src\Projektanker.Icons.Avalonia.FontAwesome\Projektanker.Icons.Avalonia.FontAwesome.csproj" />
+      <ProjectReference Include="..\src\Projektanker.Icons.Avalonia.MaterialDesign\Projektanker.Icons.Avalonia.MaterialDesign.csproj" />
+    </ItemGroup>
+</Project>

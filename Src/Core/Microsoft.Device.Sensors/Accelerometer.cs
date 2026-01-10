@@ -12,28 +12,19 @@ namespace Microsoft.Devices.Sensors
         }
 
 #if __MOBILE__
-        private void OnImplReadingChanged(
-        object ?sender, Xamarin.Essentials.AccelerometerChangedEventArgs args)
+        private void OnImplReadingChanged(object ?sender, Xamarin.Essentials.AccelerometerChangedEventArgs args)
         {
             // We always rotate it to the right... Which seems to be the opposite to Windows Phone default reported axis direction
-            ReadingChanged?.Invoke(this, 
-                new AccelerometerReadingEventArgs
-                (
-                -args.Reading.Acceleration.X,
-                -args.Reading.Acceleration.Y, 
-                -args.Reading.Acceleration.Z
-                ))
-                ;
+            ReadingChanged?.Invoke(this, new AccelerometerReadingEventArgs(-args.Reading.Acceleration.X,
+                -args.Reading.Acceleration.Y, -args.Reading.Acceleration.Z));
 
             OnCurrentValueChanged(new SensorReadingEventArgs<AccelerometerReading>()
             {
                 SensorReading = new AccelerometerReading()
                 {
-                    Acceleration = new Microsoft.Xna.Framework.Vector3(
-                    -args.Reading.Acceleration.X,
-                    -args.Reading.Acceleration.Y, 
-                    -args.Reading.Acceleration.Z)//,
-                    //Timestamp = System.DateTimeOffset.Now
+                    Acceleration = new Microsoft.Xna.Framework.Vector3(-args.Reading.Acceleration.X,
+                        -args.Reading.Acceleration.Y, -args.Reading.Acceleration.Z),
+                    Timestamp = DateTimeOffset.Now
                 }
             });
         }
@@ -58,7 +49,7 @@ namespace Microsoft.Devices.Sensors
             _Started = true;
 
 #if __MOBILE__
-            //Xamarin.Essentials.Accelerometer.ReadingChanged += OnImplReadingChanged;
+            Xamarin.Essentials.Accelerometer.ReadingChanged += OnImplReadingChanged;
 
             if (!Xamarin.Essentials.Accelerometer.IsMonitoring)
             {
@@ -75,7 +66,7 @@ namespace Microsoft.Devices.Sensors
             }
 
 #if __MOBILE__
-            //Xamarin.Essentials.Accelerometer.ReadingChanged -= OnImplReadingChanged;
+            Xamarin.Essentials.Accelerometer.ReadingChanged -= OnImplReadingChanged;
 #endif
 
             _Started = false;

@@ -14,7 +14,7 @@ namespace Projektanker.Icons.Avalonia
 
         static Attached()
         {
-            IconProperty.Changed.Subscribe(IconChanged);
+            IconProperty.Changed.Subscribe(new PropertyChangedObserver<string>(IconChanged));
         }
 
         /// <summary>
@@ -33,17 +33,34 @@ namespace Projektanker.Icons.Avalonia
             target.SetValue(IconProperty, value);
         }
 
-        private static void IconChanged(AvaloniaPropertyChangedEventArgs evt)
+        private static void IconChanged(AvaloniaPropertyChangedEventArgs<string> evt)
         {
-            if (evt.NewValue is not string value || evt.Sender is not ContentControl target)
+            if (evt.Sender is not ContentControl target)
             {
                 return;
             }
+
+            // Read the actual attached property value from the target to avoid depending on BindingValue<T> internals
+            string value = GetIcon(target) ?? string.Empty;
 
             target.Content = new Icon()
             {
                 Value = value,
             };
+        }
+
+        private sealed class PropertyChangedObserver<T> : IObserver<AvaloniaPropertyChangedEventArgs<T>>
+        {
+            private readonly Action<AvaloniaPropertyChangedEventArgs<T>> _action;
+
+            public PropertyChangedObserver(Action<AvaloniaPropertyChangedEventArgs<T>> action)
+            {
+                _action = action ?? throw new ArgumentNullException(nameof(action));
+            }
+
+            public void OnCompleted() { }
+            public void OnError(Exception error) { }
+            public void OnNext(AvaloniaPropertyChangedEventArgs<T> value) => _action(value);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.UI.Notifications;
-using XmlDocument = Windows.Data.Xml.Dom.XmlDocument;
+//using Windows.UI.Notifications;
+//using XmlDocument = Windows.Data.Xml.Dom.XmlDocument;
 
 #if NETSTANDARD
 using System.IO;
@@ -19,10 +19,10 @@ namespace DesktopNotifications.Windows
         private const int LaunchNotificationWaitMs = 5_000;
         private readonly WindowsApplicationContext _applicationContext;
         private readonly TaskCompletionSource<string>? _launchActionPromise;
-        private readonly Dictionary<ToastNotification, Notification> _notifications;
+        //private readonly Dictionary<ToastNotification, Notification> _notifications;
 
 #if NETSTANDARD
-        private readonly ToastNotifier _toastNotifier;
+        //private readonly ToastNotifier _toastNotifier;
 #else
         private readonly ToastNotifierCompat _toastNotifier;
 #endif
@@ -48,12 +48,12 @@ namespace DesktopNotifications.Windows
 #endif
 
 #if NETSTANDARD
-            _toastNotifier = ToastNotificationManager.CreateToastNotifier(_applicationContext.AppUserModelId);
+            //_toastNotifier = ToastNotificationManager.CreateToastNotifier(_applicationContext.AppUserModelId);
 #else
             _toastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
 #endif
 
-            _notifications = new Dictionary<ToastNotification, Notification>();
+            //_notifications = new Dictionary<ToastNotification, Notification>();
         }
 
         public event EventHandler<NotificationActivatedEventArgs>? NotificationActivated;
@@ -75,17 +75,18 @@ namespace DesktopNotifications.Windows
             }
 
             var xmlContent = GenerateXml(notification);
-            var toastNotification = new ToastNotification(xmlContent)
-            {
-                ExpirationTime = expirationTime
-            };
+            //var toastNotification = new ToastNotification(xmlContent)
+            //{
+            //    ExpirationTime = expirationTime
+            //};
 
-            toastNotification.Activated += ToastNotificationOnActivated;
-            toastNotification.Dismissed += ToastNotificationOnDismissed;
-            toastNotification.Failed += ToastNotificationOnFailed;
+            //toastNotification.Activated += ToastNotificationOnActivated;
+            //toastNotification.Dismissed += ToastNotificationOnDismissed;
+            //toastNotification.Failed += ToastNotificationOnFailed;
 
-            _toastNotifier.Show(toastNotification);
-            _notifications[toastNotification] = notification;
+            //TODO
+            //_toastNotifier.Show(toastNotification);
+            //_notifications[toastNotification] = notification;
 
             return Task.CompletedTask;
         }
@@ -101,12 +102,13 @@ namespace DesktopNotifications.Windows
             }
 
             var xmlContent = GenerateXml(notification);
-            var toastNotification = new ScheduledToastNotification(xmlContent, deliveryTime)
-            {
-                ExpirationTime = expirationTime
-            };
+            //var toastNotification = new ScheduledToastNotification(xmlContent, deliveryTime)
+            //{
+            //    ExpirationTime = expirationTime
+            //};
 
-            _toastNotifier.AddToSchedule(toastNotification);
+            //TODO
+            //_toastNotifier.AddToSchedule(toastNotification);
 
             return Task.CompletedTask;
         }
@@ -196,7 +198,8 @@ namespace DesktopNotifications.Windows
                 builder.AddButton(title, ToastActivationType.Foreground, actionId);
             }
 
-            return builder.GetXml();
+            //TODO
+            return default;//builder.GetXml();
 
 #endif
         }
@@ -211,35 +214,12 @@ namespace DesktopNotifications.Windows
         }
 #endif
 
-        // static
-        private void ToastNotificationOnFailed(ToastNotification sender, ToastFailedEventArgs args)
-        {
-            //RnD
+        //private static void ToastNotificationOnFailed(ToastNotification sender, ToastFailedEventArgs args)
+        //{
+        //    throw args.ErrorCode;
+        //}
 
-            // Plan A
-            //throw args.ErrorCode;
-
-            // Plan B
-            if (!_notifications.TryGetValue(sender, out var notification))
-            {
-                return;
-            }
-
-            _notifications.Remove(sender);
-
-            /*
-            NotificationDismissReason reason = args.ErrorCode switch
-            {
-                //ToastDismissalReason.UserCanceled => null,//NotificationDismissReason.User,
-                //ToastDismissalReason.TimedOut => null,//NotificationDismissReason.Expired,
-                //ToastDismissalReason.ApplicationHidden => null,//NotificationDismissReason.Application,
-                _ => throw new ArgumentOutOfRangeException()
-            };*/
-
-            NotificationDismissed?.Invoke(this, new NotificationDismissedEventArgs(notification, default/*reason*/));
-        }
-
-        private void ToastNotificationOnDismissed(ToastNotification sender, ToastDismissedEventArgs args)
+        /*private void ToastNotificationOnDismissed(ToastNotification sender, ToastDismissedEventArgs args)
         {
             if (!_notifications.TryGetValue(sender, out var notification))
             {
@@ -248,7 +228,7 @@ namespace DesktopNotifications.Windows
 
             _notifications.Remove(sender);
 
-            NotificationDismissReason reason = args.Reason switch
+            var reason = args.Reason switch
             {
                 ToastDismissalReason.UserCanceled => NotificationDismissReason.User,
                 ToastDismissalReason.TimedOut => NotificationDismissReason.Expired,
@@ -257,20 +237,20 @@ namespace DesktopNotifications.Windows
             };
 
             NotificationDismissed?.Invoke(this, new NotificationDismissedEventArgs(notification, reason));
-        }
+        }*/
 
         private static string GetActionId(string argument)
         {
             return string.IsNullOrEmpty(argument) ? "default" : argument;
         }
 
-        private void ToastNotificationOnActivated(ToastNotification sender, object args)
+        /*private void ToastNotificationOnActivated(ToastNotification sender, object args)
         {
             var activationArgs = (ToastActivatedEventArgs)args;
             var notification = _notifications[sender];
             var actionId = GetActionId(activationArgs.Arguments);
 
             NotificationActivated?.Invoke(this, new NotificationActivatedEventArgs(notification, actionId));
-        }
+        }*/
     }
 }

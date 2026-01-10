@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Diagnostics;
 
 namespace WPR
 {
@@ -20,14 +19,10 @@ namespace WPR
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
         private AssemblyNameReference SystemRunTimeRef;
-        
         private AssemblyNameReference WindowsCompRef;
-        
         private AssemblyNameReference StandardCompRef;
         private AssemblyNameReference ServiceModelPrimitivesRef;
         private AssemblyNameReference ServiceModelHTTPRef;
-        //private AssemblyNameReference SystemSecurityCryptographyRef; //!
-        //private AssemblyNameReference SystemWindowsMediaImagingRef; //!
 
         private class TypePatchInfo
         {
@@ -45,16 +40,10 @@ namespace WPR
             FNACompRef = AssemblyNameReference.Parse("WPR.XnaCompability");
             SystemRunTimeRef = AssemblyNameReference.Parse("System.Runtime");
             WindowsCompRef = AssemblyNameReference.Parse("WPR.WindowsCompability");
-            
             ServiceModelPrimitivesRef = AssemblyNameReference.Parse("System.ServiceModel.Primitives");
             ServiceModelHTTPRef = AssemblyNameReference.Parse("System.ServiceModel.Http");
-            
             StandardCompRef = AssemblyNameReference.Parse("WPR.StandardCompability");
 
-            //SystemSecurityCryptographyRef = AssemblyNameReference.Parse("WPR.WindowsCompability");
-            //SystemWindowsMediaImagingRef =  AssemblyNameReference.Parse("WPR.WindowsCompability");
-
-            // *** Patches ***
             Patches = new Dictionary<string, TypePatchInfo>()
             {
                 { "System.Diagnostics.Stopwatch", new TypePatchInfo()
@@ -84,7 +73,6 @@ namespace WPR
                 { "System.IO.IsolatedStorage.IsolatedStorageSettings", new TypePatchInfo()
                 {
                     Reference = WindowsCompRef,
-                    NewName="IsolatedStorageSettings2", //RnD
                     NewNamespace = "WPR.WindowsCompability"
                 }
                 },
@@ -186,37 +174,6 @@ namespace WPR
                     Reference = ServiceModelHTTPRef
                 }
                 },
-                //!
-                { "System.Security.Cryptography.ProtectedData", new TypePatchInfo()
-                {
-                    Reference = WindowsCompRef,
-                    //RnD : if uncomment it, WPR.WindowsCompabilityProtectedData class will be used
-                    NewName = "ProtectedData", 
-                    NewNamespace = "WPR.WindowsCompability"
-                }
-                },
-                //!
-                { "System.Windows.Media.Imaging.BitmapImage", new TypePatchInfo()
-                {
-                    Reference = WindowsCompRef,
-                    NewName = "BitmapImage",//RnD
-                    NewNamespace = "WPR.WindowsCompability"
-                }
-                },
-                //!
-                { "System.Windows.Media.Imaging.WriteableBitmap", new TypePatchInfo()
-                {
-                    Reference = WindowsCompRef,
-                    NewNamespace = "WPR.WindowsCompability"
-                }
-                },
-                 //!
-                { "System.Windows.Media.Imaging.BitmapSource", new TypePatchInfo()
-                {
-                    Reference = WindowsCompRef,
-                    NewNamespace = "WPR.WindowsCompability"
-                }
-                },
                 { "System.Windows.MessageBox", new TypePatchInfo()
                 {
                     Reference = WindowsCompRef
@@ -234,57 +191,8 @@ namespace WPR
                 }
             };
 
-            // *** Member Patches ***
             MemberPatches = new Dictionary<string, Type>
             {
-                //TODO
-                //{
-                //    "System.Byte[] System.......::MethodName(System.Byte[],System.Byte[])",
-                //    typeof(WPR.WindowsCompability.WebServices)
-                //},
-
-                // RnD ***************************************
-                //{
-                //    "Microsoft.Xna.Framework.GamerServices.LeaderboardReader Microsoft.Xna.Framework.GamerServices.LeaderboardReader::Read(Microsoft.Xna.Framework.GamerServices.LeaderboardIdentity, Microsoft.Xna.Framework.GamerServices.Gamer, Int32)",
-                //    typeof(Microsoft.Xna.Framework.GamerServices2.LeaderboardReader)
-                //},
-                {
-                    "System.String Microsoft.Phone.Info.DeviceStatus::get_DeviceName()",
-                    typeof(WPR.WindowsCompability.DeviceStatus)
-                },
-                {
-                    "System.String Microsoft.Phone.Info.DeviceStatus::get_DeviceManufacturer()",
-                    typeof(WPR.WindowsCompability.DeviceStatus)
-                },
-                // *******************************************
-                {
-                    "System.Boolean System.IO.IsolatedStorage.IsolatedStorageSettings::TryGetValue(System.String, ByRef)",
-                    typeof(WPR.WindowsCompability.IsolatedStorageSettings2)
-                },
-                {
-                    "System.IO.IsolatedStorage.IsolatedStorageSettings System.IO.IsolatedStorage.IsolatedStorageSettings::get_ApplicationSettings()",
-                    typeof(WPR.WindowsCompability.IsolatedStorageSettings2)
-                },
-
-                {
-                    "System.Byte[] System.Security.Cryptography.ProtectedData::Protect(System.Byte[],System.Byte[])",
-                    typeof(WPR.WindowsCompability.ProtectedData)
-                },
-                 
-                {
-                    "System.Byte[] System.Security.Cryptography.ProtectedData::Unprotect(System.Byte[],System.Byte[])",
-                    typeof(WPR.WindowsCompability.ProtectedData)
-                },
-                 
-                //{
-                //    "System.Windows.Media.Imaging.WriteableBitmap System.Windows.Media.Imaging.WriteableBitmap(System.Integer,System.Integer)",
-                //    typeof(WPR.WindowsCompability.WriteableBitmap)
-                //},
-                //{
-                //    "System.Void System.Windows.Media.Imaging.BitmapSource::SetSource()",
-                //    typeof(WPR.WindowsCompability.BitmapSource)
-                //},
-
                 {
                     "System.Type System.Type::GetType(System.String,System.Boolean)",
                     typeof(WPR.WindowsCompability.Type2)
@@ -297,7 +205,6 @@ namespace WPR
                     "Microsoft.Xna.Framework.Graphics.DisplayMode Microsoft.Xna.Framework.Graphics.GraphicsAdapter::get_CurrentDisplayMode()",
                     typeof(WPR.XnaCompability.Graphics.GraphicsAdapter2)
                 },
-                
                 {
                     "System.String System.IO.Path::GetDirectoryName(System.String)",
                     typeof(WPR.WindowsCompability.Path2)
@@ -314,15 +221,12 @@ namespace WPR
                     "System.Void System.GC::Collect()",
                     typeof(WPR.WindowsCompability.GC2)
                 },
-
                 {
                     "System.Xml.Linq.XElement System.Xml.Linq.XElement::Load(System.String)",
                     typeof(WPR.StandardCompability.Xml.Linq.XElement2)
-                },
-              
+                }
             };
-
-        }//ApplicationPatcher
+        }
 
         private void PatchRelaxedXmlNullableAttribTextSerialize(ModuleDefinition? module)
         {
@@ -370,33 +274,24 @@ namespace WPR
                         var actualFieldType = (field.FieldType as GenericInstanceType)!.GenericArguments[0];
 
                         // Generate holder getter/setter
-                        var getterMethod = new MethodDefinition($"get_{field.Name}SerializableHolder", 
-                            MethodAttributes.Public, actualFieldType);
-
+                        var getterMethod = new MethodDefinition($"get_{field.Name}SerializableHolder", MethodAttributes.Public, actualFieldType);
                         var getterGen = getterMethod.Body.GetILProcessor();
 
-                        var nullableRefTypeGeneric = module.ImportReference(
-                            Type.GetType("System.Nullable`1")!);
-
-                        var nullableRefType = 
-                            nullableRefTypeGeneric.MakeGenericInstanceType(new TypeReference[]
-                            { actualFieldType });
+                        var nullableRefTypeGeneric = module.ImportReference(Type.GetType("System.Nullable`1")!);
+                        var nullableRefType = nullableRefTypeGeneric.MakeGenericInstanceType(new TypeReference[] { actualFieldType });
 
                         // Emit getter
                         getterGen.Emit(OpCodes.Ldarg_0);
                         getterGen.Emit(OpCodes.Ldflda, field);
-                        getterGen.Emit(OpCodes.Call, new MethodReference("get_Value", 
-                            nullableRefTypeGeneric.GenericParameters[0])
+                        getterGen.Emit(OpCodes.Call, new MethodReference("get_Value", nullableRefTypeGeneric.GenericParameters[0])
                         {
                             HasThis = true,
                             DeclaringType = nullableRefType
                         });
-
                         getterGen.Emit(OpCodes.Ret);
 
                         // Emit setter
-                        var setterMethod = new MethodDefinition($"set_{field.Name}SerializableHolder", 
-                            MethodAttributes.Public, module.TypeSystem.Void)
+                        var setterMethod = new MethodDefinition($"set_{field.Name}SerializableHolder", MethodAttributes.Public, module.TypeSystem.Void)
                         {
                             Parameters = { new ParameterDefinition(actualFieldType) },
                             HasThis = true
@@ -405,11 +300,9 @@ namespace WPR
 
                         setterGen.Emit(OpCodes.Ldarg_0);
                         setterGen.Emit(OpCodes.Ldarg_1);
-                        setterGen.Emit(OpCodes.Newobj, new MethodReference(".ctor", 
-                            module.TypeSystem.Void, nullableRefType)
+                        setterGen.Emit(OpCodes.Newobj, new MethodReference(".ctor", module.TypeSystem.Void, nullableRefType)
                         {
-                            Parameters = { new ParameterDefinition(
-                                nullableRefTypeGeneric.GenericParameters[0]) },
+                            Parameters = { new ParameterDefinition(nullableRefTypeGeneric.GenericParameters[0]) },
                             HasThis = true
                         });
 
@@ -417,16 +310,12 @@ namespace WPR
                         setterGen.Emit(OpCodes.Ret);
 
                         // Emit skip serialize consideration
-                        var shouldSerializeMethod = new MethodDefinition(
-                            $"ShouldSerialize{field.Name}SerializableHolder", 
-                            MethodAttributes.Public, module.TypeSystem.Boolean);
-
+                        var shouldSerializeMethod = new MethodDefinition($"ShouldSerialize{field.Name}SerializableHolder", MethodAttributes.Public, module.TypeSystem.Boolean);
                         var shouldSerializeGen = shouldSerializeMethod.Body.GetILProcessor();
 
                         shouldSerializeGen.Emit(OpCodes.Ldarg_0);
                         shouldSerializeGen.Emit(OpCodes.Ldflda, field);
-                        shouldSerializeGen.Emit(OpCodes.Call, new MethodReference(
-                            "HasValue", module.TypeSystem.Boolean, nullableRefType)
+                        shouldSerializeGen.Emit(OpCodes.Call, new MethodReference("HasValue", module.TypeSystem.Boolean, nullableRefType)
                         {
                             HasThis = true
                         });
@@ -436,8 +325,7 @@ namespace WPR
                         type.Methods.Add(getterMethod);
                         type.Methods.Add(setterMethod);
 
-                        var propSeri = new PropertyDefinition(
-                            $"{field.Name}SerializableHolder", PropertyAttributes.None, actualFieldType)
+                        var propSeri = new PropertyDefinition($"{field.Name}SerializableHolder", PropertyAttributes.None, actualFieldType)
                         {
                             GetMethod = getterMethod,
                             SetMethod = setterMethod
@@ -461,18 +349,14 @@ namespace WPR
                         }
                         else
                         {
-                            var attributeType = (xmlNonNullableProp.AttributeType.FullName 
-                                == typeof(XmlAttributeAttribute).FullName)
-                                    ? typeof(XmlAttributeAttribute) 
-                                    : typeof(XmlTextAttribute);
+                            var attributeType = (xmlNonNullableProp.AttributeType.FullName == typeof(XmlAttributeAttribute).FullName)
+                                    ? typeof(XmlAttributeAttribute) : typeof(XmlTextAttribute);
 
                             MethodReference methodConstructor = module.ImportReference(attributeType
                                 .GetConstructor(new Type[] { typeof(String) }));
-                            
                             propSeri.CustomAttributes.Add(new CustomAttribute(methodConstructor)
                             {
-                                ConstructorArguments = { 
-                                    new CustomAttributeArgument(module.TypeSystem.String, field.Name) }
+                                ConstructorArguments = { new CustomAttributeArgument(module.TypeSystem.String, field.Name) }
                             });
                         }
                     }
@@ -480,39 +364,29 @@ namespace WPR
             }
         }
 
-        // PatchDll(string modulePath)
         public void PatchDll(string modulePath)
         {
-            // ReadAssembly
-            AssemblyDefinition assemblyData = 
-                Mono.Cecil.AssemblyDefinition.ReadAssembly(modulePath);
-
-            Mono.Cecil.ModuleDefinition module = assemblyData.MainModule;
+            AssemblyDefinition assemblyData = AssemblyDefinition.ReadAssembly(modulePath);
+            var module = assemblyData.MainModule;
 
             assemblyData.Name.Name = AssemblyNameStandardization.Process(assemblyData.Name.Name);
 
-            string modulePathNameStandardized = Path.Combine(
-                Path.GetDirectoryName(modulePath)!,
-               AssemblyNameStandardization.Process(
-                    Path.GetFileNameWithoutExtension(modulePath)) +
+            string modulePathNameStandardized = Path.Combine(Path.GetDirectoryName(modulePath)!,
+                AssemblyNameStandardization.Process(Path.GetFileNameWithoutExtension(modulePath)) +
                 Path.GetExtension(modulePath));
 
             AssemblyNameReference? xnaGameServices = null;
-            //RnD
-            AssemblyNameReference? xnaGameServicesExtensions = null;
 
             // Remove unneeded attribute (pretty sure!)
             foreach (var attrib in module.Assembly.CustomAttributes)
             {
-                if (attrib.AttributeType.FullName == 
-                    "System.Runtime.CompilerServices.CodeGenerationAttribute")
+                if (attrib.AttributeType.FullName == "System.Runtime.CompilerServices.CodeGenerationAttribute")
                 {
                     module.Assembly.CustomAttributes.Remove(attrib);
                     break;
                 }
             }
 
-            // module.AssemblyReferences cycle 
             foreach (var refer in module.AssemblyReferences)
             {
                 if (refer.Name.Contains("Microsoft.Xna"))
@@ -521,27 +395,19 @@ namespace WPR
                     {
                         xnaGameServices = refer;
                     }
-                    else if (refer.Name.Contains("GamerServicesExtensions"))
-                    {
-                        //RnD
-                        xnaGameServicesExtensions = refer;
-                    }
                     else
                     {
                         refer.Name = FNARef.Name;
                         refer.Version = FNARef.Version;
                         refer.PublicKey = FNARef.PublicKey;
                     }
-                } 
-                else if (refer.Name.Equals("mscorlib.Extensions", 
-                    StringComparison.OrdinalIgnoreCase))
+                } else if (refer.Name.Equals("mscorlib.Extensions", StringComparison.OrdinalIgnoreCase))
                 {
                     refer.Name = SystemRunTimeRef.Name;
                     refer.Version = SystemRunTimeRef.Version;
                     refer.PublicKey = SystemRunTimeRef.PublicKey;
                 }
-                else if (refer.Name.Equals("System.ServiceModel", 
-                    StringComparison.OrdinalIgnoreCase))
+                else if (refer.Name.Equals("System.ServiceModel", StringComparison.OrdinalIgnoreCase))
                 {
                     refer.Name = ServiceModelPrimitivesRef.Name;
                     refer.Version = ServiceModelPrimitivesRef.Version;
@@ -549,50 +415,31 @@ namespace WPR
                 }
             }
 
-            //RnD
             PatchRelaxedXmlNullableAttribTextSerialize(module);
 
-            // Add AssemblyReferences
             module.AssemblyReferences.Add(FNACompRef);
             module.AssemblyReferences.Add(WindowsCompRef);
             module.AssemblyReferences.Add(SystemRunTimeRef);
             module.AssemblyReferences.Add(ServiceModelPrimitivesRef);
             module.AssemblyReferences.Add(ServiceModelHTTPRef);
             module.AssemblyReferences.Add(StandardCompRef);
-            //module.AssemblyReferences.Add(SystemSecurityCryptographyRef);//!
-            //module.AssemblyReferences.Add(SystemWindowsMediaImagingRef);//
 
-            // create Ref. Patch Cache
-            Dictionary<string, TypeReference> typeRefPatchCache 
-                = new Dictionary<string, TypeReference>();
+            Dictionary<string, TypeReference> typeRefPatchCache = new Dictionary<string, TypeReference>();
 
-            // module.GetMemberReferences cycle
             foreach (var memberRef in module.GetMemberReferences())
             {
-                //if (memberRef.FullName.Contains("Collect"))
-                //{
-                //    Debug.WriteLine("[Collect] memberRef fullname: "
-                //        + memberRef.FullName);
-                //}
-
                 foreach (var patch in MemberPatches)
                 {
-                    /*
                     if (memberRef.FullName.Contains("Collect"))
                     {
-                        //Debug.WriteLine("[TeSTING] memberRef.FullName.Contains : Collect");
-                        Debug.WriteLine("[TeSTING] memberRef.FullName Contains Collect: " 
-                            + memberRef.FullName);
+                        Console.WriteLine("TeSTING!");
                     }
-                    */
-
                     if (memberRef.FullName == patch.Key)
                     {
                         if (typeRefPatchCache.ContainsKey(patch.Value.FullName!))
                         {
                             memberRef.DeclaringType = typeRefPatchCache[patch.Value.FullName!];
-                        } 
-                        else
+                        } else
                         {
                             memberRef.DeclaringType = module.ImportReference(patch.Value);
                             typeRefPatchCache.Add(patch.Value.FullName!, memberRef.DeclaringType);
@@ -601,22 +448,13 @@ namespace WPR
                 }
             }
 
-            // cycle existing refs...
             foreach (var existingRef in module.GetTypeReferences())
             {
                 existingRef.Name = AssemblyNameStandardization.Process(existingRef.Name);
 
-                if (existingRef.FullName 
-                    == "Microsoft.Xna.Framework.GamerServices.GamerServicesComponent")
+                if (existingRef.FullName == "Microsoft.Xna.Framework.GamerServices.GamerServicesComponent")
                 {
                     existingRef.Scope = xnaGameServices;
-                }
-                else if(existingRef.FullName
-                    == "Microsoft.Xna.Framework.GamerServicesExtensions.GamerServicesComponent")
-                {
-                    //RnD
-
-                    existingRef.Scope = xnaGameServicesExtensions;
                 }
                 else
                 {
@@ -642,36 +480,18 @@ namespace WPR
                         }
                     }
                 }
-            }//for...
-            
-
-            // create .dll.new
-            try
-            {
-                assemblyData.Write(modulePath + ".new");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("[ex] assemblyData.Write : " + ex.Message);
-                Debug.WriteLine("[error] " + modulePath + "can't patch normally :(");
-
-                assemblyData.Dispose();
-                return;
             }
 
+            assemblyData.Write(modulePath + ".new");
             assemblyData.Dispose();
 
-            // .dll -> .dll.original
             File.Move(modulePath, modulePathNameStandardized + ".original", true);
-
-            // .dll.new - > .dll
             File.Move(modulePath + ".new", modulePathNameStandardized, true);
-        }//PatchDll
+        }
 
         public void Patch(string appRootPath, Action<int> progress, CancellationToken token)
         {
-            List<string> filenameList = Directory.EnumerateFiles(appRootPath, 
-                "*.dll", SearchOption.AllDirectories).ToList();
+            List<string> filenameList = Directory.EnumerateFiles(appRootPath, "*.dll", SearchOption.AllDirectories).ToList();
             int totalCount = filenameList.Count;
             int current = 0;
 
@@ -685,14 +505,9 @@ namespace WPR
                 try
                 {
                     PatchDll(filename);
-                    Debug.WriteLine($"[i] Patching DLL with path: {filename}.\n");
-                } 
-                catch (Exception ex)
+                } catch (Exception ex)
                 {
-                    //Common.Log.Error(Common.LogCategory.AppPatcher,
-                    //$"Fail to patch DLL with path: {filename}. Error:\n{ex}");
-                    Debug.WriteLine($"Fail to patch DLL with path: {filename}. Error:\n{ex}");
-                    Debug.WriteLine($"Error Message :\n{ex.Message}");
+                    Common.Log.Error(Common.LogCategory.AppPatcher, $"Fail to patch DLL with path: {filename}. Error:\n{ex}");
                     continue;
                 }
 

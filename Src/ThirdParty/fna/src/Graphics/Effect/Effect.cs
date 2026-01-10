@@ -10,7 +10,6 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -348,20 +347,12 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		internal unsafe void INTERNAL_applyEffect(uint pass)
 		{
-			try
-			{
-				FNA3D.FNA3D_ApplyEffect(
-					GraphicsDevice.GLDevice,
-					glEffect,
-					pass,
-					stateChangesPtr
-				);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] applyEffect : " + ex.Message);
-			}
-
+			FNA3D.FNA3D_ApplyEffect(
+				GraphicsDevice.GLDevice,
+				glEffect,
+				pass,
+				stateChangesPtr
+			);
 			MOJOSHADER_effectStateChanges *stateChanges =
 				(MOJOSHADER_effectStateChanges*) stateChangesPtr;
 			if (stateChanges->render_state_change_count > 0)

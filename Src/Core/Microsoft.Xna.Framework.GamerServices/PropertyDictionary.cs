@@ -110,29 +110,17 @@ namespace Microsoft.Xna.Framework.GamerServices
         private void SetTypedValue<T>(string key, T value) where T : struct, IEquatable<T>
         {
             if (this.isReadOnly && this.fillingReadOnlyData)
-            {
-                throw new NotSupportedException(
-                    string.Format((IFormatProvider)CultureInfo.CurrentCulture, 
-                    "Read only", (object)typeof(PropertyDictionary).Name));
-            }
-            
+                throw new NotSupportedException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, "Read only", (object)typeof(PropertyDictionary).Name));
             PropertyValue property = this.GetProperty(key, true);
-
-            if (property != null)
-            { 
-                bool isChanged = false;
-
-                isChanged = property.IsChanged;
-
-                if (property is TypedPropertyValue<T> typedPropertyValue)
-                    typedPropertyValue.SetTypedValue(value);
-                else
-                    property.SetValue((object)value);
-                if (!property.IsChanged || isChanged || this.fillingReadOnlyData)
-                    return;
-                ++this.changedPropertyCount;
-                // Write to leaderboard
-            }
+            bool isChanged = property.IsChanged;
+            if (property is TypedPropertyValue<T> typedPropertyValue)
+                typedPropertyValue.SetTypedValue(value);
+            else
+                property.SetValue((object)value);
+            if (!property.IsChanged || isChanged || this.fillingReadOnlyData)
+                return;
+            ++this.changedPropertyCount;
+            // Write to leaderboard
         }
 
         public int Count => this.properties.Count;

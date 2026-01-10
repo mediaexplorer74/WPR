@@ -7,9 +7,7 @@ namespace WPR.StandardCompability.Xml.Linq
     {
         public static XElement Load(string path)
         {
-            return XElement.Load((Path.DirectorySeparatorChar == '\\') 
-                ? path 
-                : path.Replace('\\', Path.DirectorySeparatorChar));
+            return XElement.Load((Path.DirectorySeparatorChar == '\\') ? path : path.Replace('\\', Path.DirectorySeparatorChar));
         }
     }
 }

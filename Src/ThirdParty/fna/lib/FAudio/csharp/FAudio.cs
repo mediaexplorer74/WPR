@@ -25,9 +25,7 @@
  */
 
 #region Using Statements
-using Microsoft.Xna.Framework.Media;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 #endregion
@@ -2143,20 +2141,7 @@ public static class FAudio
 	{
 		int utf8BufSize = Utf8Size(name);
 		byte* utf8Buf = stackalloc byte[utf8BufSize];
-		float song = default;
-
-		try
-		{
-            byte* encodedName = Utf8Encode(name, utf8Buf, utf8BufSize);
-
-            song = XNA_PlaySong(encodedName);
-		}
-		catch 
-		{ 
-		
-			Debug.WriteLine("[ex] FNA.Core FAudio: XNA_PlaySong exception (possible, memory corrupt) !");
-		}
-        return song;
+		return XNA_PlaySong(Utf8Encode(name, utf8Buf, utf8BufSize));
 	}
 
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]

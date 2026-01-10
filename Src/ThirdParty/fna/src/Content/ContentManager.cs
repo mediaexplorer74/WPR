@@ -326,31 +326,11 @@ namespace Microsoft.Xna.Framework.Content
 			}
 
 			// Check for XNB header
-
-			try
-			{
-				if (stream != null)
-				{
-					stream.Read(xnbHeader, 0, xnbHeader.Length);
-				}
-				else
-				{
-                    return default;
-                }
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] Exception : " + ex.Message);
-				
-			}
-
-			if 
-	        (	
-			    xnbHeader[0] == 'X' &&
+			stream.Read(xnbHeader, 0, xnbHeader.Length);
+			if (	xnbHeader[0] == 'X' &&
 				xnbHeader[1] == 'N' &&
 				xnbHeader[2] == 'B' &&
-				targetPlatformIdentifiers.Contains((char) xnbHeader[3]) 
-			)
+				targetPlatformIdentifiers.Contains((char) xnbHeader[3]) )
 			{
 				using (BinaryReader xnbReader = new BinaryReader(stream))
 				using (ContentReader reader = GetContentReaderFromXnb(assetName, ref stream, xnbReader, (char) xnbHeader[3], recordDisposableObject))

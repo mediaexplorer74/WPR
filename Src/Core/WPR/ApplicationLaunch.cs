@@ -12,57 +12,27 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using WPR.XnaCompability;
-using System.Diagnostics;
 
 namespace WPR
 {
     public static class ApplicationLaunch
     {
-        private static string CurrentProductFolder
-        {
-            get
-            {
-                return Path.Combine(
-                    Configuration.Current.DataPath(Application.DataStoreFolder),
-                              WindowsCompability.Application.Current!.ProductId!);
-            }
-        }
+        private static string CurrentProductFolder => Path.Combine(Configuration.Current.DataPath(Application.DataStoreFolder),
+            WindowsCompability.Application.Current!.ProductId!);
 
         static ApplicationLaunch()
         {
             AssemblyLoadContext.Default.Resolving += (loadContext, name) =>
             {
-                Assembly path = default;
-
-                try
-                {
-                    path = loadContext.LoadFromAssemblyPath(
-                        Path.Combine(CurrentProductFolder, name.Name + ".dll"));
-                }
-                catch// (Exception ex)
-                {
-                    //Debug.WriteLine("[warn] loadContext.LoadFromAssemblyPath ex.: " + ex.Message);
-                }
-
-                return path;
-
+                return loadContext.LoadFromAssemblyPath(Path.Combine(CurrentProductFolder, name.Name + ".dll"));
             };
         }
 
-        // Start
-                        //Temp
-        public static /*async*/ Task Start
-        (
-            Application app, Action<DisplayOrientation>? requestOrientation/* = default*///null
-        )
+        public static async Task Start(Application app, Action<DisplayOrientation>? requestOrientation = null)
         {
-            //
-            requestOrientation = default;
-
             if (app.ApplicationType != ApplicationType.XNA)
             {
-                //throw new NotSupportedException("Only XNA app is supported!");
-                Debug.WriteLine("[warn] Only XNA app is supported!");
+                throw new NotSupportedException("Only XNA app is supported!");
             }
 
             // Setting game folder path
@@ -72,41 +42,29 @@ namespace WPR
             FNAPlatform.TitleLocation = folderPath;
             string curDir = Directory.GetCurrentDirectory();
 
-            Assembly assem = AssemblyLoadContext.Default.LoadFromAssemblyPath(
-                Path.Combine(folderPath, AssemblyNameStandardization.Process(app.Assembly)));
+            Assembly assem = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(folderPath, AssemblyNameStandardization.Process(app.Assembly)));
 
             Directory.SetCurrentDirectory(folderPath);
 
             // Instatiate
-            //Type? mainType = assem.GetType(app.EntryPoint);
-            Type mainType = assem.GetType(app.EntryPoint);
+            Type? mainType = assem.GetType(app.EntryPoint);
 
-            // RnD / TEST / DEBUG
             // Run on separate thread to not affect the UI
-            //await Task.Run(() =>
-            //{
-            //using (Game obj = Activator.CreateInstance(mainType) as Game)
-            using (Game? obj = Activator.CreateInstance(mainType!) as Game)
+            await Task.Run(() =>
             {
-                //RnD
-                //obj.IsMouseVisible = true;
-                obj!.IsMouseVisible = true;
-
-                obj!.Window.Title =
-                      $"WPR - {app.Name}";// - {app.Author} (Publisher: {app.Publisher})";
-                //obj.Window.Title = "WPR";
+                using (Game? obj = Activator.CreateInstance(mainType!) as Game)
+                {
+                    obj!.IsMouseVisible = true;
+                    obj!.Window.Title = $"{app.Name} - {app.Author} (Publisher: {app.Publisher})";
 
 #if !__MOBILE__
                     TouchPanel.MouseAsTouch = true;
 #endif
-                    TouchPanel.EnabledGestures = GestureType.DoubleTap | GestureType.Tap 
-                    | GestureType.Hold |
+                    TouchPanel.EnabledGestures = GestureType.DoubleTap | GestureType.Tap | GestureType.Hold |
                         GestureType.HorizontalDrag | GestureType.VerticalDrag | GestureType.FreeDrag |
-                        GestureType.Pinch | GestureType.Flick | GestureType.DragComplete 
-                       | GestureType.PinchComplete;
+                        GestureType.Pinch | GestureType.Flick | GestureType.DragComplete | GestureType.PinchComplete;
 
                     GraphicsDeviceManager2.RequestOrientation = requestOrientation;
-                
                     SignedInGamer.Reset();
 
                     obj.Activated += (obj, args) =>
@@ -114,58 +72,32 @@ namespace WPR
                         PhoneApplicationService.Current!.HandleApplicationStart(true);
                     };
 
-                    //GraphicsDeviceManager? manager = obj.Services.GetService(
-                    GraphicsDeviceManager manager = obj.Services.GetService(
-                        typeof(IGraphicsDeviceManager)) as GraphicsDeviceManager;
-
+                    GraphicsDeviceManager? manager = obj.Services.GetService(typeof(IGraphicsDeviceManager)) as GraphicsDeviceManager;
                     if (manager != null)
                     {
                         manager.PreparingDeviceSettings += (obj, args) =>
                         {
-                            GraphicsDeviceManager2.RequestOrientationChange
-                            (
-                                args.GraphicsDeviceInformation
-                                   .PresentationParameters.BackBufferWidth,
-                                args.GraphicsDeviceInformation
-                                   .PresentationParameters.BackBufferHeight
+                            GraphicsDeviceManager2.RequestOrientationChange(
+                                args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
+                                args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight
                             );
                         };
                     }
 
-                    
-                    try
-                    {
-                        obj.Run();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[ex] obj.Run ex. : {ex.Message}");
-                    }
+                    obj.Run();
 
                     try
                     {
-                       //PhoneApplicationService.Current.HandleApplicationExit();
                         PhoneApplicationService.Current!.HandleApplicationExit();
                     }
                     catch (Exception ex)
                     {
-                        //Debug.WriteLine($"[ex] HandleApplicationExit ex. : {ex.Message}");
-                        Log.Warn(LogCategory.AppList, $"Ignored clean-up exception:\n {ex.Message}");
+                        Log.Warn(LogCategory.AppList, $"Ignored clean-up exception:\n {ex}");
                     }
-                    
-                    try
-                    {
-                        obj.Exit();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[ex] obj.Exit ex. : {ex.Message}");
-                    }
+
+                    obj.Exit();
                 }
-            //}); 
-            
-            //Temp
-            return Task.CompletedTask;
-        }//Start
+            });
+        }
     }
 }

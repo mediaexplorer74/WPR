@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace WPR.WindowsCompability
+namespace System.Windows
 {
     public static class MessageBox
     {

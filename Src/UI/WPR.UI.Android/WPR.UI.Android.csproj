@@ -1,41 +1,44 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <CheckEolWorkloads>false</CheckEolWorkloads>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-android34.0</TargetFramework>
+    <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>26</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
-    <AvaloniaVersion>11.1-beta1</AvaloniaVersion>
+    <AvaloniaVersion>11.3.9</AvaloniaVersion>
     <ApplicationId>com.MediaExplorer.WPR</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>0.0.12</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
-    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
     <PublishTrimmed>False</PublishTrimmed>
-    <RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
-    <XamarinGoogleGuavaListenableFutureOptOut>true</XamarinGoogleGuavaListenableFutureOptOut>
-    <XamarinGoogleGuavaOptOut>true</XamarinGoogleGuavaOptOut>
+	<RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
+	<XamarinGoogleGuavaListenableFutureOptOut>true</XamarinGoogleGuavaListenableFutureOptOut>
+	<XamarinGoogleGuavaOptOut>true</XamarinGoogleGuavaOptOut>
   </PropertyGroup>
   <Target Name="CopyPremadeDb" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild">
-    <ItemGroup>
-      <_CopyItems Include="$(SolutionDir)Database\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ProjectDir)\Database\%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" />
+	<ItemGroup>
+		<_CopyItems Include="$(SolutionDir)Database\**\*.*" />
+	</ItemGroup>
+	<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ProjectDir)\Database\%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" />
   </Target>
-
-
   <ItemGroup>
-    <AndroidAsset Include="Database\applications.db" />
-    <AndroidAsset Include="Database\achievements.db" />
-    <AndroidAsset Include="Database\TrueAchievements\AchievementsNameToKey.json" />
-    <AndroidAsset Include="Database\TrueAchievements\ProductIdUrl.json" />
+	<AndroidAsset Include="Database\applications.db" />
+	<AndroidAsset Include="Database\achievements.db" />
+	<AndroidAsset Include="Database\TrueAchievements\AchievementsNameToKey.json" />
+	<AndroidAsset Include="Database\TrueAchievements\ProductIdUrl.json" />
   </ItemGroup>
-  
+  <ItemGroup>
+	<AndroidResource Include="Icon.png">
+	  <Link>Resources\drawable\Icon.png</Link>
+	</AndroidResource>
+  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='RelWithDebInfo'">
-    <PublishTrimmed>False</PublishTrimmed>
-    <AotAssemblies>False</AotAssemblies>
-    <RunAOTCompilation>False</RunAOTCompilation>
-    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	<PublishTrimmed>False</PublishTrimmed>
+	<AotAssemblies>False</AotAssemblies>
+	<RunAOTCompilation>False</RunAOTCompilation>
+	<EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -43,22 +46,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Android" Version="11.3.9" />
     <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.0.6" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
     <!--PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.5.0" /-->
     <!--PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.5.1" /-->
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
-  </ItemGroup>
 
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\JavaBindings\Org.Libsdl.App\Org.Libsdl.App.csproj" />
     <ProjectReference Include="$(SolutionDir)\ThirdParty\assembly-store-reader\assembly-store-reader.csproj" />
     <ProjectReference Include="$(SolutionDir)\UI\WPR.UI\WPR.UI.csproj" />
   </ItemGroup>
 </Project>
-  
-  
-
-  

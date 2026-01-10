@@ -1,7 +1,5 @@
 ﻿using DesktopNotifications;
-//using DesktopNotifications.Apple;
-//using DesktopNotifications.FreeDesktop;
-//using DesktopNotifications.Windows;
+using DesktopNotifications.Windows;
 
 #if __ANDROID__
 using DesktopNotifications.Android;
@@ -18,30 +16,29 @@ namespace WPR.Common
 
         public static void Initialize(object hostControl = null)
         {
-            //#if __ANDROID__
-            //            NotificationManager = new AndroidNotificationManager((hostControl as Android.Content.Context)!);
-            //#else
-            //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            //{
-            //    NotificationManager = new WindowsNotificationManager();
-            //}
-            //else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            //{
-            //    NotificationManager = new FreeDesktopNotificationManager();
-            //}
-            //else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            //{
-            //   NotificationManager = new AppleNotificationManager();
-            //} 
-            //else 
-            //{
-            //    throw new PlatformNotSupportedException();
-            //NotificationManager = new WindowsNotificationManager();
-            //}
-            //#endif
-            //Temp
-
-            NotificationManager = default;
+//#if __ANDROID__
+//            NotificationManager = new AndroidNotificationManager((hostControl as Android.Content.Context)!);
+//#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // FreeDesktopNotificationManager is not available in this build; leave null
+                NotificationManager = null;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                NotificationManager = new WindowsNotificationManager();
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                // AppleNotificationManager is not available in this build; leave null
+                NotificationManager = null;
+            }
+            else
+            {
+                // Unknown platform
+                NotificationManager = null;
+            }
+//#endif
             //NotificationManager.Initialize();
         }
     }

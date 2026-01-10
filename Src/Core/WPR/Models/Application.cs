@@ -24,7 +24,5 @@ namespace WPR.Models
         public string Version { get; set; }     // Can't find why this conflicted with the class if Version class is used
         public DateTime InstalledTime { get; set; }
         public int PatchedVersion { get; set; }
-
-        // public int ApplicationMemoryLimit { get; set; }
     }
 }

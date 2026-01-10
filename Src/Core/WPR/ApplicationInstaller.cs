@@ -13,7 +13,6 @@ using System.Linq;
 
 using WPR.Common;
 using WPR.Models;
-using System.Diagnostics;
 
 namespace WPR
 {
@@ -22,9 +21,7 @@ namespace WPR
         private const string TempXmlFile = "temp.xml";
         private static string TempXmlFileFullPath => Configuration.Current!.DataPath(TempXmlFile);
 
-        private static async Task<(ApplicationInstallError, Application?, string)> 
-            CreateApplicationEntryAndExtract(Stream fileStream, Action<int> progressSet, 
-            Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken canceled)
+        private static async Task<(ApplicationInstallError, Application?, string)> CreateApplicationEntryAndExtract(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken canceled)
         {
             Application? app = null;
             string dataFolderProduct = "";
@@ -65,8 +62,7 @@ namespace WPR
                 XmlAttribute? versionAttrib = appNode!.Attributes!["Version"];
                 XmlAttribute? productAttrib = appNode!.Attributes!["ProductID"];
 
-                if ((titleAttrib == null) || (runtimeTypeAttrb == null) || (versionAttrib == null) 
-                    || (productAttrib == null))
+                if ((titleAttrib == null) || (runtimeTypeAttrb == null) || (versionAttrib == null) || (productAttrib == null))
                 {
                     return ( ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct );
                 }
@@ -74,8 +70,7 @@ namespace WPR
                 string productTrimmed = productAttrib!.Value.Trim('{').Trim('}');
                 string storeFolder = Configuration.Current!.DataPath(Application.DataStoreFolder);
                 string productStoreFolder = Path.Combine(storeFolder, productTrimmed);
-                string productStoreFolderRelative = Path.Combine(Application.DataStoreFolder,
-                    productTrimmed);
+                string productStoreFolderRelative = Path.Combine(Application.DataStoreFolder, productTrimmed);
 
                 List<Application> existingApp = await ApplicationContext.Current.Applications!
                     .Where(a => a.ProductId == productTrimmed)
@@ -97,22 +92,9 @@ namespace WPR
                     }
                 }
 
-                //RnD
                 if (!Enum.TryParse(runtimeTypeAttrb.Value, true, out ApplicationType runtimeTypeParsed))
                 {
-                   
-                    Debug.WriteLine
-                    (
-                        "[warn] " +
-                        ApplicationInstallError.NotSupportedAppType + " | " +
-                        "(" + runtimeTypeAttrb.Value +")" + 
-                        app + " | " +
-                        dataFolderProduct
-                    );
-
-                    // comment it for to obtain SL-type game installing
-                    return (ApplicationInstallError.NotSupportedAppType, app,
-                        dataFolderProduct + ":" + runtimeTypeAttrb.Value);
+                    return ( ApplicationInstallError.NotSupportedAppType, app, dataFolderProduct );
                 }
 
                 XmlAttribute? authorAttrib = appNode!.Attributes!["Author"];
@@ -156,9 +138,7 @@ namespace WPR
                 var nsmgr = new XmlNamespaceManager(wmManifestDoc.NameTable);
                 nsmgr.AddNamespace("a", "http://schemas.microsoft.com/client/2007/deployment");
 
-                XmlNodeList? assemblies = deploymentNode!.SelectNodes(
-                    "//a:Deployment.Parts//a:AssemblyPart", nsmgr);
-
+                XmlNodeList? assemblies = deploymentNode!.SelectNodes("//a:Deployment.Parts//a:AssemblyPart", nsmgr);
                 if (assemblies == null)
                 {
                     return (ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct);
@@ -234,18 +214,14 @@ namespace WPR
             }
             catch (Exception ex)
             {
-                Log.Error(LogCategory.AppInstall, 
-                    $"An unexpected error happen during the installation: \n{ex}");
-
+                Log.Error(LogCategory.AppInstall, $"An unexpected error happen during the installation: \n{ex}");
                 return (ApplicationInstallError.UnexpectedError, app, dataFolderProduct);
             }
 
             return (ApplicationInstallError.None, app, dataFolderProduct);
         }
 
-        public static async Task<ApplicationInstallError> Install(
-            Stream fileStream, Action<int> progressSet, 
-            Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken cancelSource)
+        public static async Task<ApplicationInstallError> Install(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken cancelSource)
         {
             try
             {
@@ -254,9 +230,7 @@ namespace WPR
                 ApplicationInstallError error;
 
                 // 60% spend for extracting files
-                (error, app, appDataFolder) = await Task.Run(() 
-                    => CreateApplicationEntryAndExtract(fileStream, progressSet, 
-                    deleteExistingApp, cancelSource));
+                (error, app, appDataFolder) = await Task.Run(() => CreateApplicationEntryAndExtract(fileStream, progressSet, deleteExistingApp, cancelSource));
 
                 if (error != ApplicationInstallError.None)
                 {
@@ -269,15 +243,12 @@ namespace WPR
                     await Task.Run(() =>
                     {
                         ApplicationPatcher patcher = new ApplicationPatcher();
-                        patcher.Patch(appDataFolder, progress => 
-                           progressSet(60 + (int)((double)progress / 5)), cancelSource);
+                        patcher.Patch(appDataFolder, progress => progressSet(60 + (int)((double)progress / 5)), cancelSource);
                     });
                 }
                 catch (Exception exception)
                 {
-                    Log.Error(LogCategory.AppInstall,
-                        $"Application DLL patching failed with exception:\n{exception}");
-
+                    Log.Error(LogCategory.AppInstall, $"Application DLL patching failed with exception:\n{exception}");
                     return ApplicationInstallError.PatchFailed;
                 }
 
@@ -299,9 +270,7 @@ namespace WPR
                             cancelSource);
                     } catch (Exception exception)
                     {
-                        Log.Error(LogCategory.AppInstall, 
-                            $"Application WMA conversion failed with exception:\n{exception}");
-
+                        Log.Error(LogCategory.AppInstall, $"Application WMA conversion failed with exception:\n{exception}");
                         return ApplicationInstallError.ConvertFailed;
                     }
                 }
@@ -317,9 +286,7 @@ namespace WPR
                 progressSet(100);
             } catch (Exception ex)
             {
-                Log.Error(LogCategory.AppInstall, 
-                    $"An unexpected error happen during the installation: \n{ex}");
-
+                Log.Error(LogCategory.AppInstall, $"An unexpected error happen during the installation: \n{ex}");
                 return ApplicationInstallError.UnexpectedError;
             }
 

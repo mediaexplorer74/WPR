@@ -7,30 +7,16 @@ namespace WPR.WindowsCompability
         private static Application? _Current;
         public event EventHandler<ApplicationUnhandledExceptionEventArgs>? UnhandledException;
 
-        public string? ProductId
-        {
-            get
-            {
-                return productId;
-            }
-
-            set
-            {
-                productId = value;
-            }
-        }
+        public string? ProductId { get; set; }
         private ResourceDictionary _Resources;
-        private string? productId;
 
         internal Application()
         {
             _Resources = new ResourceDictionary();
         }
 
-        public static Application Current 
-        {
-            get 
-            {
+        public static Application Current {
+            get {
                 if (_Current == null)
                 {
                     _Current = new Application();
@@ -39,12 +25,6 @@ namespace WPR.WindowsCompability
             }
         }
 
-        public ResourceDictionary Resources
-        {
-            get
-            {
-                return _Resources;
-            }
-        }
+        public ResourceDictionary Resources => _Resources;
     }
 }

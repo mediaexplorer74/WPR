@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Microsoft.Phone.Info
 {
@@ -9,24 +8,16 @@ namespace Microsoft.Phone.Info
         {
             if (propertyName == null)
             {
-                //throw new ArgumentNullException(
-                //    "Null property name in retrieving user extended properties' value!");
-                return default; // RnD
+                throw new ArgumentNullException("Null property name in retrieving user extended properties' value!");
             }
 
             switch (propertyName)
             {
                 case "ANID":
-                    return "1234567890123456789012345678901234567890";
+                    return "123456789";
 
                 default:
-                    //RnD
-                    Debug.WriteLine("[ex] GetValue - Unknown property name: " + propertyName);
-
-                    //throw new ArgumentException(
-                    //  "[error] GetValue - Unknown property name: "
-                    //  + propertyName);
-                    return default; 
+                    throw new ArgumentException("Unknown property name!");
             }
         }
 
@@ -34,31 +25,19 @@ namespace Microsoft.Phone.Info
         {
             if (propertyName == null)
             {
-                //RnD
-                Debug.WriteLine("[ex] TryGetValue - Unknown property name: " + propertyName);
-                //throw new ArgumentNullException(
-                //    "Null property name in retrieving user extended properties' value!");
-                propertyName = default; 
+                throw new ArgumentNullException("Null property name in retrieving user extended properties' value!");
             }
 
             propertyValue = null;
 
-            //RnD
             try
             {
                 propertyValue = GetValue(propertyName);
-            } 
-            catch
+            } catch
             {
                 return false;
             }
 
-            return true;
-        }
-
-        public static bool DeviceStatus()
-        {
-            //RnD
             return true;
         }
     }

@@ -10,7 +10,6 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -753,21 +752,13 @@ namespace Microsoft.Xna.Framework.Graphics
 			{
 				options &= ~ClearOptions.Stencil;
 			}
-
-			try
-			{
-				FNA3D.FNA3D_Clear(
-					GLDevice,
-					options,
-					ref color,
-					depth,
-					stencil
-				);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("Exception: " + ex.Message);
-			}
+			FNA3D.FNA3D_Clear(
+				GLDevice,
+				options,
+				ref color,
+				depth,
+				stencil
+			);
 		}
 
 		#endregion

@@ -21,8 +21,7 @@ namespace WPR
 
             public FFMPEGConvertSession()
             {
-                CompletionSource = 
-                new TaskCompletionSource<FFmpegSession?>(TaskCreationOptions.RunContinuationsAsynchronously);
+                CompletionSource = new TaskCompletionSource<FFmpegSession?>(TaskCreationOptions.RunContinuationsAsynchronously);
             }
 
             public void Apply(FFmpegSession? session)
@@ -52,8 +51,7 @@ namespace WPR
             FFmpegKitConfig.IgnoreSignal(Signal.Sigxcpu);
 #endif
 
-            var fileEnum = Directory.EnumerateFiles(rootFolder, "*.wma", 
-                SearchOption.AllDirectories).ToList();
+            var fileEnum = Directory.EnumerateFiles(rootFolder, "*.wma", SearchOption.AllDirectories).ToList();
 
             int countSoFar = 0;
             int totalCount = fileEnum.Count();
@@ -65,20 +63,16 @@ namespace WPR
                     return;
                 }
 
-                if (!File.Exists(filename + ".xnb") && 
-                    !File.Exists(Path.ChangeExtension(filename, ".xnb"))) 
-                {
+                if (!File.Exists(filename + ".xnb") && !File.Exists(Path.ChangeExtension(filename, ".xnb"))) {
                     countSoFar++;
                     progressReport((int)(countSoFar * 100.0 / totalCount));
 
                     continue;
                 }
                 
-                FileStream headerCheckFile = new FileStream(filename, FileMode.Open,
-                    FileAccess.Read, FileShare.Read);
+                FileStream headerCheckFile = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
                 
-                byte[] Magic = new byte[16] { 
-                    0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11, 0xA6, 0xD9, 0x00, 0xAA,
+                byte[] Magic = new byte[16] { 0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11, 0xA6, 0xD9, 0x00, 0xAA,
                     0x00, 0x62, 0xCE, 0x6C };
 
                 byte[] MagicCheck = new byte[16];

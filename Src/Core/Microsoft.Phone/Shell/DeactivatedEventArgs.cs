@@ -6,22 +6,10 @@ namespace Microsoft.Phone.Shell
     {
         private DeactivationReason _reason;
 
-        public DeactivatedEventArgs()
-        {
-            this._reason = DeactivationReason.UserAction;
-        }
+        public DeactivatedEventArgs() => this._reason = DeactivationReason.UserAction;
 
-        public DeactivatedEventArgs(DeactivationReason reason)
-        {
-            this._reason = reason;
-        }
+        public DeactivatedEventArgs(DeactivationReason reason) => this._reason = reason;
 
-        public DeactivationReason Reason
-        {
-            get
-            {
-                return this._reason;
-            }
-        }
+        public DeactivationReason Reason => this._reason;
     }
 }

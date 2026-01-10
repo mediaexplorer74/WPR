@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<!--Note: Dotnet currently does not allow to build on non-windows platforms when a windows TFM is specified-->
+	<PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+           <CheckEolWorkloads>false</CheckEolWorkloads>
+	   <TargetFrameworks>netstandard2.0;net8.0;net8.0-android</TargetFrameworks>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+          <CheckEolWorkloads>false</CheckEolWorkloads>
+	   <TargetFrameworks>netstandard2.0;net8.0-windows10.0.17763.0;net8.0-android</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+          <CheckEolWorkloads>false</CheckEolWorkloads>
+	  <Nullable>enable</Nullable>
+	  <LangVersion>8.0</LangVersion>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <Description>A cross-platform C# library for native desktop "toast" notifications.</Description>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <PackageProjectUrl>https://github.com/pr8x/DesktopNotifications</PackageProjectUrl>
+	  <Authors>DesktopNotifications.Apple</Authors>
+	  <Product>DesktopNotifications.Apple</Product>
+	  <Company>DesktopNotifications.Apple</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+	   <ProjectReference Include="..\DesktopNotifications\DesktopNotifications.csproj" />
+	</ItemGroup>
+
+</Project>

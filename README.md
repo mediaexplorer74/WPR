@@ -1,33 +1,39 @@
-# WPR 0.0.12-alpha :: avalonia branch
+# WPR 0.0.15-alpha :: avalonia branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
 
-NOTE: *avalonia* branch used as +- "master" one. It constists of Windows (tested) & Android (not tested yet) targets. If you interested in development, look at (see) *dev* branch that also consists of some experimental things (i.e., iOS & WebBrowser target stubs, Tests, etc.).  
+NOTE: previous *avalonia* branch copied to "avalonia-win" one. In my new "avalonia" branch I planned to repair Android target. 
 
 ## Screenshots
+
 ![](Images/sshot01.png)
-![](Images/sshot02.png)
+
+_Windows 11 Tiny_
+
 
 ## Status
-- I started experimenting with .NET 8 & Avalonia 11. I started to repair Android part of solution (WPR.UI.Android). So, *avalonia* branch consists of 2 targets: Windows & Android at now :)
-- With help of Trial mode of WindSurf (and ChatGPT 4 AI) I repaired Android-related parts of WPR code... (but still work-in-progress!).
-- Some experimental "UI improvements applied ("Two small Run and Uninstall" icons added to main/larg icon in app/game list). Run & App also added to popup/context menu.
-- All AI-generated things not tested yet (no Android device, and Android emulator errors because of my veeeey poor hardware; also, I never haved any iOS device ... so, help needed)
+- I started experimenting with .NET 8 & Avalonia 11.3.9. I started to repair Android part of solution (WPR.UI.Android) & fix Avalonia 11.3.9 for WPR.UI.Desktop to. So, *avalonia* branch consists of 2 targets: Windows & Android at now :)
+- With help of Trial mode of WindSurf (and ChatGPT 4 AI) I partially repaired Android-related parts of WPR code... But thiis still work-in-progress: many game "patches" lost.
+- Experimental "UI improvements applied ("Two small Run and Uninstall" icons added to main/larg icon in app/game list) lost. No "Run & App at popup/context menu".
+- All AI-generated things not tested yet 
 - For Android target, I changed Min. Supported Android Api version from 21 to 26 in project (.csproj) files. 
 
 
 ## Tech. details
-- Newest VS 2022 Preview used to "assemble" (build) this "dev branch"
-- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR (however, some reduced Windows 11 Tiny is goode choice even for 15-year-old retro-notebooks... Sony Vaio, etc.)))
+- Newest VS 2022 Preview used to "assemble" (build) this "avaonia branch"
+- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR (however, some reduced Windows 11 Tiny is goode choice even for some very retro-notebooks)
 
 
 ## ToDo
+- Fix bug "System.TypeInitializationException: The type initializer for 'DialogHost.DialogHost' threw an exception." (install progress indicator error)
+- Repair lost game patches (use "avalonia-win" branch) 
+- Test Desktop (Windows) target
 - Test Android target
 - Actualize Wiki section
 - Transtale Readme to RU and CN
 - Fix resolution scaling...
-- Try to port this "app creature" (in)to modern "multi-platform engine" such as MAUI... :)
+- Try to port this "app creature" (in)to modern "multi-platform engine" such as MAUI (far future)
 
 ## Credits
 - Tyler Jaacks (https://github.com/TylerJaacks) - for net5/6 -> net8 upgrade !
@@ -41,6 +47,6 @@ NOTE: *avalonia* branch used as +- "master" one. It constists of Windows (tested
 AS IS. No support. Developers / Geeks only. "DIY mode"
 
 ## ::
-[m][e] 2025
+[m][e] 2026
 
 ![](Images/footer.png)
