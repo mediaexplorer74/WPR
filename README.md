@@ -13,16 +13,16 @@ _Windows 11 Tiny_
 
 
 ## Status
-- I started experimenting with .NET 8 & Avalonia 11.3.9. I started to repair Android part of solution (WPR.UI.Android) & fix Avalonia 11.3.9 for WPR.UI.Desktop to. So, *avalonia* branch consists of 2 targets: Windows & Android at now :)
-- With help of Trial mode of WindSurf (and ChatGPT 4 AI) I partially repaired Android-related parts of WPR code... But thiis still work-in-progress: many game "patches" lost.
+- I started experimenting with .NET 8 & Avalonia _11.3.9_. I started to repair Android part of solution  & Desktop (Windows) part of solution too. So, *avalonia* branch consists of 2 targets: Windows & Android at now :)
+- With help of Trial mode of WindSurf (and ChatGPT 4 AI) I partially repaired Android-related parts of WPR code... But this is still work-in-progress: 100500 new errors (because of Avalonia 11 incompatibility with Avalonia 9 / 10), and many game "patches" lost!
 - Experimental "UI improvements applied ("Two small Run and Uninstall" icons added to main/larg icon in app/game list) lost. No "Run & App at popup/context menu".
 - All AI-generated things not tested yet 
 - For Android target, I changed Min. Supported Android Api version from 21 to 26 in project (.csproj) files. 
 
 
 ## Tech. details
-- Newest VS 2022 Preview used to "assemble" (build) this "avaonia branch"
-- I think that WPR "dev edition" incompatible with Win10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR (however, some reduced Windows 11 Tiny is goode choice even for some very retro-notebooks)
+- Newest VS 2022 or above must be used to "assemble" (build) this _avalonia_ branch
+- I think that WPR 0.0.15 "avalonia edition" incompatible with Windows 10 because of .NET 8... So, fresh Windows 11 OS needed to run WPR (however, some reduced Windows 11 Tiny is good choice even for some very retro-notebooks).
 
 
 ## ToDo
@@ -32,7 +32,7 @@ _Windows 11 Tiny_
 - Test Android target
 - Actualize Wiki section
 - Transtale Readme to RU and CN
-- Fix resolution scaling...
+- Fix Zuma "game screen" scaling...
 - Try to port this "app creature" (in)to modern "multi-platform engine" such as MAUI (far future)
 
 ## Credits

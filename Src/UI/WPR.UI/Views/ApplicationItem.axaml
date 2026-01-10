@@ -6,7 +6,7 @@
              x:Class="WPR.UI.Views.ApplicationView">
 	<Grid HorizontalAlignment="Center" Background="Transparent" ToolTip.Tip="{Binding Tooltip}">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="{Binding IconSize}"/>
+			<RowDefinition Height="{Binding IconGridLength}"/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 
