@@ -15,9 +15,6 @@ namespace WPR.UI.ViewModels
         public int IconSize => 90;
         public int Height => 160;
 
-        // GridLength for binding to RowDefinition.Height (avoids int->GridLength conversion error)
-        public Avalonia.Layout.GridLength IconGridLength => new Avalonia.Layout.GridLength(IconSize, Avalonia.Layout.GridUnitType.Pixel);
-
         public ApplicationItemViewModel(Application app)
         {
             _App = app;

@@ -7,9 +7,18 @@ NOTE: previous *avalonia* branch copied to "avalonia-win" one. In my new "avalon
 
 ## Screenshots
 
-![](Images/sshot01.png)
 
-_Windows 11 Tiny_
+_Desktop (Windows 11 Tiny)_ :
+
+![](Images/sshot01.png)
+![](Images/sshot02.png)
+![](Images/sshot03.png)
+![](Images/sshot04.png)
+
+
+_Android (HOROR 400 )_ :
+
+soon
 
 
 ## Status

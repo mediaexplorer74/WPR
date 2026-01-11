@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using System;
 using WPR.Common;
 using WPR.Models;
@@ -15,6 +15,8 @@ namespace WPR.UI.Views
         {
             InitializeComponent();
 
+
+
 #if !__MOBILE__
             MessageBoxUtils.MainWindow = this;
             ServicesSetup.Start();
@@ -23,12 +25,13 @@ namespace WPR.UI.Views
             {
                 Hide();
 
-                _ = NativeUI.NotificationManager.ShowNotification(new DesktopNotifications.Notification()
+                //TODO: fix windows notification for desktop
+                /*_ = NativeUI.NotificationManager.ShowNotification(new DesktopNotifications.Notification()
                 {
                     Title = Properties.Resources.LaunchingInProcess,
                     Body = args.Target.Name!,
                     ImagePath = Configuration.Current!.DataPath(args.Target.IconPath)
-                }, expirationTime: DateTime.Now + TimeSpan.FromSeconds(5));
+                }, expirationTime: DateTime.Now + TimeSpan.FromSeconds(5));*/
 
                 bool runOk = true;
 
@@ -56,6 +59,7 @@ namespace WPR.UI.Views
                 }
             };
 #endif
+
 
             _Navigator = new MainViewNavigator();
             _Navigator.SetupNavigation(this.Get<TabControl>("navigationControl"), this.Get<TransitioningContentControl>("contentControl"));

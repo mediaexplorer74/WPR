@@ -3,6 +3,7 @@
              xmlns:local="using:WPR.UI"
              x:Class="WPR.UI.App"
              xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+             xmlns:conv="clr-namespace:WPR.UI.Converters;assembly=WPR.UI"
              >
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -16,4 +17,8 @@
 			<Setter Property="Foreground" Value="White" />
 		</Style>
     </Application.Styles>
+
+    <Application.Resources>
+        <conv:PixelToGridLengthConverter x:Key="PixelToGridLengthConverter" />
+    </Application.Resources>
 </Application>

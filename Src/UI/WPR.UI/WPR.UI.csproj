@@ -44,7 +44,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
 	<PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
 	<PackageReference Include="Markdown.Avalonia" Version="11.0.0-a1" />
-	<PackageReference Include="DialogHost.Avalonia" Version="0.8.0" />
+	<PackageReference Include="DialogHost.Avalonia" Version="0.10.4" />
 	<PackageReference Include="MessageBox.Avalonia" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFVersion)" />

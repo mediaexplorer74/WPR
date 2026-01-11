@@ -172,11 +172,11 @@ namespace WPR.UI.Pages
                 var InstallProgressWindow = new ProgressView();
 
                 // Wire cancellation
-                EventHandler<object>? cancelHandler = (obj, args) => ViewModel!.CancelSource!.Cancel();
+                WPR.UI.Views.ProgressView.OnCancelRequested? cancelHandler = args => ViewModel!.CancelSource!.Cancel();
                 InstallProgressWindow.CancelRequested += cancelHandler;
 
                 // Wire progress event
-                Action<int>? progressHandler = progress => Dispatcher.UIThread.InvokeAsync(() => InstallProgressWindow.Progress = progress);
+                WPR.UI.ViewModels.ApplicationListingPageViewModel.OnProgressNeedSet? progressHandler = progress => Dispatcher.UIThread.InvokeAsync(() => InstallProgressWindow.Progress = progress);
                 ViewModel!.InstallationSetProgress += progressHandler;
 
                 // Register interaction handler (capture disposable)
@@ -218,12 +218,12 @@ namespace WPR.UI.Pages
 
                         ViewModel!.UpdateApplicationList(ViewModel!.SearchText);
 
-                        // Close dialog via named host
-                        DialogHost.Close(null, "RootDialogHost");
+                    // Close dialog via named host
+                    DialogHost.Close(null);//, "RootDialogHost");
                     });
 
                 // Show dialog using the named root host
-                await DialogHost.Show(InstallProgressWindow, "RootDialogHost");
+                await DialogHost.Show(InstallProgressWindow);//, "RootDialogHost");
 
                 // Cleanup handlers/subscriptions
                 try
