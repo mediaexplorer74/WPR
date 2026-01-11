@@ -1,0 +1,71 @@
+Hi! Please help me to fix all solutions errors. Feel free to rebuild the solution. I need to fix 2 targets: Windows (WPR.Desktop) & Android (WPR.Android).
+
+Next Steps for .NET 5 to .NET 8 Upgrade
+A modernization agent has been started in a new thread to help you upgrade the Windows (WPR.Desktop) projects from .NET 5 to .NET 6. Please switch to that new thread to continue with the upgrade process. The agent will help you with:
+•	Upgrading WPR.UI.Desktop.csproj from net5.0-windows10.0.17763.0 to net8.0-windows10.0.17763.0
+•	Updating WPR.UI.csproj Windows target from net5.0-windows10.0.17763.0 to net8.0-windows10.0.17763.0
+•	Updating other dependent projects accordingly
+•	Managing breaking changes and API updates
+
+
+# 🎯 Upgrade Windows and fix notification manager
+**Overview**: Upgrade Windows and fix notification manager
+
+**Progress**: 0% [░░░░░░░░░░]
+
+**Last Updated**: 2026-01-06 10:42:59
+
+## 📝 Plan Steps
+-  **Modify `ThirdParty\DesktopNotifications\DesktopNotifications.Windows\DesktopNotifications.Windows.csproj` to target `net6.0-windows10.0.17763.0` for Windows TFMs**
+-  **Modify `UI\WPR.UI.Desktop\WPR.UI.Desktop.csproj` to target `net6.0-windows10.0.17763.0` and non-Windows TFMs to `net6.0`**
+-  **Modify `UI\WPR.UI\WPR.UI.csproj` to replace `net5.0` Windows TFMs with `net6.0` equivalents**
+-  **Edit `ThirdParty\DesktopNotifications\DesktopNotifications.Windows\WindowsNotificationManager.cs` to fix `_application_context` typo and any related small issues**
+-  **Run `dotnet build` for the solution to collect compilation errors and report back**
+-  **Fix any remaining compilation errors discovered by the build**
+-  **Re-run build and finish**
+
+Bugs:
+
+System.InvalidOperationException: 'No Panel with name PART_DialogHostRoot found. Did you add the styles as stated in getting started?'
+
+
+[Binding]An error occurred binding 'Height' to 'IconSize': 'Could not convert '90' (System.Int32) to 'Avalonia.Controls.GridLength'.' (RowDefinition #31678442)
+Exception thrown: 'System.ArgumentException' in Avalonia.Skia.dll
+[Binding]An error occurred binding 'Height' to 'IconSize': 'Could not convert '90' (System.Int32) to 'Avalonia.Controls.GridLength'.' (RowDefinition #35022440)
+
+
+Also, try to fix this runtime error: 
+[Binding]An error occurred binding 'Height' to 'IconSize': 'Could not convert '90' (System.Int32) to 'Avalonia.Controls.GridLength'.' (RowDefinition #31678442)
+Exception thrown: 'System.ArgumentException' in Avalonia.Skia.dll
+[Binding]An error occurred binding 'Height' to 'IconSize': 'Could not convert '90' (System.Int32) to 'Avalonia.Controls.GridLength'.' (RowDefinition #35022440)
+
+Q: Copilot, please fix Android target bug "only white screen on app start". I mean WPR.UI.Android project and MainActivity.cs, SplashActivity.cs, GameActivity.cs
+
+A: Changes applied
+•	UI/WPR.UI.Android/MainActivity.cs
+•	Moved activity-result registration into OnCreate.
+•	Restored/overrode CustomizeAppBuilder to call base.CustomizeAppBuilder(...) and enable UseReactiveUI() and icon provider registration so Avalonia is initialized correctly on Android.
+•	Kept constructor minimal (avoid early calls before Android activity is created).
+•	UI/WPR.UI.Android/SplashActivity.cs
+•	Added ConfigurationChanges and set intent flags when launching MainActivity to avoid duplicate/invalid activity state on cold start.
+•	UI/WPR.UI/MessageBoxUtils.cs
+•	Added guarded call around MessageBoxManager.GetMessageBoxStandardWindow and an Avalonia Window fallback to prevent MissingMethodException crashes from third-party package / assembly version mismatch.
+•	Fixed build errors (removed TextWrapping enum usage, added LINQ usage where needed). Project builds successfully.
+Why this fixes the white screen
+•	The white screen on Android is commonly caused by Avalonia not being initialized or the activity that should host the UI not being properly configured before the framework tries to render. Previously CustomizeAppBuilder returned a noop/default and activity-level initialization (activity result registration) occurred too early in the constructor; that can prevent Avalonia from being configured and the MainActivity from starting the UI, producing a white/blank screen. Calling the base CustomizeAppBuilder(...) and applying Avalonia options ensures the framework is initialized properly. Launch flags on the splash activity avoid activity duplication/state issues that can also result in no UI being shown.
+What to verify / test
+1.	Clean, uninstall app from device/emulator, rebuild and deploy.
+2.	Watch logcat during startup for Avalonia initialization lines and any exceptions:
+•	adb logcat -s Avalonia or inspect full logs for exceptions.
+3.	Confirm main window appears after splash and no immediate exceptions occur.
+4.	Try flows that launch GameActivity to ensure activity result handling works.
+If issue persists, provide
+•	Logcat output for app startup (first 30–60s).
+•	The implementation or origin of AvaloniaMainActivity being inherited (its source or assembly/version).
+•	The AndroidManifest or generated manifest portion for launcher activity and intent filters.
+•	Runtime loaded assembly list or app output folder (to confirm Avalonia / MessageBox.Avalonia versions).
+
+If you want, I can add explicit startup logging (Avalonia initialization and MainWindow show) and a small health-check message box to confirm the UI thread and window creation.
+
+Q: Heh, issue persists, sadly :(  Github Copilot, add explicit startup logging (Avalonia initialization and MainWindow show) and a small health-check message box to confirm the UI thread and window creation.
+

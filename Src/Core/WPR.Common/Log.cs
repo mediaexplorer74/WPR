@@ -17,5 +17,9 @@ namespace WPR.Common
         {
             Write(category, content);
         }
+        public static void Info(LogCategory category, String content)
+        {
+            Write(category, content);
+        }
     }
 }

@@ -10,6 +10,9 @@ namespace WPR.Common
         {
             public string DataStorePath;
             public String GamerTag;
+            public string? RegistrationToken;
+            public string? UserEmail;
+            public bool IsRegistered;
         };
 
         private const string ConfigurationFilePath = "config.json";
@@ -27,6 +30,24 @@ namespace WPR.Common
         {
             get => _ConfPrivate!.GamerTag;
             set => _ConfPrivate!.GamerTag = value;
+        }
+
+        public string? RegistrationToken
+        {
+            get => _ConfPrivate!.RegistrationToken;
+            set => _ConfPrivate!.RegistrationToken = value;
+        }
+
+        public string? UserEmail
+        {
+            get => _ConfPrivate!.UserEmail;
+            set => _ConfPrivate!.UserEmail = value;
+        }
+
+        public bool IsRegistered
+        {
+            get => _ConfPrivate!.IsRegistered;
+            set => _ConfPrivate!.IsRegistered = value;
         }
 
         public static Configuration? Current { get; set; }

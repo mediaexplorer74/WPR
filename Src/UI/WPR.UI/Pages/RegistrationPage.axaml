@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="WPR.UI.Pages.RegistrationPage">
+  <ScrollViewer>
+    <StackPanel Margin="20" Spacing="10">
+      <TextBlock Text="Registration" 
+                 FontSize="24" 
+                 FontWeight="Bold" 
+                 Margin="0,0,0,20"/>
+      
+      <TextBlock Text="Register your WPR Account" 
+                 FontSize="18" 
+                 Margin="0,0,0,20"/>
+      
+      <TextBlock Text="Email:" Margin="0,0,0,5"/>
+      <TextBox Name="EmailTextBox" 
+               Watermark="Enter your email address" 
+               Margin="0,0,0,15"/>
+      
+      <TextBlock Text="Registration Key:" Margin="0,0,0,5"/>
+      <TextBox Name="RegistrationKeyTextBox" 
+               Watermark="Enter your registration key or paste registration URL" 
+               Margin="0,0,0,15"/>
+      
+      <Button Name="RegisterButton" 
+              Content="Register" 
+              HorizontalAlignment="Left"
+              Margin="0,0,0,10"
+              Padding="20,10"/>
+              
+      <Button Name="VerifyRegistrationButton" 
+              Content="Verify Registration" 
+              HorizontalAlignment="Left"
+              Margin="0,0,0,10"
+              Padding="20,10"/>
+              
+      <TextBlock Name="StatusTextBlock" 
+                 TextWrapping="Wrap" 
+                 Foreground="Green"
+                 Margin="0,10,0,0"/>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

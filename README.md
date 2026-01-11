@@ -35,7 +35,7 @@ soon
 
 
 ## ToDo
-- Fix bug "System.TypeInitializationException: The type initializer for 'DialogHost.DialogHost' threw an exception." (install progress indicator error)
+- Solve "White screen instead of App UI" bug for Android target 
 - Repair lost game patches (use "avalonia-win" branch) 
 - Test Desktop (Windows) target
 - Test Android target

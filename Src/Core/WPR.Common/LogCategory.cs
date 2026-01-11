@@ -8,6 +8,8 @@
         AppAudioConverter,
         AppPatcher,
         AppList,
-        Android
+        Android,
+        Startup,
+        Registration
     }
 }

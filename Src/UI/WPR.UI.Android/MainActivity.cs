@@ -71,8 +71,7 @@ namespace WPR.UI.Android
 
         public MainActivity()
         {
-            ActivitySpawner = RegisterForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new GameActivityResultCallback(this));
+            // Keep constructor minimal; register activity results in OnCreate when Activity is initialized
         }
 
         // Because DLLs files are in APK. Monodroid has their own way of extracting and getting these dlls out.
@@ -182,6 +181,10 @@ namespace WPR.UI.Android
             ServicesSetup.Start();
             NativeUI.Initialize(this);
 
+            // Register activity result launcher now that Activity is created
+            ActivitySpawner = RegisterForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new GameActivityResultCallback(this));
+
             ApplicationLaunchRequest.Incoming += (sender, args) =>
             {
                 RunOnUiThread(() =>
@@ -196,13 +199,12 @@ namespace WPR.UI.Android
             base.OnCreate(savedInstanceState);
         }
 
-        protected /*override*/ AppBuilder CustomizeAppBuilder(AppBuilder builder)
+        protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
         {
-            return default;//base.CustomizeAppBuilder(builder)
-                //.LogToTrace()
-                //.UseReactiveUI()
-                //.WithIcons(container => container
-                //    .Register<FontAwesomeIconProvider>());
+            // Ensure Avalonia is configured correctly for Android; call base then add app-specific options
+            return base.CustomizeAppBuilder(builder)
+                .UseReactiveUI()
+                .WithIcons(container => container.Register<FontAwesomeIconProvider>());
         }
     }
 }

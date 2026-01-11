@@ -9,7 +9,10 @@ namespace WPR.UI.Views
     public class MainViewNavigator
     {
         private int _CurrentIndex = -1;
-        private UserControl[] _Pages = new UserControl[4];
+        private UserControl[] _Pages = new UserControl[5]; // Updated to accommodate 5 pages (0-4)
+
+        // Property to track if navigation is already set up
+        private bool _IsNavigationSetUp = false;
 
         public void SetupNavigation(TabControl control, TransitioningContentControl contentControl)
         {
@@ -35,6 +38,10 @@ namespace WPR.UI.Views
 
                             case 2:
                                 _Pages[2] = new AboutPage();
+                                break;
+                                
+                            case 3:
+                                _Pages[3] = new RegistrationPage(); // Add registration page
                                 break;
                         }
                     }
