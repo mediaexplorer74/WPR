@@ -62,10 +62,7 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public GamerProfile GetProfile() => EndGetProfile(BeginGetProfile(null, null));
 
-        public override string ToString()
-        {
-            throw new NotImplementedException();
-        }
+        public override string ToString() => Gamertag;
 
         public static IAsyncResult BeginGetPartnerToken(
           string audienceUri,

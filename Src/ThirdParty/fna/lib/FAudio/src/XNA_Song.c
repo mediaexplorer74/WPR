@@ -174,6 +174,11 @@ FAUDIOAPI float XNA_PlaySong(const char *name)
 	XNA_SongKill();
 
 	activeSong = stb_vorbis_open_filename(name, NULL, NULL);
+	if (activeSong == NULL)
+	{
+		/* Unsupported or missing song file (e.g. WP7 .wma via MediaPlayer). */
+		return 0.0f;
+	}
 
 	/* Set format info */
 	activeSongInfo = stb_vorbis_get_info(activeSong);

@@ -4,7 +4,7 @@
     <TargetFramework>net8.0-android34.0</TargetFramework>
     <SupportedOSPlatformVersion>26</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
-    <AvaloniaVersion>11.1-beta1</AvaloniaVersion>
+    <AvaloniaVersion>11.3.9</AvaloniaVersion>
     <ApplicationId>com.MediaExplorer.WPR</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>0.0.17</ApplicationDisplayVersion>
@@ -38,8 +38,10 @@
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
   </PropertyGroup>
 
+  <!-- Embed assemblies so adb-installed APKs run without VS fast-deploy (.__override__). -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <AndroidEnableAssemblyCompression>false</AndroidEnableAssemblyCompression>
   </PropertyGroup>
 
   <ItemGroup>

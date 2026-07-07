@@ -16,7 +16,8 @@
 			<TextBox Grid.Row="0" Name="searchBarTextBox" Text="{Binding SearchText}" 
                Margin="10,10,10,0" 
                Watermark="{x:Static p:Resources.SearchForAppSearchBar}" Background="Transparent"/>
-			<ListBox Grid.Row="1" Name="appListBox" Margin="10 10" VerticalAlignment="Stretch" ItemsSource="{Binding Applications}"
+			<Panel Grid.Row="1" Margin="10,10">
+			<ListBox Name="appListBox" VerticalAlignment="Stretch" ItemsSource="{Binding Applications}"
                SelectedItem="{Binding ChoosenApp}" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Visible">
             <ListBox.ContextMenu>
                 <ContextMenu>
@@ -38,7 +39,17 @@
 						<nst:ApplicationView />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</ListBox >
+			</ListBox>
+			<TextBlock Text="{x:Static p:Resources.NoApplicationsInstalled}"
+			           IsVisible="{Binding ShowEmptyHint}"
+			           HorizontalAlignment="Center"
+			           VerticalAlignment="Center"
+			           FontSize="18"
+			           Foreground="#B0B0B0"
+			           TextWrapping="Wrap"
+			           TextAlignment="Center"
+			           Margin="24"/>
+			</Panel>
 		</Grid>
 		<Button x:Name="addNewAppButton"
 				Width="64"

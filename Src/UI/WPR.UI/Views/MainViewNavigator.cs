@@ -17,7 +17,7 @@ namespace WPR.UI.Views
 
             _Pages[0] = new ApplicationListingPage();
 
-            contentControl.Content = _Pages[0];
+            SetPageContent(contentControl, _Pages[0]);
 
             control.SelectionChanged += (obj, args) =>
             {
@@ -39,15 +39,17 @@ namespace WPR.UI.Views
                         }
                     }
 
-                    var previousControl = contentControl.Content as UserControl;
-
-                    // Workaround control not displaying back
-                    // TODO: Report to the developers
-                    contentControl.Content = _Pages[_CurrentIndex];
-                    contentControl.Content = null;
-                    contentControl.Content = _Pages[_CurrentIndex];
+                    SetPageContent(contentControl, _Pages[_CurrentIndex]);
                 }
             };
+        }
+
+        private static void SetPageContent(TransitioningContentControl contentControl, UserControl page)
+        {
+            // Workaround: TransitioningContentControl may not paint the first page on Android.
+            contentControl.Content = page;
+            contentControl.Content = null;
+            contentControl.Content = page;
         }
     }
 }

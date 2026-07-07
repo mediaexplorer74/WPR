@@ -10,29 +10,11 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
         }
 
-        public GamerPrivilegeSetting AllowCommunication
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public GamerPrivilegeSetting AllowCommunication => GamerPrivilegeSetting.Everyone;
 
-        public bool AllowOnlineSessions
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool AllowOnlineSessions => true;
 
-        public GamerPrivilegeSetting AllowProfileViewing
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public GamerPrivilegeSetting AllowProfileViewing => GamerPrivilegeSetting.Everyone;
 
         public bool AllowPurchaseContent
         {
@@ -42,20 +24,8 @@ namespace Microsoft.Xna.Framework.GamerServices
             }
         }
 
-        public bool AllowTradeContent
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool AllowTradeContent => true;
 
-        public GamerPrivilegeSetting AllowUserCreatedContent
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public GamerPrivilegeSetting AllowUserCreatedContent => GamerPrivilegeSetting.Everyone;
     }
 }

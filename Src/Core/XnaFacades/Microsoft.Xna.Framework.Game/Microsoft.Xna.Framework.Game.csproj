@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Microsoft.Xna.Framework.Game</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(SolutionDir)ThirdParty/fna/abi/Microsoft.Xna.Framework.Game.cs" Link="Microsoft.Xna.Framework.Game.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)ThirdParty/fna/FNA.Core.csproj" />
+    <ProjectReference Include="$(SolutionDir)Core/Microsoft.Xna.Framework.GamerServices/Microsoft.Xna.Framework.GamerServices.csproj" />
+  </ItemGroup>
+</Project>

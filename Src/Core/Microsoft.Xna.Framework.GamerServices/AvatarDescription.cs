@@ -1,57 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Microsoft.Xna.Framework.GamerServices
 {
     public class AvatarDescription
     {
+        private static readonly byte[] EmptyDescription = Array.Empty<byte>();
+
         public AvatarDescription(byte[] data)
         {
-            throw new NotImplementedException();
+            BodyType = AvatarBodyType.Male;
+        }
+
+        private AvatarDescription(AvatarBodyType bodyType)
+        {
+            BodyType = bodyType;
         }
 
         public static AvatarDescription CreateRandom()
         {
-            throw new NotImplementedException();
+            return new AvatarDescription(EmptyDescription);
         }
 
         public static AvatarDescription CreateRandom(AvatarBodyType bodyType)
         {
-            throw new NotImplementedException();
+            return new AvatarDescription(bodyType);
         }
 
-        public AvatarBodyType BodyType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public AvatarBodyType BodyType { get; }
 
-        public byte[] Description
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public byte[] Description => EmptyDescription;
 
-        public float Height
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public float Height => 1.0f;
 
-        public bool IsValid
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
+        public bool IsValid => true;
     }
 }

@@ -10,12 +10,13 @@ using System.Threading;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using WPR.Common;
 
 namespace WPR
 {
     public class ApplicationPatcher
     {
-        public static int Version => 0;
+        public static int Version => 1;
 
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
@@ -689,10 +690,7 @@ namespace WPR
                 }
                 catch (Exception ex)
                 {
-                    //Common.Log.Error(Common.LogCategory.AppPatcher,
-                    //$"Fail to patch DLL with path: {filename}. Error:\n{ex}");
-                    Debug.WriteLine($"Fail to patch DLL with path: {filename}. Error:\n{ex}");
-                    Debug.WriteLine($"Error Message :\n{ex.Message}");
+                    Log.Error(LogCategory.AppInstall, $"Fail to patch DLL with path: {filename}. Error:\n{ex}");
                     continue;
                 }
 

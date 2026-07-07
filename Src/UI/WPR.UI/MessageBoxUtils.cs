@@ -22,6 +22,44 @@ namespace WPR.UI
     {
 #if __ANDROID__
         public static Activity MainActivity { get; set; }
+
+        public sealed class AndroidInstallProgress
+        {
+            private readonly ProgressDialog _dialog;
+
+            public AndroidInstallProgress(string message)
+            {
+                _dialog = new ProgressDialog(MainActivity)
+                {
+                    Indeterminate = false
+                };
+                _dialog.SetMessage(message);
+                _dialog.SetProgressStyle(ProgressDialogStyle.Horizontal);
+                _dialog.SetCancelable(false);
+                _dialog.Max = 100;
+            }
+
+            public void Show()
+            {
+                MainActivity.RunOnUiThread(() => _dialog.Show());
+            }
+
+            public void SetProgress(int percent)
+            {
+                MainActivity.RunOnUiThread(() => _dialog.Progress = Math.Clamp(percent, 0, 100));
+            }
+
+            public void Dismiss()
+            {
+                MainActivity.RunOnUiThread(() =>
+                {
+                    if (_dialog.IsShowing)
+                    {
+                        _dialog.Dismiss();
+                    }
+                });
+            }
+        }
 #else
         public static Window MainWindow { get; set; }
 #endif

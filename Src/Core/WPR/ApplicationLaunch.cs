@@ -9,7 +9,10 @@ using Microsoft.Phone.Shell;
 using Microsoft.Xna.Framework.GamerServices;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WPR.XnaCompability;
 
@@ -22,10 +25,73 @@ namespace WPR
 
         static ApplicationLaunch()
         {
-            AssemblyLoadContext.Default.Resolving += (loadContext, name) =>
+            AssemblyLoadContext.Default.Resolving += ResolveAssembly;
+        }
+
+        private static Assembly? ResolveAssembly(AssemblyLoadContext loadContext, AssemblyName assemblyName)
+        {
+            if (string.IsNullOrEmpty(assemblyName.Name))
             {
-                return loadContext.LoadFromAssemblyPath(Path.Combine(CurrentProductFolder, name.Name + ".dll"));
-            };
+                return null;
+            }
+
+            string? productFolder = null;
+            try
+            {
+                if (Configuration.Current != null && WindowsCompability.Application.Current?.ProductId != null)
+                {
+                    productFolder = CurrentProductFolder;
+                }
+            }
+            catch
+            {
+                // Ignore; fall back to host assemblies only.
+            }
+
+            if (productFolder != null)
+            {
+                var gamePath = Path.Combine(productFolder, assemblyName.Name + ".dll");
+                if (File.Exists(gamePath))
+                {
+                    return loadContext.LoadFromAssemblyPath(gamePath);
+                }
+            }
+
+            var alreadyLoaded = AssemblyLoadContext.Default.Assemblies
+                .FirstOrDefault(a => string.Equals(a.GetName().Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase));
+            if (alreadyLoaded != null)
+            {
+                return alreadyLoaded;
+            }
+
+            foreach (var searchDir in GetHostAssemblySearchPaths())
+            {
+                var hostPath = Path.Combine(searchDir, assemblyName.Name + ".dll");
+                if (File.Exists(hostPath))
+                {
+                    return loadContext.LoadFromAssemblyPath(hostPath);
+                }
+            }
+
+            return null;
+        }
+
+        private static IEnumerable<string> GetHostAssemblySearchPaths()
+        {
+            var paths = new List<string>();
+
+            if (!string.IsNullOrEmpty(AppContext.BaseDirectory))
+            {
+                paths.Add(AppContext.BaseDirectory);
+            }
+
+            var hostAssemblyDir = Path.GetDirectoryName(typeof(ApplicationLaunch).Assembly.Location);
+            if (!string.IsNullOrEmpty(hostAssemblyDir))
+            {
+                paths.Add(hostAssemblyDir);
+            }
+
+            return paths.Distinct(StringComparer.OrdinalIgnoreCase);
         }
 
         public static async Task Start(Application app, Action<DisplayOrientation>? requestOrientation = null)
@@ -41,6 +107,8 @@ namespace WPR
 
             FNAPlatform.TitleLocation = folderPath;
             string curDir = Directory.GetCurrentDirectory();
+
+            EnsureGameAssembliesPatched(folderPath, app);
 
             Assembly assem = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(folderPath, AssemblyNameStandardization.Process(app.Assembly)));
 
@@ -66,6 +134,7 @@ namespace WPR
 
                     GraphicsDeviceManager2.RequestOrientation = requestOrientation;
                     SignedInGamer.Reset();
+                    GamerServicesDispatcher.WindowHandle = obj.Window.Handle;
 
                     obj.Activated += (obj, args) =>
                     {
@@ -143,6 +212,27 @@ namespace WPR
                     }
                 }
             });
+        }
+
+        private static void EnsureGameAssembliesPatched(string folderPath, Application app)
+        {
+            if (app.PatchedVersion >= ApplicationPatcher.Version)
+            {
+                return;
+            }
+
+            try
+            {
+                Log.Info(LogCategory.AppList, $"Patching game assemblies in {folderPath}");
+                var patcher = new ApplicationPatcher();
+                patcher.Patch(folderPath, _ => { }, CancellationToken.None);
+                app.PatchedVersion = ApplicationPatcher.Version;
+                ApplicationContext.Current.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(LogCategory.AppList, $"Failed to patch game before launch: {ex}");
+            }
         }
 
         private static string BuildDiagnostics(Game? obj, Exception ex)

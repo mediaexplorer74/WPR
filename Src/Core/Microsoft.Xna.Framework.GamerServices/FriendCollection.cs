@@ -16,18 +16,14 @@ namespace Microsoft.Xna.Framework.GamerServices
             GC.SuppressFinalize(this);
         }
 
+        private bool _isDisposed;
+
         private void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+            _isDisposed = true;
         }
 
-        public bool IsDisposed
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool IsDisposed => _isDisposed;
 
     }
 }

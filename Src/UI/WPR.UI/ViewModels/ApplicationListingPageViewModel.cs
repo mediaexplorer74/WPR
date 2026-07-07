@@ -59,8 +59,14 @@ namespace WPR.UI.ViewModels
 
         public ObservableCollection<ApplicationItemViewModel> Applications {
             get { return _Applications; }
-            set { this.RaiseAndSetIfChanged(ref _Applications, value); }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _Applications, value);
+                this.RaisePropertyChanged(nameof(ShowEmptyHint));
+            }
         }
+
+        public bool ShowEmptyHint => Applications.Count == 0;
 
         public void UpdateApplicationList(string text)
         {
@@ -79,7 +85,8 @@ namespace WPR.UI.ViewModels
                 // not make it refresh display
                 Applications = 
                     new ObservableCollection<ApplicationItemViewModel>(enumerable);
-                
+                this.RaisePropertyChanged(nameof(ShowEmptyHint));
+
                 // Subscribe to UninstallRequested event for each ApplicationItemViewModel
                 foreach (var appItem in Applications)
                 {
@@ -93,6 +100,7 @@ namespace WPR.UI.ViewModels
                 Log.Error(LogCategory.AppList,
                     $"Unable to query application database with exception:\n {ex}");
                 Applications = new ObservableCollection<ApplicationItemViewModel>();
+                this.RaisePropertyChanged(nameof(ShowEmptyHint));
             }
         }
 

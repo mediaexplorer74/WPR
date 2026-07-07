@@ -10,6 +10,7 @@
 #region Using Statements
 using System;
 using System.Diagnostics;
+using System.IO;
 #endregion
 
 namespace Microsoft.Xna.Framework.Media
@@ -380,6 +381,13 @@ namespace Microsoft.Xna.Framework.Media
 			FrameworkDispatcher.ActiveSongChanged = true;
 		}
 
+		private static bool IsSupportedSongPath(string path)
+		{
+			/* XNA_PlaySong uses stb_vorbis; WP7 titles ship .wma instead. */
+			string ext = Path.GetExtension(path);
+			return ext.Equals(".ogg", StringComparison.OrdinalIgnoreCase);
+		}
+
 		private static void PlaySong(Song song)
 		{
 			if (!initialized)
@@ -387,6 +395,18 @@ namespace Microsoft.Xna.Framework.Media
 				FAudio.XNA_SongInit();
 				initialized =  true;
 			}
+
+			if (!IsSupportedSongPath(song.handle))
+			{
+				Debug.WriteLine(
+					"[WPR] Skipping unsupported MediaPlayer song: " + song.handle
+				);
+				song.Duration = TimeSpan.Zero;
+				timer.Reset();
+				State = MediaState.Playing;
+				return;
+			}
+
 			song.Duration = TimeSpan.FromSeconds(FAudio.XNA_PlaySong(song.handle));
 			timer.Start();
 			State = MediaState.Playing;

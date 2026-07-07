@@ -5,12 +5,15 @@
 			 xmlns:ic="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              
 			 mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="1520"
-             x:Class="WPR.UI.Views.MainViewMobile">
+             x:Class="WPR.UI.Views.MainViewMobile"
+             Background="#121212"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
 
   <!--xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"-->
 
   <!--dialogHost:DialogHost-->
-		<Panel>
+		<Panel Background="#121212">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition />

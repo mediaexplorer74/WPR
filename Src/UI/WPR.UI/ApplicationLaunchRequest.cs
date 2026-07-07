@@ -30,6 +30,9 @@ namespace WPR.UI
             catch (Exception ex)
             {
                 Debug.WriteLine("[ex] ApplicationLaunchRequest (Ask) error: " + ex.Message);
+#if __ANDROID__
+                WPR.Common.Log.Error(WPR.Common.LogCategory.AppList, $"ApplicationLaunchRequest failed: {ex}");
+#endif
             }
         }
     }

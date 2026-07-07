@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace Microsoft.Xna.Framework.GamerServices
 {
@@ -11,101 +8,28 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
         }
 
-        public bool AccelerateWithButtons
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool AccelerateWithButtons => false;
 
-        public bool AutoAim
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool AutoAim => true;
 
-        public bool AutoCenter
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool AutoCenter => true;
 
-        public bool BrakeWithButtons
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool BrakeWithButtons => false;
 
-        public ControllerSensitivity ControllerSensitivity
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public ControllerSensitivity ControllerSensitivity => ControllerSensitivity.Medium;
 
-        public GameDifficulty GameDifficulty
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public GameDifficulty GameDifficulty => GameDifficulty.Normal;
 
-        public bool InvertYAxis
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool InvertYAxis => false;
 
-        public bool ManualTransmission
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool ManualTransmission => false;
 
-        public bool MoveWithRightThumbStick
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool MoveWithRightThumbStick => false;
 
-        public Color? PrimaryColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Color? PrimaryColor => null;
 
-        public RacingCameraAngle RacingCameraAngle
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public RacingCameraAngle RacingCameraAngle => RacingCameraAngle.Back;
 
-        public Color? SecondaryColor
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
+        public Color? SecondaryColor => null;
     }
 }

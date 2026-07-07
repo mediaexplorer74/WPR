@@ -132,6 +132,10 @@ using WPR.Common;
 using Avalonia.Platform.Storage;
 using DialogHostAvalonia;
 using Avalonia.Interactivity;
+using Avalonia.Input;
+using System.Threading;
+using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
 
 namespace WPR.UI.Pages
 {
@@ -157,6 +161,15 @@ namespace WPR.UI.Pages
             };
 
             this.Get<Button>("addNewAppButton").Click += AddNewAppButton_Click;
+
+            var appListBox = this.Get<ListBox>("appListBox");
+            appListBox.DoubleTapped += (_, _) =>
+            {
+                if (ViewModel?.ChoosenApp != null)
+                {
+                    ApplicationLaunchRequest.Ask(ViewModel.ChoosenApp.Model);
+                }
+            };
         }
 
         private async void AddNewAppButton_Click(object? sender, RoutedEventArgs e)
@@ -169,73 +182,121 @@ namespace WPR.UI.Pages
 
             if ((result != null) && (result.Count >= 1))
             {
-                var InstallProgressWindow = new ProgressView();
+#if __ANDROID__
+                await InstallXapOnAndroidAsync(result[0]);
+#else
+                await InstallXapWithDialogHostAsync(result[0]);
+#endif
+            }
+        }
 
-                // Wire cancellation
-                WPR.UI.Views.ProgressView.OnCancelRequested? cancelHandler = args => ViewModel!.CancelSource!.Cancel();
-                InstallProgressWindow.CancelRequested += cancelHandler;
+#if __ANDROID__
+        private async Task InstallXapOnAndroidAsync(IStorageFile file)
+        {
+            var progress = new MessageBoxUtils.AndroidInstallProgress(Properties.Resources.InstallingApp);
+            progress.Show();
 
-                // Wire progress event
-                WPR.UI.ViewModels.ApplicationListingPageViewModel.OnProgressNeedSet? progressHandler = progress => Dispatcher.UIThread.InvokeAsync(() => InstallProgressWindow.Progress = progress);
-                ViewModel!.InstallationSetProgress += progressHandler;
+            ViewModel!.CancelSource = new CancellationTokenSource();
+            void OnProgress(int value) => progress.SetProgress(value);
+            ViewModel.InstallationSetProgress += OnProgress;
 
-                // Register interaction handler (capture disposable)
-                IDisposable? deleteExistingReg = null;
-                deleteExistingReg = ViewModel!.DeleteExistingAppInteraction!.RegisterHandler(context => Dispatcher.UIThread.InvokeAsync(async () =>
+            using var deleteExistingReg = ViewModel.DeleteExistingAppInteraction!.RegisterHandler(context =>
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    Application app = context.Input;
+                    var msgResult = await MessageBoxUtils.GetMessageDialogResult(
+                        title: Properties.Resources.ApplicationAlreadyInstalled,
+                        text: string.Format(Properties.Resources.ApplicationAlreadyInstalledDescription, app.Name),
+                        icon: MessageBox.Avalonia.Enums.Icon.Question,
+                        buttons: MessageBox.Avalonia.Enums.ButtonEnum.YesNo);
+                    context.SetOutput(msgResult == MessageBox.Avalonia.Enums.ButtonResult.Yes);
+                }));
+
+            try
+            {
+                await using var stream = await file.OpenReadAsync();
+                var err = await ViewModel.InstallRequestCommand.Execute(stream);
+
+                string errUserStr = LocaleUtils.GetDisplayName(err);
+                bool failed = err != ApplicationInstallError.None;
+
+                await MessageBoxUtils.GetMessageDialogResult(
+                    title: failed ? Properties.Resources.InstallationFailed : Properties.Resources.InstallationSucceed,
+                    text: errUserStr,
+                    icon: failed ? MessageBox.Avalonia.Enums.Icon.Error : MessageBox.Avalonia.Enums.Icon.Success);
+
+                ViewModel.UpdateApplicationList(ViewModel.SearchText);
+            }
+            finally
+            {
+                ViewModel.InstallationSetProgress -= OnProgress;
+                progress.Dismiss();
+            }
+        }
+#else
+        private async Task InstallXapWithDialogHostAsync(IStorageFile file)
+        {
+            var InstallProgressWindow = new ProgressView();
+
+            WPR.UI.Views.ProgressView.OnCancelRequested? cancelHandler = args => ViewModel!.CancelSource!.Cancel();
+            InstallProgressWindow.CancelRequested += cancelHandler;
+
+            WPR.UI.ViewModels.ApplicationListingPageViewModel.OnProgressNeedSet? progressHandler =
+                progress => Dispatcher.UIThread.InvokeAsync(() => InstallProgressWindow.Progress = progress);
+            ViewModel!.InstallationSetProgress += progressHandler;
+
+            IDisposable? deleteExistingReg = null;
+            deleteExistingReg = ViewModel!.DeleteExistingAppInteraction!.RegisterHandler(context =>
+                Dispatcher.UIThread.InvokeAsync(async () =>
                 {
                     Application app = context.Input;
 
                     MessageBox.Avalonia.Enums.ButtonResult msgResult = await MessageBoxUtils.GetMessageDialogResult(
                         title: Properties.Resources.ApplicationAlreadyInstalled,
-                        text: String.Format(Properties.Resources.ApplicationAlreadyInstalledDescription, app.Name),
+                        text: string.Format(Properties.Resources.ApplicationAlreadyInstalledDescription, app.Name),
                         icon: MessageBox.Avalonia.Enums.Icon.Question,
                         buttons: MessageBox.Avalonia.Enums.ButtonEnum.YesNo);
 
                     context.SetOutput(msgResult == MessageBox.Avalonia.Enums.ButtonResult.Yes);
                 }));
 
-                // Subscribe to visibility changes; dispose subscription when dialog closes
-                IDisposable? progressSub = null;
-                progressSub = InstallProgressWindow.WhenAnyValue(v => v.IsVisible)
-                    .Subscribe(async v =>
-                    {
-                        if (!v)
-                        {
-                            // Dialog hidden/closed; nothing to do here
-                            progressSub?.Dispose();
-                            return;
-                        }
-
-                        var err = await ViewModel!.InstallRequestCommand.Execute(await result[0].OpenReadAsync());
-
-                        string errUserStr = LocaleUtils.GetDisplayName(err);
-                        bool failed = err != ApplicationInstallError.None;
-
-                        await MessageBoxUtils.GetMessageDialogResult(
-                            title: failed ? Properties.Resources.InstallationFailed : Properties.Resources.InstallationSucceed,
-                            text: errUserStr,
-                            icon: failed ? MessageBox.Avalonia.Enums.Icon.Error : MessageBox.Avalonia.Enums.Icon.Success);
-
-                        ViewModel!.UpdateApplicationList(ViewModel!.SearchText);
-
-                        // Close dialog via named host
-                        DialogHost.Close(null);//, "RootDialogHost");
-                    });
-
-                // Show dialog using the named root host
-                await DialogHost.Show(InstallProgressWindow);//, "RootDialogHost");
-
-                // Cleanup handlers/subscriptions
-                try
+            IDisposable? progressSub = null;
+            progressSub = InstallProgressWindow.WhenAnyValue(v => v.IsVisible)
+                .Subscribe(async v =>
                 {
-                    progressSub?.Dispose();
-                    deleteExistingReg?.Dispose();
-                    if (cancelHandler != null) InstallProgressWindow.CancelRequested -= cancelHandler;
-                    if (progressHandler != null) ViewModel!.InstallationSetProgress -= progressHandler;
-                }
-                catch { }
+                    if (!v)
+                    {
+                        progressSub?.Dispose();
+                        return;
+                    }
+
+                    await using var stream = await file.OpenReadAsync();
+                    var err = await ViewModel!.InstallRequestCommand.Execute(stream);
+
+                    string errUserStr = LocaleUtils.GetDisplayName(err);
+                    bool failed = err != ApplicationInstallError.None;
+
+                    await MessageBoxUtils.GetMessageDialogResult(
+                        title: failed ? Properties.Resources.InstallationFailed : Properties.Resources.InstallationSucceed,
+                        text: errUserStr,
+                        icon: failed ? MessageBox.Avalonia.Enums.Icon.Error : MessageBox.Avalonia.Enums.Icon.Success);
+
+                    ViewModel!.UpdateApplicationList(ViewModel!.SearchText);
+                    DialogHost.Close(null);
+                });
+
+            await DialogHost.Show(InstallProgressWindow);
+
+            try
+            {
+                progressSub?.Dispose();
+                deleteExistingReg?.Dispose();
+                if (cancelHandler != null) InstallProgressWindow.CancelRequested -= cancelHandler;
+                if (progressHandler != null) ViewModel!.InstallationSetProgress -= progressHandler;
             }
+            catch { }
         }
+#endif
 
         Window GetWindow() => VisualRoot as Window ?? throw new NullReferenceException("Invalid Owner");
         TopLevel GetTopLevel() => VisualRoot as TopLevel ?? throw new NullReferenceException("Invalid Owner");

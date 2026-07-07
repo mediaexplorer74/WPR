@@ -30,6 +30,16 @@
     <ProjectReference Include="$(SolutionDir)\Core\Microsoft.Xna.Framework.GamerServices\Microsoft.Xna.Framework.GamerServices.csproj" />
     <ProjectReference Include="$(SolutionDir)\Core\System.Device\System.Device.csproj" />
     <ProjectReference Include="$(SolutionDir)\ThirdParty\fna\FNA.Core.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Game\Microsoft.Xna.Framework.Game.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework\Microsoft.Xna.Framework.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Graphics\Microsoft.Xna.Framework.Graphics.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Input.Touch\Microsoft.Xna.Framework.Input.Touch.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Audio\Microsoft.Xna.Framework.Audio.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Content\Microsoft.Xna.Framework.Content.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Media\Microsoft.Xna.Framework.Media.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.Input\Microsoft.Xna.Framework.Input.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.XlastConfiguration\Microsoft.Xna.Framework.XlastConfiguration.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Core\XnaFacades\Microsoft.Xna.Framework.RuntimeProfile\Microsoft.Xna.Framework.RuntimeProfile.csproj" />
     <ProjectReference Include="$(SolutionDir)\Core\WPR.WindowsCompability\WPR.WindowsCompability.csproj" />
     <ProjectReference Include="$(SolutionDir)\Core\WPR.Common\WPR.Common.csproj" />
     <ProjectReference Include="$(SolutionDir)\Core\WPR.XnaCompabilityPatch\WPR.XnaCompability.csproj" />

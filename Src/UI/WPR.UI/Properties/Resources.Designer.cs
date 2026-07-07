@@ -259,6 +259,15 @@ namespace WPR.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No applications installed yet. Tap + to install a .xap package..
+        /// </summary>
+        public static string NoApplicationsInstalled {
+            get {
+                return ResourceManager.GetString("NoApplicationsInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully changed.
         /// </summary>
         public static string SuccessfullyChanged {

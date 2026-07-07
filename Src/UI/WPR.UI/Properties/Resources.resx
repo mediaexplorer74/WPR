@@ -156,6 +156,9 @@
   <data name="SearchForAppSearchBar" xml:space="preserve">
     <value>Search for applications...</value>
   </data>
+  <data name="NoApplicationsInstalled" xml:space="preserve">
+    <value>No applications installed yet. Tap + to install a .xap package.</value>
+  </data>
   <data name="ApplicationAlreadyInstalled" xml:space="preserve">
     <value>Application already installed</value>
   </data>

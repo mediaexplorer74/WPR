@@ -187,30 +187,17 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public void AwardAchievement(string achievementKey) => EndAwardAchievement(BeginAwardAchievement(achievementKey, null, null));
 
-        public FriendCollection GetFriends()
-        {
-            throw new NotImplementedException();
-        }
+        private static readonly FriendCollection EmptyFriends = new FriendCollection();
+        private static readonly GameDefaults DefaultGameDefaults = new GameDefaults();
+        private static readonly AvatarDescription DefaultAvatar = AvatarDescription.CreateRandom();
 
-        public bool IsFriend(Gamer gamer)
-        {
-            throw new NotImplementedException();
-        }
-        public AvatarDescription Avatar
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public FriendCollection GetFriends() => EmptyFriends;
 
-        public GameDefaults GameDefaults
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool IsFriend(Gamer gamer) => false;
+
+        public AvatarDescription Avatar => DefaultAvatar;
+
+        public GameDefaults GameDefaults => DefaultGameDefaults;
 
         public bool IsGuest => false;
 
@@ -222,13 +209,7 @@ namespace Microsoft.Xna.Framework.GamerServices
             }
         }
 
-        public int PartySize
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int PartySize => 0;
 
         public PlayerIndex PlayerIndex
         {

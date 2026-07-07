@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.Xna.Framework.Storage;
 
 namespace Microsoft.Xna.Framework.GamerServices
 {
@@ -76,27 +77,31 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public static IAsyncResult BeginShowStorageDeviceSelector(AsyncCallback callback, object state)
         {
-            throw new NotImplementedException();
+            return StorageDevice.BeginShowSelector(callback, state);
         }
 
         public static IAsyncResult BeginShowStorageDeviceSelector(PlayerIndex player, AsyncCallback callback, object state)
         {
-            throw new NotImplementedException();
+            return StorageDevice.BeginShowSelector(player, callback, state);
         }
 
         public static IAsyncResult BeginShowStorageDeviceSelector(int sizeInBytes, int directoryCount, AsyncCallback callback, object state)
         {
-            throw new NotImplementedException();
+            return StorageDevice.BeginShowSelector(sizeInBytes, directoryCount, callback, state);
         }
 
         public static IAsyncResult BeginShowStorageDeviceSelector(PlayerIndex player, int sizeInBytes, int directoryCount, AsyncCallback callback, object state)
         {
-            throw new NotImplementedException();
+            return StorageDevice.BeginShowSelector(player, sizeInBytes, directoryCount, callback, state);
+        }
+
+        public static StorageDevice EndShowStorageDeviceSelector(IAsyncResult result)
+        {
+            return StorageDevice.EndShowSelector(result);
         }
 
         public static void DelayNotifications(TimeSpan delay)
         {
-            throw new NotImplementedException();
         }
 
         public static string EndShowKeyboardInput(IAsyncResult result)
@@ -193,16 +198,12 @@ namespace Microsoft.Xna.Framework.GamerServices
             private set;
         }
 
+        private static NotificationPosition _notificationPosition = NotificationPosition.TopCenter;
+
         public static NotificationPosition NotificationPosition
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get => _notificationPosition;
+            set => _notificationPosition = value;
         }
 
         public static bool SimulateTrialMode

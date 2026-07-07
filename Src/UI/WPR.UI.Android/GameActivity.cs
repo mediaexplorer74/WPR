@@ -4,14 +4,17 @@ using Android.OS;
 
 using Org.Libsdl.App;
 using Newtonsoft.Json;
+using WPR.Common;
 
 using System;
 using System.Runtime.InteropServices;
 using Android.Content.PM;
+using Android.Runtime;
 
 namespace WPR.UI.Android
 {
     [Activity(Label = "Game activity", Theme = "@style/MyTheme.NoActionBar", ScreenOrientation = ScreenOrientation.Landscape, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Register("com.wpr.android.GameActivity")]
     public class GameActivity : SDLActivity
     {
         public static string TargetApplicationDataName = "TargetApplication";
@@ -31,6 +34,11 @@ namespace WPR.UI.Android
 
         protected override void OnCreate(Bundle? savedInstanceState)
         {
+            if (Configuration.Current == null)
+            {
+                Configuration.Current = new Configuration(GetExternalFilesDir(null)!.AbsolutePath);
+            }
+
             base.OnCreate(savedInstanceState);
 
             CurrentActivity = this;

@@ -10,28 +10,8 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
         }
 
-        public GamerPresenceMode PresenceMode
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public GamerPresenceMode PresenceMode { get; set; } = GamerPresenceMode.None;
 
-        public int PresenceValue
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int PresenceValue { get; set; }
     }
 }

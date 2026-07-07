@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.Devices.Sensors
 {
     public class AccelerometerReadingEventArgs : EventArgs
     {
-        private double x;
-        private double y;
-        private double z;
-
-        public AccelerometerReadingEventArgs(double x, double y, double z)
+        public AccelerometerReadingEventArgs(double x, double y, double z, DateTimeOffset? timestamp = null)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            X = x;
+            Y = y;
+            Z = z;
+            Timestamp = timestamp ?? DateTimeOffset.Now;
         }
 
-        public double X => this.x;
-        public double Y => this.y;
-        public double Z => this.z;
+        public double X { get; }
+
+        public double Y { get; }
+
+        public double Z { get; }
+
+        public DateTimeOffset Timestamp { get; }
     }
 }

@@ -4,7 +4,7 @@ using Application = Android.App.Application;
 
 namespace WPR.UI.Android
 {
-    [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
+    [Activity(Theme = "@style/MyTheme.Splash", NoHistory = true)]
     public class SplashActivity : Activity
     {
 

@@ -915,6 +915,9 @@ namespace Microsoft.Xna.Framework
 			catch (Exception ex)
 			{
 				Debug.WriteLine("[ex] Game init ex. : " + ex.Message);
+#if __ANDROID__
+				throw;
+#endif
 			}
 
 			/* We need to do this after virtual Initialize(...) is called.
