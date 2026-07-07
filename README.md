@@ -1,4 +1,4 @@
-# WPR 0.0.17-alpha :: dev branch
+# WPR 0.0.17.5 :: dev branch
 ![](Images/logo.png)
 
 WPR is a WP7-8 XNA app runner. This is only my fork of [WPR](https://github.com/8212369/WPR), not the original. 
@@ -63,11 +63,13 @@ CAUTION: _dev_ branch may not build / run normally. This is work-in-progress!
 -  **run build to verify fixes**
 -  **repeat until build succeeds or errors blocked**
 
-## Credits
+## Credits / Thanks ()
+- Jay Harris (https://github.com/fallaciousreasoning) - for Get(ting) Android builds working !
 - Tyler Jaacks (https://github.com/TylerJaacks) - for net5/6 -> net8 upgrade !
 - Hector47 (https://github.com/Hector47) for try to add some online services and more :)
 
 ## Another cool forks I noticed over 3 years 
+-  https://github.com/fallaciousreasoning/WPR (*dev* branch)
 -  https://github.com/TylerJaacks/WPR (branches *net8_upgrade* & *dotnet_upgrade* are very interesting & useful!)
 -  https://github.com/Hector47/WPR (master branch: some GameServices ideas)
 
