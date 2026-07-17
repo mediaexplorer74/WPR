@@ -14,11 +14,11 @@ namespace WPR.WindowsCompability
     // projection: System......IsolatedStorageSettings
     public class IsolatedStorageSettings2 //RnD : static
     {
-        private static IsolatedStorageSettings2 _ApplicationSettings;
+        private static IsolatedStorageSettings2? _ApplicationSettings;
         private const string LocalSettingsName = "__LocalSettings";
 
-        private IsolatedStorageFile _Holder;
-        private static Dictionary<string, object> _Settings;
+        private IsolatedStorageFile? _Holder;
+        private static Dictionary<string, object> _Settings = new();
 
         public IsolatedStorageSettings2()// RnD: static
         {
@@ -59,13 +59,13 @@ namespace WPR.WindowsCompability
             }
         }
 
-        ~IsolatedStorageSettings2()
-        {
-            Save();
-        }
-
         public void Save()
         {
+            if (_Holder == null)
+            {
+                return;
+            }
+
             using (IsolatedStorageFileStream storage = _Holder.CreateFile(LocalSettingsName))
             {
                 DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>));
@@ -109,6 +109,32 @@ namespace WPR.WindowsCompability
             }
         }
 
+        public int Count => _Settings.Count;
+
+        public ICollection<string> Keys => _Settings.Keys;
+
+        public ICollection<object> Values => _Settings.Values;
+
+        public void Add(string key, object value)
+        {
+            _Settings.Add(key, value);
+        }
+
+        public bool Contains(string key)
+        {
+            return _Settings.ContainsKey(key);
+        }
+
+        public bool Remove(string key)
+        {
+            return _Settings.Remove(key);
+        }
+
+        public void Clear()
+        {
+            _Settings.Clear();
+        }
+
         public object? this[object key]
         {
             get
@@ -143,10 +169,16 @@ namespace WPR.WindowsCompability
 
         //RnD: static
         // [MaybeNullWhen(false)] 
-        public static bool TryGetValue(string key, out object value)
+        public bool TryGetValue<T>(string key, out T value)
         {
-            //value = true;
-            return _Settings.TryGetValue(key, out value);
+            if (_Settings.TryGetValue(key, out object? stored) && stored is T typed)
+            {
+                value = typed;
+                return true;
+            }
+
+            value = default!;
+            return false;
         }
 
         //RnD : static
