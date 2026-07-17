@@ -1,85 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 using System.Collections.ObjectModel;
 
-namespace Microsoft.Xna.Framework.GamerServices
+namespace Microsoft.Xna.Framework.GamerServices;
+
+public class AvatarAnimation : IDisposable
 {
-    public class AvatarAnimation : IDisposable
+    private const int AvatarBoneCount = 0x47;
+
+    private readonly ReadOnlyCollection<Matrix> boneTransforms;
+    private readonly AvatarExpression currentExpression = new();
+    private TimeSpan currentPosition;
+    private bool isDisposed;
+
+    public AvatarAnimation(AvatarAnimationPreset animationPreset)
     {
-
-        private Matrix[] avatarBones = new Matrix[0x47];
-        private ReadOnlyCollection<Matrix> boneTransforms;
-        private AvatarExpression currentExpression = new AvatarExpression();
-        private TimeSpan currentPosition;
-        private bool isDisposed;
-        private TimeSpan length;
-
-        public AvatarAnimation(AvatarAnimationPreset animationPreset)
+        var bones = new Matrix[AvatarBoneCount];
+        for (int index = 0; index < bones.Length; index++)
         {
-            throw new NotImplementedException();
+            bones[index] = Matrix.Identity;
         }
+        boneTransforms = Array.AsReadOnly(bones);
+        Length = TimeSpan.FromSeconds(1);
+    }
 
-        public void Dispose()
+    public ReadOnlyCollection<Matrix> BoneTransforms => boneTransforms;
+
+    public TimeSpan CurrentPosition
+    {
+        get => currentPosition;
+        set => currentPosition = NormalizePosition(value, loop: false);
+    }
+
+    public AvatarExpression Expression => currentExpression;
+
+    public bool IsDisposed => isDisposed;
+
+    public TimeSpan Length { get; }
+
+    public void Update(TimeSpan elapsedAnimationTime, bool loop)
+    {
+        currentPosition = NormalizePosition(currentPosition + elapsedAnimationTime, loop);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        isDisposed = true;
+    }
+
+    private TimeSpan NormalizePosition(TimeSpan value, bool loop)
+    {
+        if (value < TimeSpan.Zero)
         {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            return TimeSpan.Zero;
         }
-
-        protected virtual void Dispose(bool disposing)
+        if (value <= Length)
         {
-            throw new NotImplementedException();
+            return value;
         }
-
-        public void Update(TimeSpan elapsedAnimationTime, bool loop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ReadOnlyCollection<Matrix> BoneTransforms
-        {
-            get
-            {
-                return this.boneTransforms;
-            }
-        }
-
-        public TimeSpan CurrentPosition
-        {
-            get
-            {
-                return this.currentPosition;
-            }
-            set
-            {
-                this.currentPosition = value;
-                this.Update(TimeSpan.Zero, false);
-            }
-        }
-
-        public AvatarExpression Expression
-        {
-            get
-            {
-                return this.currentExpression;
-            }
-        }
-
-        public bool IsDisposed
-        {
-            get
-            {
-                return this.isDisposed;
-            }
-        }
-
-        public TimeSpan Length
-        {
-            get
-            {
-                return this.length;
-            }
-        }
-
+        return loop ? TimeSpan.FromTicks(value.Ticks % Length.Ticks) : Length;
     }
 }

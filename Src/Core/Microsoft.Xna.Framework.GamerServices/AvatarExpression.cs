@@ -6,61 +6,11 @@ namespace Microsoft.Xna.Framework.GamerServices
 {
     public struct AvatarExpression
     {
-        public AvatarMouth Mouth
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
-        public AvatarEye LeftEye
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
-        public AvatarEye RightEye
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
-        public AvatarEyebrow LeftEyebrow
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
-        public AvatarEyebrow RightEyebrow
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
+        public AvatarMouth Mouth { get; set; }
+        public AvatarEye LeftEye { get; set; }
+        public AvatarEye RightEye { get; set; }
+        public AvatarEyebrow LeftEyebrow { get; set; }
+        public AvatarEyebrow RightEyebrow { get; set; }
 
     }
 }

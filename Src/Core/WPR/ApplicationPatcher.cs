@@ -777,8 +777,8 @@ namespace WPR
             {
                 existingRef.Name = AssemblyNameStandardization.Process(existingRef.Name);
 
-                if (existingRef.FullName
-                    == "Microsoft.Xna.Framework.GamerServices.GamerServicesComponent")
+                if (existingRef.Namespace
+                    == "Microsoft.Xna.Framework.GamerServices")
                 {
                     existingRef.Scope = xnaGameServices;
                 }

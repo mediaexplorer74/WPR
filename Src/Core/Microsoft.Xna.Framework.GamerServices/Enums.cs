@@ -285,4 +285,11 @@
         BottomRight
     }
 
+    public enum AvatarRendererState
+    {
+        Loading,
+        Ready,
+        Unavailable
+    }
+
 }

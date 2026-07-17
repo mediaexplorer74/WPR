@@ -1,143 +1,77 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections.ObjectModel;
 
-namespace Microsoft.Xna.Framework.GamerServices
+namespace Microsoft.Xna.Framework.GamerServices;
+
+public class AvatarRenderer : IDisposable
 {
-    public class AvatarRenderer : IDisposable
+    [CLSCompliant(false)]
+    public const int BoneCount = 0x47;
+
+    private readonly ReadOnlyCollection<Matrix> bindPose;
+    private readonly ReadOnlyCollection<int> parentBones;
+    private bool isDisposed;
+
+    public AvatarRenderer(AvatarDescription avatarDescription)
+        : this(avatarDescription, true)
     {
-        [CLSCompliant(false)]
-        public const int BoneCount = 0x47;
+    }
 
-        public AvatarRenderer(AvatarDescription avatarDescription)
-            : this(avatarDescription, true)
+    public AvatarRenderer(AvatarDescription avatarDescription, bool useLoadingEffect)
+    {
+        var bones = new Matrix[BoneCount];
+        var parents = new int[BoneCount];
+        for (int index = 0; index < BoneCount; index++)
         {
+            bones[index] = Matrix.Identity;
+            parents[index] = -1;
         }
+        bindPose = Array.AsReadOnly(bones);
+        parentBones = Array.AsReadOnly(parents);
+        AmbientLightColor = Vector3.One;
+        LightColor = Vector3.One;
+        Projection = Matrix.Identity;
+        View = Matrix.Identity;
+        World = Matrix.Identity;
+    }
 
-        public AvatarRenderer(AvatarDescription avatarDescription, bool useLoadingEffect)
-        {
-        }
+    public Vector3 AmbientLightColor { get; set; }
 
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    public ReadOnlyCollection<Matrix> BindPose => bindPose;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            throw new NotImplementedException();
-        }
+    public bool IsDisposed => isDisposed;
 
-        public void Draw(IList<Matrix> bones, AvatarExpression expression)
-        {
-            throw new NotImplementedException();
-        }
+    public bool IsLoaded => !isDisposed;
 
-        public Vector3 AmbientLightColor
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
+    public AvatarRendererState State => isDisposed
+        ? AvatarRendererState.Unavailable
+        : AvatarRendererState.Ready;
 
-        public ReadOnlyCollection<Matrix> BindPose
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+    public Vector3 LightColor { get; set; }
 
-        public bool IsDisposed
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+    public Vector3 LightDirection { get; set; }
 
-        public bool IsLoaded
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+    public ReadOnlyCollection<int> ParentBones => parentBones;
 
-        public Vector3 LightColor
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
+    public Matrix Projection { get; set; }
 
-        public Vector3 LightDirection
-        {
-            get
-        {
-            throw new NotImplementedException();
-        }
-            set
-        {
-            throw new NotImplementedException();
-        }
-        }
+    public Matrix View { get; set; }
 
-        public ReadOnlyCollection<int> ParentBones
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+    public Matrix World { get; set; }
 
-        public Matrix Projection
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+    public void Draw(IList<Matrix> bones, AvatarExpression expression)
+    {
+    }
 
-        public Matrix View
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        public Matrix World
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
+    protected virtual void Dispose(bool disposing)
+    {
+        isDisposed = true;
     }
 }

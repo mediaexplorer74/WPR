@@ -26,6 +26,23 @@ namespace Microsoft.Xna.Framework.GamerServices
             return new AvatarDescription(bodyType);
         }
 
+        public static IAsyncResult BeginGetFromGamer(
+            string gamertag, AsyncCallback? callback, object? asyncState)
+        {
+            var source = new System.Threading.Tasks.TaskCompletionSource<AvatarDescription>(
+                asyncState, System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
+            source.SetResult(CreateRandom());
+            callback?.Invoke(source.Task);
+            return source.Task;
+        }
+
+        public static AvatarDescription EndGetFromGamer(IAsyncResult result)
+        {
+            return ((System.Threading.Tasks.Task<AvatarDescription>)result).GetAwaiter().GetResult();
+        }
+
+        public event EventHandler<EventArgs>? Changed;
+
         public AvatarBodyType BodyType { get; }
 
         public byte[] Description => EmptyDescription;
