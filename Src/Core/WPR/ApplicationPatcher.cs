@@ -117,6 +117,24 @@ namespace WPR
                     NewNamespace = "WPR.WindowsCompability"
                 }
                 },
+                { "System.Windows.UIElement", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.Windows.FrameworkElement", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.Windows.Visibility", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
                 { "System.Windows.Threading.Dispatcher", new TypePatchInfo()
                 {
                     Reference = WindowsCompRef,

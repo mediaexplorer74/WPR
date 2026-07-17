@@ -1,9 +1,10 @@
 using System;
 using System.Windows.Navigation;
+using WPR.WindowsCompability;
 
 namespace Microsoft.Phone.Controls;
 
-public sealed class WebBrowser
+public sealed class WebBrowser : FrameworkElement
 {
     public event EventHandler<NavigationEventArgs>? Navigated;
 

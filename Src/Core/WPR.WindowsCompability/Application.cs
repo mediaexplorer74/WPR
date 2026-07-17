@@ -22,6 +22,7 @@ namespace WPR.WindowsCompability
         private ResourceDictionary _Resources;
         private string? productId;
         private readonly Interop.SilverlightHost _host = new();
+        private UIElement? _rootVisual;
 
         internal Application()
         {
@@ -49,6 +50,12 @@ namespace WPR.WindowsCompability
         }
 
         public Interop.SilverlightHost Host => _host;
+
+        public UIElement? RootVisual
+        {
+            get => _rootVisual;
+            set => _rootVisual = value;
+        }
 
         public static Resources.StreamResourceInfo? GetResourceStream(Uri uri)
         {
