@@ -646,27 +646,59 @@ namespace WPR
             }//for...
 
 
-            // create .dll.new
+            string patchedModulePath = modulePath + ".new";
+
+            // A write failure must abort the install; otherwise an unpatched DLL
+            // can be recorded as successfully installed.
             try
             {
-                assemblyData.Write(modulePath + ".new");
+                assemblyData.Write(patchedModulePath);
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.WriteLine("[ex] assemblyData.Write : " + ex.Message);
-                Debug.WriteLine("[error] " + modulePath + "can't patch normally :(");
+                if (File.Exists(patchedModulePath))
+                {
+                    File.Delete(patchedModulePath);
+                }
 
+                throw;
+            }
+            finally
+            {
                 assemblyData.Dispose();
-                return;
             }
 
-            assemblyData.Dispose();
+            if (!Path.GetFullPath(modulePathNameStandardized).Equals(
+                    Path.GetFullPath(modulePath),
+                    OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) &&
+                File.Exists(modulePathNameStandardized))
+            {
+                File.Delete(patchedModulePath);
+                throw new IOException($"Patching '{modulePath}' would overwrite '{modulePathNameStandardized}'.");
+            }
 
             // .dll -> .dll.original
             File.Move(modulePath, modulePathNameStandardized + ".original", true);
 
             // .dll.new - > .dll
-            File.Move(modulePath + ".new", modulePathNameStandardized, true);
+            try
+            {
+                File.Move(patchedModulePath, modulePathNameStandardized, true);
+            }
+            catch
+            {
+                if (File.Exists(modulePathNameStandardized + ".original"))
+                {
+                    File.Move(modulePathNameStandardized + ".original", modulePath, true);
+                }
+
+                if (File.Exists(patchedModulePath))
+                {
+                    File.Delete(patchedModulePath);
+                }
+
+                throw;
+            }
         }//PatchDll
 
         public void Patch(string appRootPath, Action<int> progress, CancellationToken token)
@@ -676,12 +708,15 @@ namespace WPR
             int totalCount = filenameList.Count;
             int current = 0;
 
+            if (totalCount == 0)
+            {
+                progress(100);
+                return;
+            }
+
             foreach (var filename in filenameList)
             {
-                if (token.IsCancellationRequested)
-                {
-                    return;
-                }
+                token.ThrowIfCancellationRequested();
 
                 try
                 {
@@ -691,7 +726,7 @@ namespace WPR
                 catch (Exception ex)
                 {
                     Log.Error(LogCategory.AppInstall, $"Fail to patch DLL with path: {filename}. Error:\n{ex}");
-                    continue;
+                    throw new InvalidDataException($"Failed to patch application DLL '{filename}'.", ex);
                 }
 
                 current++;

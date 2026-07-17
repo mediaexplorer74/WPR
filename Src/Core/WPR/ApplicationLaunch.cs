@@ -221,18 +221,11 @@ namespace WPR
                 return;
             }
 
-            try
-            {
-                Log.Info(LogCategory.AppList, $"Patching game assemblies in {folderPath}");
-                var patcher = new ApplicationPatcher();
-                patcher.Patch(folderPath, _ => { }, CancellationToken.None);
-                app.PatchedVersion = ApplicationPatcher.Version;
-                ApplicationContext.Current.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Log.Warn(LogCategory.AppList, $"Failed to patch game before launch: {ex}");
-            }
+            Log.Info(LogCategory.AppList, $"Patching game assemblies in {folderPath}");
+            var patcher = new ApplicationPatcher();
+            patcher.Patch(folderPath, _ => { }, CancellationToken.None);
+            app.PatchedVersion = ApplicationPatcher.Version;
+            ApplicationContext.Current.SaveChanges();
         }
 
         private static string BuildDiagnostics(Game? obj, Exception ex)

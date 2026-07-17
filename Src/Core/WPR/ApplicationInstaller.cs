@@ -102,10 +102,12 @@ namespace WPR
             }
         }
 
-        private static async Task<(ApplicationInstallError, Application?, string)> CreateApplicationEntryAndExtract(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken canceled)
+        private static async Task<(ApplicationInstallError Error, Application? App, string StagingFolder, string FinalFolder, List<Application> ExistingApps)> CreateApplicationEntryAndExtract(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken canceled)
         {
             Application? app = null;
-            string dataFolderProduct = "";
+            string stagingFolder = "";
+            string finalFolder = "";
+            List<Application> existingApps = new();
 
             try
             {
@@ -113,12 +115,12 @@ namespace WPR
                 ZipArchiveEntry? entry = archive.GetEntry("WMAppManifest.xml");
                 if (entry == null)
                 {
-                    return ( ApplicationInstallError.MissingManifestFiles, app, dataFolderProduct );
+                    return (ApplicationInstallError.MissingManifestFiles, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 if (canceled.IsCancellationRequested)
                 {
-                    return ( ApplicationInstallError.Canceled, app, dataFolderProduct );
+                    return (ApplicationInstallError.Canceled, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 progressSet(3);
@@ -130,7 +132,7 @@ namespace WPR
 
                 if (appNodeList == null || appNodeList.Count == 0)
                 {
-                    return ( ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct );
+                    return (ApplicationInstallError.InvalidManifestFiles, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 XmlNode? appNode = appNodeList[0];
@@ -142,7 +144,7 @@ namespace WPR
 
                 if ((titleAttrib == null) || (runtimeTypeAttrb == null) || (versionAttrib == null) || (productAttrib == null))
                 {
-                    return ( ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct );
+                    return (ApplicationInstallError.InvalidManifestFiles, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 string productTrimmed = ValidateProductId(productAttrib!.Value);
@@ -150,31 +152,9 @@ namespace WPR
                 string productStoreFolder = Path.Combine(storeFolder, productTrimmed);
                 string productStoreFolderRelative = Path.Combine(Application.DataStoreFolder, productTrimmed);
 
-                ValidateArchive(archive, productStoreFolder);
-
-                List<Application> existingApp = await ApplicationContext.Current.Applications!
-                    .Where(a => a.ProductId == productTrimmed)
-                    .ToListAsync();
-
-                if (existingApp.Count != 0)
-                {
-                    if (await deleteExistingApp(existingApp[0]))
-                    {
-                        if (Directory.Exists(productStoreFolder))
-                        {
-                            Directory.Delete(productStoreFolder, true);
-                        }
-                        ApplicationContext.Current.Applications!.Remove(existingApp[0]);
-                        await ApplicationContext.Current.SaveChangesAsync();
-                    } else
-                    {
-                        return ( ApplicationInstallError.Canceled, app, dataFolderProduct );
-                    }
-                }
-
                 if (!Enum.TryParse(runtimeTypeAttrb.Value, true, out ApplicationType runtimeTypeParsed))
                 {
-                    return ( ApplicationInstallError.NotSupportedAppType, app, dataFolderProduct );
+                    return (ApplicationInstallError.NotSupportedAppType, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 XmlAttribute? authorAttrib = appNode!.Attributes!["Author"];
@@ -192,12 +172,12 @@ namespace WPR
                 entry = archive.GetEntry("AppManifest.xaml");
                 if (entry == null)
                 {
-                    return ( ApplicationInstallError.MissingManifestFiles, app, dataFolderProduct) ;
+                    return (ApplicationInstallError.MissingManifestFiles, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 if (canceled.IsCancellationRequested)
                 {
-                    return (ApplicationInstallError.Canceled, app, dataFolderProduct);
+                    return (ApplicationInstallError.Canceled, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 wmManifestDoc = LoadXmlDocument(entry);
@@ -209,7 +189,7 @@ namespace WPR
                 
                 if ((entryPointAsmAttrib == null) || (entryPointTypeAttrib == null))
                 {
-                    return (ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct);
+                    return (ApplicationInstallError.InvalidManifestFiles, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 var nsmgr = new XmlNamespaceManager(wmManifestDoc.NameTable);
@@ -218,7 +198,7 @@ namespace WPR
                 XmlNodeList? assemblies = deploymentNode!.SelectNodes("//a:Deployment.Parts//a:AssemblyPart", nsmgr);
                 if (assemblies == null)
                 {
-                    return (ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct);
+                    return (ApplicationInstallError.InvalidManifestFiles, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 XmlAttribute? entryPointAsmFileNameAttrib = null;
@@ -235,24 +215,35 @@ namespace WPR
 
                 if (entryPointAsmFileNameAttrib == null)
                 {
-                    return (ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct);
+                    return (ApplicationInstallError.InvalidManifestFiles, app, stagingFolder, finalFolder, existingApps);
+                }
+
+                existingApps = await ApplicationContext.Current.Applications!
+                    .Where(a => a.ProductId.ToLower() == productTrimmed)
+                    .ToListAsync(canceled);
+
+                if (existingApps.Count != 0 && !await deleteExistingApp(existingApps[0]))
+                {
+                    return (ApplicationInstallError.Canceled, app, stagingFolder, finalFolder, existingApps);
                 }
 
                 progressSet(5);
 
-                dataFolderProduct = productStoreFolder;
+                Directory.CreateDirectory(storeFolder);
+                finalFolder = productStoreFolder;
+                stagingFolder = Path.Combine(storeFolder, $".install-{productTrimmed}-{Guid.NewGuid():N}");
+                ValidateArchive(archive, stagingFolder);
 
-                Directory.CreateDirectory(productStoreFolder);
+                Directory.CreateDirectory(stagingFolder);
                 int count = 0;
 
                 foreach (ZipArchiveEntry iterateEntry in archive.Entries)
                 {
                     if (canceled.IsCancellationRequested)
                     {
-                        Directory.Delete(productStoreFolder, true);
-                        return (ApplicationInstallError.Canceled, app, dataFolderProduct);
+                        return (ApplicationInstallError.Canceled, app, stagingFolder, finalFolder, existingApps);
                     }
-                    string fileDestinationPath = GetSafeExtractionPath(productStoreFolder, iterateEntry.FullName);
+                    string fileDestinationPath = GetSafeExtractionPath(stagingFolder, iterateEntry.FullName);
 
                     if (iterateEntry.Name.Length == 0)
                     {
@@ -281,38 +272,102 @@ namespace WPR
                     Assembly = entryPointAsmFileNameAttrib.Value,
                     EntryPoint = entryPointTypeAttrib.Value,
                     InstalledTime = DateTime.Now,
-                    PatchedVersion = ApplicationPatcher.Version
+                    PatchedVersion = 0
                 };
 
-                ApplicationContext.Current.Add(app);
-                ApplicationContext.Current.SaveChanges();
-
                 progressSet(60);
+            }
+            catch (OperationCanceledException) when (canceled.IsCancellationRequested)
+            {
+                return (ApplicationInstallError.Canceled, app, stagingFolder, finalFolder, existingApps);
             }
             catch (InvalidDataException ex)
             {
                 Log.Error(LogCategory.AppInstall, $"Application archive is invalid: \n{ex}");
-                return (ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct);
+                return (ApplicationInstallError.InvalidManifestFiles, app, stagingFolder, finalFolder, existingApps);
             }
             catch (Exception ex)
             {
                 Log.Error(LogCategory.AppInstall, $"An unexpected error happen during the installation: \n{ex}");
-                return (ApplicationInstallError.UnexpectedError, app, dataFolderProduct);
+                return (ApplicationInstallError.UnexpectedError, app, stagingFolder, finalFolder, existingApps);
             }
 
-            return (ApplicationInstallError.None, app, dataFolderProduct);
+            return (ApplicationInstallError.None, app, stagingFolder, finalFolder, existingApps);
+        }
+
+        private static async Task CommitInstallation(Application app, IReadOnlyCollection<Application> existingApps,
+            string stagingFolder, string finalFolder, CancellationToken cancellationToken)
+        {
+            string backupFolder = $"{finalFolder}.backup-{Guid.NewGuid():N}";
+            bool hasBackup = false;
+
+            try
+            {
+                if (Directory.Exists(finalFolder))
+                {
+                    Directory.Move(finalFolder, backupFolder);
+                    hasBackup = true;
+                }
+
+                Directory.Move(stagingFolder, finalFolder);
+
+                await using var transaction = await ApplicationContext.Current.Database
+                    .BeginTransactionAsync(cancellationToken);
+                ApplicationContext.Current.Applications!.RemoveRange(existingApps);
+                ApplicationContext.Current.Applications!.Add(app);
+                await ApplicationContext.Current.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                try
+                {
+                    if (Directory.Exists(finalFolder))
+                    {
+                        Directory.Delete(finalFolder, true);
+                    }
+
+                    if (hasBackup && Directory.Exists(backupFolder))
+                    {
+                        Directory.Move(backupFolder, finalFolder);
+                    }
+                }
+                finally
+                {
+                    ApplicationContext.Current.ChangeTracker.Clear();
+                }
+
+                throw;
+            }
+
+            if (hasBackup && Directory.Exists(backupFolder))
+            {
+                try
+                {
+                    Directory.Delete(backupFolder, true);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(LogCategory.AppInstall,
+                        $"The previous application files could not be removed from '{backupFolder}':\n{ex}");
+                }
+            }
         }
 
         public static async Task<ApplicationInstallError> Install(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken cancelSource)
         {
+            string stagingFolder = "";
+
             try
             {
                 Application? app;
-                string? appDataFolder;
+                string finalFolder;
+                List<Application> existingApps;
                 ApplicationInstallError error;
 
                 // 60% spend for extracting files
-                (error, app, appDataFolder) = await Task.Run(() => CreateApplicationEntryAndExtract(fileStream, progressSet, deleteExistingApp, cancelSource));
+                (error, app, stagingFolder, finalFolder, existingApps) = await Task.Run(() =>
+                    CreateApplicationEntryAndExtract(fileStream, progressSet, deleteExistingApp, cancelSource));
 
                 if (error != ApplicationInstallError.None)
                 {
@@ -325,8 +380,12 @@ namespace WPR
                     await Task.Run(() =>
                     {
                         ApplicationPatcher patcher = new ApplicationPatcher();
-                        patcher.Patch(appDataFolder, progress => progressSet(60 + (int)((double)progress / 5)), cancelSource);
+                        patcher.Patch(stagingFolder, progress => progressSet(60 + (int)((double)progress / 5)), cancelSource);
                     });
+                }
+                catch (OperationCanceledException) when (cancelSource.IsCancellationRequested)
+                {
+                    return ApplicationInstallError.Canceled;
                 }
                 catch (Exception exception)
                 {
@@ -336,21 +395,25 @@ namespace WPR
 
                 if (cancelSource.IsCancellationRequested)
                 {
-                    Directory.Delete(appDataFolder, true);
-                    ApplicationContext.Current.Remove(app);
-
                     return ApplicationInstallError.Canceled;
                 }
+
+                app!.PatchedVersion = ApplicationPatcher.Version;
 
                 // 20% for converting audio to unified support
                 if (app.ApplicationType == ApplicationType.XNA)
                 {
                     try
                     {
-                        await AudioCompabilityConverter.ScanWmaAndConvert(appDataFolder,
+                        await AudioCompabilityConverter.ScanWmaAndConvert(stagingFolder,
                             progress => progressSet(80 + (int)((double)progress / 5)),
                             cancelSource);
-                    } catch (Exception exception)
+                    }
+                    catch (OperationCanceledException) when (cancelSource.IsCancellationRequested)
+                    {
+                        return ApplicationInstallError.Canceled;
+                    }
+                    catch (Exception exception)
                     {
                         Log.Error(LogCategory.AppInstall, $"Application WMA conversion failed with exception:\n{exception}");
                         return ApplicationInstallError.ConvertFailed;
@@ -359,17 +422,36 @@ namespace WPR
 
                 if (cancelSource.IsCancellationRequested)
                 {
-                    Directory.Delete(appDataFolder, true);
-                    ApplicationContext.Current.Remove(app);
-
                     return ApplicationInstallError.Canceled;
                 }
 
+                await CommitInstallation(app, existingApps, stagingFolder, finalFolder, cancelSource);
+
                 progressSet(100);
-            } catch (Exception ex)
+            }
+            catch (OperationCanceledException) when (cancelSource.IsCancellationRequested)
+            {
+                return ApplicationInstallError.Canceled;
+            }
+            catch (Exception ex)
             {
                 Log.Error(LogCategory.AppInstall, $"An unexpected error happen during the installation: \n{ex}");
                 return ApplicationInstallError.UnexpectedError;
+            }
+            finally
+            {
+                if (Directory.Exists(stagingFolder))
+                {
+                    try
+                    {
+                        Directory.Delete(stagingFolder, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warn(LogCategory.AppInstall,
+                            $"The incomplete application staging directory could not be removed from '{stagingFolder}':\n{ex}");
+                    }
+                }
             }
 
             return ApplicationInstallError.None;
