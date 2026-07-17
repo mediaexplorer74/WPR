@@ -57,10 +57,6 @@
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\JavaBindings\Org.Libsdl.App\Org.Libsdl.App.csproj" />
     <ProjectReference Include="$(SolutionDir)\ThirdParty\assembly-store-reader\assembly-store-reader.csproj" />
-    <ProjectReference Include="$(SolutionDir)\UI\WPR.UI\WPR.UI.csproj" />
+    <ProjectReference Include="$(SolutionDir)\UI\WPR.UI\WPR.UI.csproj" AdditionalProperties="WPRTargetPlatform=Android" SetTargetFramework="TargetFramework=net8.0-android" />
   </ItemGroup>
 </Project>
-  
-  
-
-  

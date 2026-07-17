@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)</SolutionDir>
+  </PropertyGroup>
   <PropertyGroup Condition="$([System.String]::Copy('$(TargetFramework)').Contains('android'))">
     <DefineConstants>$(DefineConstants);__ANDROID__;__MOBILE__</DefineConstants>
   </PropertyGroup>
