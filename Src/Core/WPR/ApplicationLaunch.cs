@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Reflection;
 using System.Runtime.Loader;
 using WPR.Models;
@@ -146,9 +147,24 @@ namespace WPR
                     {
                         manager.PreparingDeviceSettings += (obj, args) =>
                         {
+                            var presentation = args.GraphicsDeviceInformation.PresentationParameters;
+#if !__MOBILE__
+                            if (presentation.BackBufferFormat != SurfaceFormat.Color)
+                            {
+                                Log.Info(LogCategory.AppList,
+                                    $"Normalizing phone backbuffer format {presentation.BackBufferFormat} to Color");
+                                presentation.BackBufferFormat = SurfaceFormat.Color;
+                            }
+#endif
+                            Log.Info(LogCategory.AppList,
+                                $"Presentation parameters: {presentation.BackBufferWidth}x{presentation.BackBufferHeight}, " +
+                                $"format={presentation.BackBufferFormat}, depth={presentation.DepthStencilFormat}, " +
+                                $"fullscreen={presentation.IsFullScreen}, samples={presentation.MultiSampleCount}, " +
+                                $"interval={presentation.PresentationInterval}, orientation={presentation.DisplayOrientation}, " +
+                                $"window=0x{presentation.DeviceWindowHandle.ToInt64():X}");
                             GraphicsDeviceManager2.RequestOrientationChange(
-                                args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
-                                args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight
+                                presentation.BackBufferWidth,
+                                presentation.BackBufferHeight
                             );
                         };
                     }
