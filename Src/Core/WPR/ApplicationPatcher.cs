@@ -291,6 +291,12 @@ namespace WPR
                     Reference = ServiceModelHTTPRef
                 }
                 },
+                { "System.Runtime.Serialization.Json.JavaScriptObjectDeserializer", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Serialization.Json"
+                }
+                },
                 //!
                 { "System.Security.Cryptography.ProtectedData", new TypePatchInfo()
                 {
