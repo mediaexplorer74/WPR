@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 #endregion
 
 namespace Microsoft.Xna.Framework
@@ -41,20 +42,11 @@ namespace Microsoft.Xna.Framework
 			}
 			safeName = GetCaseName(Path.Combine(TitleLocation.Path, safeName));
 #endif
-			if (Path.IsPathRooted(safeName))
-			{
-				return File.OpenRead(safeName);
-			}
-
-			try
-			{
-				return File.OpenRead(Path.Combine(TitleLocation.Path, safeName));
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("[ex] Exception : " + ex.Message);
-			}
-			return default;
+			string realName = Path.IsPathRooted(safeName)
+				? safeName
+				: Path.Combine(TitleLocation.Path, safeName);
+			string resolvedName = ResolvePackagedPath(realName, TitleLocation.Path);
+			return File.OpenRead(resolvedName);
 		}
 
 		#endregion
@@ -81,6 +73,7 @@ namespace Microsoft.Xna.Framework
 			{
 				realName = Path.Combine(TitleLocation.Path, safeName);
 			}
+			realName = ResolvePackagedPath(realName, TitleLocation.Path);
 			if (!File.Exists(realName))
 			{
 				throw new FileNotFoundException(realName);
@@ -89,6 +82,52 @@ namespace Microsoft.Xna.Framework
 		}
 
 		#endregion
+
+		private static string ResolvePackagedPath(string path, string titleRoot)
+		{
+			if (File.Exists(path))
+			{
+				return path;
+			}
+
+			string fullPath = Path.GetFullPath(path);
+			string root = Path.GetFullPath(titleRoot);
+			string rootPrefix = root.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)
+				? root
+				: root + Path.DirectorySeparatorChar;
+			if (!fullPath.StartsWith(rootPrefix,
+				OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+			{
+				return path;
+			}
+
+			string relative = fullPath.Substring(rootPrefix.Length);
+			string[] segments = relative.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			for (int index = 0; index < segments.Length - 1; index += 1)
+			{
+				string segment = segments[index];
+				bool cultureSegment = segment.Length == 2 &&
+					char.IsLetter(segment[0]) && char.IsLetter(segment[1]);
+				if (!cultureSegment && segment.Length == 5 && segment[2] == '-')
+				{
+					cultureSegment = char.IsLetter(segment[0]) && char.IsLetter(segment[1]) &&
+						char.IsLetter(segment[3]) && char.IsLetter(segment[4]);
+				}
+				if (!cultureSegment)
+				{
+					continue;
+				}
+
+				string candidate = Path.Combine(root,
+					Path.Combine(segments.Where((_, candidateIndex) => candidateIndex != index).ToArray()));
+				if (File.Exists(candidate))
+				{
+					return candidate;
+				}
+			}
+
+			return path;
+		}
 
 		#region Private Static fcaseopen Method
 

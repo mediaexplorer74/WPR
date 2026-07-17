@@ -121,6 +121,7 @@ namespace WPR
             // Run on separate thread to not affect the UI
             await Task.Run(() =>
             {
+                SignedInGamer.Reset();
                 using (Game? obj = Activator.CreateInstance(mainType!) as Game)
                 {
                     obj!.IsMouseVisible = true;
@@ -134,7 +135,6 @@ namespace WPR
                         GestureType.Pinch | GestureType.Flick | GestureType.DragComplete | GestureType.PinchComplete;
 
                     GraphicsDeviceManager2.RequestOrientation = requestOrientation;
-                    SignedInGamer.Reset();
                     GamerServicesDispatcher.WindowHandle = obj.Window.Handle;
 
                     obj.Activated += (obj, args) =>

@@ -11,19 +11,22 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using System.Globalization;
 using WPR.Common;
 
 namespace WPR
 {
     public class ApplicationPatcher
     {
-        public static int Version => 2;
+        public static int Version => 3;
 
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
         private AssemblyNameReference SystemRunTimeRef;
+        private AssemblyNameReference SystemThreadingRef;
 
         private AssemblyNameReference WindowsCompRef;
+        private AssemblyNameReference MicrosoftPhoneRef;
 
         private AssemblyNameReference StandardCompRef;
         private AssemblyNameReference ServiceModelPrimitivesRef;
@@ -46,7 +49,9 @@ namespace WPR
             FNARef = AssemblyNameReference.Parse("FNA");
             FNACompRef = AssemblyNameReference.Parse("WPR.XnaCompability");
             SystemRunTimeRef = AssemblyNameReference.Parse("System.Runtime");
+            SystemThreadingRef = AssemblyNameReference.Parse("System.Threading");
             WindowsCompRef = AssemblyNameReference.Parse("WPR.WindowsCompability");
+            MicrosoftPhoneRef = AssemblyNameReference.Parse("Microsoft.Phone");
 
             ServiceModelPrimitivesRef = AssemblyNameReference.Parse("System.ServiceModel.Primitives");
             ServiceModelHTTPRef = AssemblyNameReference.Parse("System.ServiceModel.Http");
@@ -64,10 +69,21 @@ namespace WPR
                     Reference = SystemRunTimeRef
                 }
                 },
+                { "System.Threading.Mutex", new TypePatchInfo()
+                {
+                    Reference = SystemThreadingRef
+                }
+                },
                 { "Microsoft.Xna.Framework.GraphicsDeviceManager", new TypePatchInfo()
                 {
                     NewName = "GraphicsDeviceManager2",
                     NewNamespace = "WPR.XnaCompability",
+                    Reference = FNACompRef
+                }
+                },
+                { "Microsoft.Xna.Framework.Graphics.UIElementRenderer", new TypePatchInfo()
+                {
+                    NewNamespace = "WPR.XnaCompability.Graphics",
                     Reference = FNACompRef
                 }
                 },
@@ -81,6 +97,75 @@ namespace WPR
                 {
                     Reference = WindowsCompRef,
                     NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.Windows.Deployment", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.Windows.Size", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.Windows.DependencyObject", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.Windows.Threading.Dispatcher", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Threading"
+                }
+                },
+                { "System.Windows.Threading.DispatcherOperation", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Threading"
+                }
+                },
+                { "System.Windows.Navigation.NavigationEventArgs", new TypePatchInfo()
+                {
+                    Reference = MicrosoftPhoneRef
+                }
+                },
+                { "System.Windows.Navigation.NavigationFailedEventArgs", new TypePatchInfo()
+                {
+                    Reference = MicrosoftPhoneRef
+                }
+                },
+                { "System.Windows.Navigation.NavigationFailedEventHandler", new TypePatchInfo()
+                {
+                    Reference = MicrosoftPhoneRef
+                }
+                },
+                { "System.Windows.Threading.DispatcherTimer", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Threading"
+                }
+                },
+                { "System.Windows.Interop.SilverlightHost", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Interop"
+                }
+                },
+                { "System.Windows.Interop.Settings", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Interop"
+                }
+                },
+                { "System.Windows.Resources.StreamResourceInfo", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Resources"
                 }
                 },
                 { "System.IO.IsolatedStorage.IsolatedStorageSettings", new TypePatchInfo()
@@ -221,17 +306,32 @@ namespace WPR
                 },
                 { "System.Windows.MessageBox", new TypePatchInfo()
                 {
-                    Reference = WindowsCompRef
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "Microsoft.Xna.Framework.Media.Picture", new TypePatchInfo()
+                {
+                    Reference = FNACompRef,
+                    NewNamespace = "WPR.XnaCompability.Media"
+                }
+                },
+                { "Microsoft.Xna.Framework.Media.PictureCollection", new TypePatchInfo()
+                {
+                    Reference = FNACompRef,
+                    NewNamespace = "WPR.XnaCompability.Media"
                 }
                 },
                 { "System.Windows.MessageBoxResult", new TypePatchInfo()
                 {
-                    Reference = WindowsCompRef
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
                 }
                 },
                 { "System.Windows.MessageBoxButton", new TypePatchInfo()
                 {
-                    Reference = WindowsCompRef
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability"
                 }
                 }
             };
@@ -485,9 +585,20 @@ namespace WPR
         // PatchDll(string modulePath)
         public void PatchDll(string modulePath)
         {
+            using InMemoryAssemblyResolver resolver = CreateResolver(Path.GetDirectoryName(modulePath)!);
+            PatchDll(modulePath, resolver);
+        }
+
+        private void PatchDll(string modulePath, IAssemblyResolver resolver)
+        {
             // ReadAssembly
             AssemblyDefinition assemblyData =
-                Mono.Cecil.AssemblyDefinition.ReadAssembly(modulePath);
+                Mono.Cecil.AssemblyDefinition.ReadAssembly(modulePath, new ReaderParameters
+                {
+                    AssemblyResolver = resolver,
+                    InMemory = true,
+                    ReadSymbols = false
+                });
 
             Mono.Cecil.ModuleDefinition module = assemblyData.MainModule;
 
@@ -500,6 +611,8 @@ namespace WPR
                 Path.GetExtension(modulePath));
 
             AssemblyNameReference? xnaGameServices = null;
+
+            PatchNeutralResourcesLanguage(module);
 
             // Remove unneeded attribute (pretty sure!)
             foreach (var attrib in module.Assembly.CustomAttributes)
@@ -549,13 +662,23 @@ namespace WPR
                 }
             }
 
+            xnaGameServices ??= module.AssemblyReferences.FirstOrDefault(reference =>
+                reference.Name.Equals("Microsoft.Xna.Framework.GamerServices", StringComparison.OrdinalIgnoreCase));
+            if (xnaGameServices == null)
+            {
+                xnaGameServices = AssemblyNameReference.Parse("Microsoft.Xna.Framework.GamerServices");
+                module.AssemblyReferences.Add(xnaGameServices);
+            }
+
             //RnD
             PatchRelaxedXmlNullableAttribTextSerialize(module);
 
             // Add AssemblyReferences
             module.AssemblyReferences.Add(FNACompRef);
             module.AssemblyReferences.Add(WindowsCompRef);
+            module.AssemblyReferences.Add(MicrosoftPhoneRef);
             module.AssemblyReferences.Add(SystemRunTimeRef);
+            module.AssemblyReferences.Add(SystemThreadingRef);
             module.AssemblyReferences.Add(ServiceModelPrimitivesRef);
             module.AssemblyReferences.Add(ServiceModelHTTPRef);
             module.AssemblyReferences.Add(StandardCompRef);
@@ -698,6 +821,77 @@ namespace WPR
             }
         }//PatchDll
 
+        private static void PatchNeutralResourcesLanguage(ModuleDefinition module)
+        {
+            foreach (CustomAttribute attribute in module.Assembly.CustomAttributes)
+            {
+                if (attribute.AttributeType.FullName !=
+                    "System.Resources.NeutralResourcesLanguageAttribute" ||
+                    attribute.ConstructorArguments.Count == 0 ||
+                    attribute.ConstructorArguments[0].Value is not string cultureName)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    _ = CultureInfo.GetCultureInfo(cultureName);
+                    continue;
+                }
+                catch (CultureNotFoundException) when (
+                    cultureName.Equals("English", StringComparison.OrdinalIgnoreCase))
+                {
+                    attribute.ConstructorArguments[0] = new CustomAttributeArgument(
+                        attribute.ConstructorArguments[0].Type, "en-US");
+                }
+            }
+        }
+
+        private static InMemoryAssemblyResolver CreateResolver(string appRootPath)
+        {
+            var resolver = new InMemoryAssemblyResolver();
+            var searchDirectories = new HashSet<string>(
+                OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+
+            void AddSearchDirectory(string? directory)
+            {
+                if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+                {
+                    return;
+                }
+
+                string fullPath = Path.GetFullPath(directory);
+                if (searchDirectories.Add(fullPath))
+                {
+                    resolver.AddSearchDirectory(fullPath);
+                }
+            }
+
+            AddSearchDirectory(appRootPath);
+            foreach (string dllPath in Directory.EnumerateFiles(appRootPath, "*.dll", SearchOption.AllDirectories))
+            {
+                AddSearchDirectory(Path.GetDirectoryName(dllPath));
+            }
+            AddSearchDirectory(Path.GetDirectoryName(typeof(ApplicationPatcher).Assembly.Location));
+            AddSearchDirectory(AppContext.BaseDirectory);
+            return resolver;
+        }
+
+        private sealed class InMemoryAssemblyResolver : DefaultAssemblyResolver
+        {
+            public override AssemblyDefinition Resolve(AssemblyNameReference name) =>
+                Resolve(name, new ReaderParameters());
+
+            public override AssemblyDefinition Resolve(
+                AssemblyNameReference name, ReaderParameters parameters)
+            {
+                parameters.AssemblyResolver = this;
+                parameters.InMemory = true;
+                parameters.ReadSymbols = false;
+                return base.Resolve(name, parameters);
+            }
+        }
+
         public void Patch(string appRootPath, Action<int> progress, CancellationToken token)
         {
             List<string> filenameList = Directory.EnumerateFiles(appRootPath,
@@ -711,6 +905,7 @@ namespace WPR
                 return;
             }
 
+            using InMemoryAssemblyResolver resolver = CreateResolver(appRootPath);
             foreach (var filename in filenameList)
             {
                 token.ThrowIfCancellationRequested();
@@ -726,7 +921,7 @@ namespace WPR
 
                     if (hasMetadata)
                     {
-                        PatchDll(filename);
+                        PatchDll(filename, resolver);
                         Debug.WriteLine($"[i] Patching DLL with path: {filename}.\n");
                     }
                     else

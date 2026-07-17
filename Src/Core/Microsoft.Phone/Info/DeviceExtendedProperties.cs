@@ -6,8 +6,9 @@ namespace Microsoft.Phone.Info
     {
         public static bool TryGetValue(string propertyName, out Object propertyValue)
         {
-            propertyValue = GetValue(propertyName);
-            return true;
+            object? value = GetValue(propertyName);
+            propertyValue = value!;
+            return value != null;
         }
 
         public static Object? GetValue(string property)
@@ -25,8 +26,17 @@ namespace Microsoft.Phone.Info
                     return "8.0.0";
 
                 case "DeviceTotalMemory":
-                    // Return 2GB RAM
-                    return 2048L * 1024 * 1024;
+                    return DeviceStatus.DeviceTotalMemory;
+
+                case "ApplicationCurrentMemoryUsage":
+                    return DeviceStatus.ApplicationCurrentMemoryUsage;
+
+                case "ApplicationPeakMemoryUsage":
+                    return DeviceStatus.ApplicationPeakMemoryUsage;
+
+                case "ApplicationMemoryUsageLimit":
+                case "ApplicationWorkingSetLimit":
+                    return DeviceStatus.ApplicationMemoryUsageLimit;
 
                 default:
                     return null;

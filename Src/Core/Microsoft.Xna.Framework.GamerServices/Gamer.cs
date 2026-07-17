@@ -11,6 +11,7 @@ namespace Microsoft.Xna.Framework.GamerServices
 {
     public abstract class Gamer : IDisposable
     {
+        private const string OfflinePartnerToken = "<EncryptedData />";
         internal static SignedInGamerCollection _SignedInGamers;
 
         private LeaderboardWriter _LeaderboardWriter;
@@ -69,8 +70,19 @@ namespace Microsoft.Xna.Framework.GamerServices
           AsyncCallback callback,
           object asyncState)
         {
-            return StubUtils.ForeverTask;
+            var source = new TaskCompletionSource<string>(asyncState,
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            source.SetResult(OfflinePartnerToken);
+            callback?.Invoke(source.Task);
+            return source.Task;
         }
+
+        public static string EndGetPartnerToken(IAsyncResult result) =>
+            ((Task<string>)result).GetAwaiter().GetResult();
+
+        public static string GetPartnerToken(string audienceUri) =>
+            EndGetPartnerToken(BeginGetPartnerToken(
+                audienceUri, callback: null!, asyncState: null!));
 
         public string Gamertag
         {

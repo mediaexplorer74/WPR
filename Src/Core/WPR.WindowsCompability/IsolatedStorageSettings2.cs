@@ -94,12 +94,6 @@ namespace WPR.WindowsCompability
         {
             get
             {
-                //return _Settings[key];
-                if (!_Settings.ContainsKey(key))
-                {
-                    return default;//null;
-                }
-
                 return _Settings[key];
             }
 

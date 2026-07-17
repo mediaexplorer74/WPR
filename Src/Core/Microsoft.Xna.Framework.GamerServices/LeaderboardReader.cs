@@ -19,16 +19,23 @@ namespace Microsoft.Xna.Framework.GamerServices
 
         public IAsyncResult BeginPageDown(AsyncCallback callback, object asyncState)
         {
-            return StubUtils.ForeverTask;
+            return CompletePage(callback, asyncState);
         }
         public IAsyncResult BeginPageUp(AsyncCallback callback, object asyncState)
         {
-            return StubUtils.ForeverTask;
+            return CompletePage(callback, asyncState);
         }
         public static IAsyncResult BeginRead(LeaderboardIdentity leaderb,
             int pageStart, int pageSize, AsyncCallback callback, object asyncState)
         {
             return CompleteRead(callback, asyncState);
+        }
+
+        public static LeaderboardReader Read(
+            LeaderboardIdentity leaderboardId, int pageStart, int pageSize)
+        {
+            return EndRead(BeginRead(
+                leaderboardId, pageStart, pageSize, callback: null!, asyncState: null!));
         }
 
         public static IAsyncResult BeginRead(
@@ -39,6 +46,13 @@ namespace Microsoft.Xna.Framework.GamerServices
           object asyncState)
         {
             return CompleteRead(callback, asyncState);
+        }
+
+        public static LeaderboardReader Read(
+            LeaderboardIdentity leaderboardId, Gamer pivotGamer, int pageSize)
+        {
+            return EndRead(BeginRead(
+                leaderboardId, pivotGamer, pageSize, callback: null!, asyncState: null!));
         }
 
         public static IAsyncResult BeginRead(
@@ -50,6 +64,17 @@ namespace Microsoft.Xna.Framework.GamerServices
           object asyncState)
         {
             return CompleteRead(callback, asyncState);
+        }
+
+        public static LeaderboardReader Read(
+            LeaderboardIdentity leaderboardId,
+            IEnumerable<Gamer> gamers,
+            Gamer pivotGamer,
+            int pageSize)
+        {
+            return EndRead(BeginRead(
+                leaderboardId, gamers, pivotGamer, pageSize,
+                callback: null!, asyncState: null!));
         }
 
         private static IAsyncResult CompleteRead(AsyncCallback? callback, object? asyncState)
@@ -65,15 +90,31 @@ namespace Microsoft.Xna.Framework.GamerServices
             return ((Task<LeaderboardReader>)result).GetAwaiter().GetResult();
         }
 
+        private IAsyncResult CompletePage(AsyncCallback? callback, object? asyncState)
+        {
+            var source = new TaskCompletionSource<LeaderboardReader>(asyncState,
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            source.SetResult(this);
+            callback?.Invoke(source.Task);
+            return source.Task;
+        }
+
+        public void EndPageDown(IAsyncResult result) =>
+            ((Task<LeaderboardReader>)result).GetAwaiter().GetResult();
+
+        public void EndPageUp(IAsyncResult result) =>
+            ((Task<LeaderboardReader>)result).GetAwaiter().GetResult();
+
         //public IAsyncResult TotalLeaderboardSize()
         //{
         //    return StubUtils.ForeverTask;
         //}
 
 
-        public Int32 TotalLeaderboardSize()
-        {
-            return 3;
-        }
+        public Int32 TotalLeaderboardSize => _Entries?.Count ?? 0;
+
+        public bool CanPageDown => false;
+
+        public bool CanPageUp => false;
     }
 }

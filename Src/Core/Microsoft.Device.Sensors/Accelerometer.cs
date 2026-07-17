@@ -4,6 +4,19 @@ namespace Microsoft.Devices.Sensors
 {
     public class Accelerometer : SensorBase<AccelerometerReading>
     {
+        public static bool IsSupported
+        {
+            get
+            {
+#if __MOBILE__ || __ANDROID__
+                return Xamarin.Essentials.Accelerometer.IsMonitoring ||
+                    Xamarin.Essentials.DeviceInfo.DeviceType == Xamarin.Essentials.DeviceType.Physical;
+#else
+                return false;
+#endif
+            }
+        }
+
         private bool _Started = false;
 
         public Accelerometer()
@@ -30,6 +43,7 @@ namespace Microsoft.Devices.Sensors
                     Timestamp = DateTimeOffset.Now
                 }
             });
+            IsDataValid = true;
         }
 #endif
 
@@ -42,7 +56,7 @@ namespace Microsoft.Devices.Sensors
 
         public SensorState State { get; private set; }
 
-        public void Start()
+        public override void Start()
         {
             if (_Started)
             {
@@ -61,7 +75,7 @@ namespace Microsoft.Devices.Sensors
 #endif
         }
 
-        public void Stop()
+        public override void Stop()
         {
             if (!_Started)
             {
@@ -73,6 +87,7 @@ namespace Microsoft.Devices.Sensors
 #endif
 
             _Started = false;
+            IsDataValid = false;
         }
     }
 }

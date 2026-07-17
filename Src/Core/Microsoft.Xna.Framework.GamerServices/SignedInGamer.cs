@@ -14,8 +14,9 @@ namespace Microsoft.Xna.Framework.GamerServices
 {
     public sealed class SignedInGamer : Gamer
     {
-        private const int DelaySignedInMillis = 2000;
         private static bool FirstSignInSessionDone = false;
+        private static bool SignInQueued = false;
+        private static event EventHandler<SignedInEventArgs>? SignedInHandlers;
 
         private PlayerIndex _PlayerIndex;
 
@@ -28,39 +29,48 @@ namespace Microsoft.Xna.Framework.GamerServices
         public static void Reset()
         {
             FirstSignInSessionDone = false;
+            SignInQueued = false;
+            SignedInHandlers = null;
+            GamerServicesDispatcher.Reset();
         }
 
         public static event EventHandler<SignedInEventArgs> SignedIn
         {
             add
             {
-                if (value != null)
+                if (value == null)
                 {
-                    if (FirstSignInSessionDone)
-                    {
-                        value.Invoke(null, new SignedInEventArgs(_SignedInGamers[0]));
-                    } else
-                    {
-                        Task.Delay(DelaySignedInMillis).ContinueWith(previous =>
-                        {
-                            FirstSignInSessionDone = true;
+                    return;
+                }
 
-                            //TODO: handle multiple signed in gamers
-                            try
-                            {
-                                value.Invoke(null, new SignedInEventArgs(_SignedInGamers[0]));
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine("[ex] SignedInGamer exception: " + ex.Message);
-                            }
-                        });
-                    }
+                SignedInHandlers += value;
+                if (FirstSignInSessionDone)
+                {
+                    GamerServicesDispatcher.Schedule(() =>
+                        value.Invoke(null, new SignedInEventArgs(_SignedInGamers[0])));
+                }
+                else if (!SignInQueued)
+                {
+                    SignInQueued = true;
+                    GamerServicesDispatcher.Schedule(DispatchSignedIn);
                 }
             }
             remove
             {
+                SignedInHandlers -= value;
             }
+        }
+
+        private static void DispatchSignedIn()
+        {
+            if (FirstSignInSessionDone)
+            {
+                return;
+            }
+
+            FirstSignInSessionDone = true;
+            SignInQueued = false;
+            SignedInHandlers?.Invoke(null, new SignedInEventArgs(_SignedInGamers[0]));
         }
 
         public static event EventHandler<SignedOutEventArgs> SignedOut;
@@ -79,12 +89,7 @@ namespace Microsoft.Xna.Framework.GamerServices
 
                 if (achievementStored.Count == 0)
                 {
-                    AchievementCollection collection = await TrueAchievements.Scraper.QueryAchievements(Application.Current!.ProductId!);
-                    if (collection.Count != 0)
-                    {
-                        await AchievementContext.Current!.Achievements!.AddRangeAsync(collection.ToArray());
-                        await AchievementContext.Current!.SaveChangesAsync();
-                    }
+                    AchievementCollection collection = new AchievementCollection();
 
                     if (callback != null)
                     {

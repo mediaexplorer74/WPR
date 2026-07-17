@@ -6,6 +6,8 @@ namespace Microsoft.Phone.Shell
     public class PhoneApplicationService
     {
         private bool _AppActivated = false;
+        private bool _AppLaunched = false;
+        private bool _DispatchingLifecycleEvent = false;
 
         static PhoneApplicationService()
         {
@@ -22,8 +24,31 @@ namespace Microsoft.Phone.Shell
 
         public void HandleApplicationStart(bool anew)
         {
-            _Activated?.Invoke(this, new ActivatedEventArgs(!anew));
-            _AppActivated = true;
+            if (_DispatchingLifecycleEvent)
+            {
+                return;
+            }
+
+            _DispatchingLifecycleEvent = true;
+            try
+            {
+                if (anew)
+                {
+                    if (!_AppLaunched)
+                    {
+                        _AppLaunched = true;
+                        Launching?.Invoke(this, new LaunchingEventArgs());
+                    }
+                    return;
+                }
+
+                _Activated?.Invoke(this, new ActivatedEventArgs(true));
+                _AppActivated = true;
+            }
+            finally
+            {
+                _DispatchingLifecycleEvent = false;
+            }
         }
 
         public void HandleApplicationExit()

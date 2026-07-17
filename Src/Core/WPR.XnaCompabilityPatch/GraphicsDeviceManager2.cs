@@ -5,6 +5,9 @@ namespace WPR.XnaCompability
 {
     public class GraphicsDeviceManager2 : GraphicsDeviceManager
     {
+        public new static int DefaultBackBufferWidth = 800;
+        public new static int DefaultBackBufferHeight = 480;
+
         public static Action<DisplayOrientation>? RequestOrientation;
 
         public GraphicsDeviceManager2(Game game)

@@ -8,5 +8,11 @@ namespace Microsoft.Xna.Framework.GamerServices
             : base(game)
         {
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            GamerServicesDispatcher.Update();
+            base.Update(gameTime);
+        }
     }
 }

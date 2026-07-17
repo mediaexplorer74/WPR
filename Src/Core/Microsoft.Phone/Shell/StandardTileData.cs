@@ -10,7 +10,7 @@ namespace Microsoft.Phone.Shell
     {
         public string? Title { get; set; }
         public Uri? BackgroundImage { get; set; }
-        public int Count { get; set; }
+        public int? Count { get; set; }
         public string? BackContent { get; set; }
         public Uri? BackBackgroundImage { get; set; }
         public string? BackTitle { get; set; }
