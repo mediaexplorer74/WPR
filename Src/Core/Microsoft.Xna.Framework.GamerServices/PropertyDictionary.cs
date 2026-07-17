@@ -40,7 +40,9 @@ namespace Microsoft.Xna.Framework.GamerServices
             PropertyValue propertyValue;
             if (this.properties.TryGetValue(key, out propertyValue))
                 return propertyValue;
-            return null;
+            return demandCreate
+                ? this.Add(key, new UntypedPropertyValue())
+                : null;
         }
 
         internal void Reset()
