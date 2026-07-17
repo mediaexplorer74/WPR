@@ -268,6 +268,18 @@ namespace Microsoft.Xna.Framework.Content
 				};
 			}
 
+			/* System.Object members are polymorphic in XNB data. Their concrete
+			 * reader is encoded with each value, so there is deliberately no
+			 * type reader registered for the declared System.Object type.
+			 */
+			if (elementType == typeof(object))
+			{
+				return (input, parent) => setter(
+					parent,
+					input.ReadObject<object>()
+				);
+			}
+
 			// We need to have a reader at this point.
 			ContentTypeReader reader = manager.GetTypeReader(elementType);
 			if (reader == null)
