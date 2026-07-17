@@ -499,8 +499,6 @@ namespace WPR
                 Path.GetExtension(modulePath));
 
             AssemblyNameReference? xnaGameServices = null;
-            //RnD
-            AssemblyNameReference? xnaGameServicesExtensions = null;
 
             // Remove unneeded attribute (pretty sure!)
             foreach (var attrib in module.Assembly.CustomAttributes)
@@ -518,14 +516,14 @@ namespace WPR
             {
                 if (refer.Name.Contains("Microsoft.Xna"))
                 {
-                    if (refer.Name.Contains("GamerServices"))
+                    if (refer.Name.Contains("GamerServicesExtensions"))
                     {
+                        refer.Name = "Microsoft.Xna.Framework.GamerServices";
                         xnaGameServices = refer;
                     }
-                    else if (refer.Name.Contains("GamerServicesExtensions"))
+                    else if (refer.Name.Contains("GamerServices"))
                     {
-                        //RnD
-                        xnaGameServicesExtensions = refer;
+                        xnaGameServices = refer;
                     }
                     else
                     {
@@ -615,9 +613,7 @@ namespace WPR
                 else if (existingRef.FullName
                     == "Microsoft.Xna.Framework.GamerServicesExtensions.GamerServicesComponent")
                 {
-                    //RnD
-
-                    existingRef.Scope = xnaGameServicesExtensions;
+                    existingRef.Scope = xnaGameServices;
                 }
                 else
                 {
