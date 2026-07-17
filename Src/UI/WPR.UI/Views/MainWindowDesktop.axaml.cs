@@ -54,7 +54,7 @@ namespace WPR.UI.Views
 
                 try
                 {
-                    await ApplicationLaunch.Start(args.Target, default);
+                    await ApplicationLaunchRequest.Launch(args.Target);
                 }
                 catch (Exception ex)
                 {

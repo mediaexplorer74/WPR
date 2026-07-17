@@ -20,6 +20,13 @@ namespace WPR.UI
     public static class ApplicationLaunchRequest
     {
         public static EventHandler<ApplicationLaunchRequestArgs>? Incoming;
+        public static Func<Models.Application, Task> Launcher { private get; set; } =
+            app => ApplicationLaunch.Start(app, default);
+
+        public static Task Launch(Models.Application app)
+        {
+            return Launcher(app);
+        }
 
         public static void Ask(Models.Application app)
         {

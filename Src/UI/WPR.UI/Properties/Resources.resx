@@ -181,7 +181,7 @@
     <value>Application encountered an unexpected error while executing. Please check the log for more detailed info!</value>
   </data>
   <data name="LaunchingInProcess" xml:space="preserve">
-    <value>Launching in process...</value>
+    <value>Launching in isolated process...</value>
   </data>
   <data name="RestoreDefaultStorage" xml:space="preserve">
     <value>Result default data storage path</value>
