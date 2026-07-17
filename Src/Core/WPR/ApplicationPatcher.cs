@@ -8,6 +8,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using WPR.Common;
@@ -16,7 +17,7 @@ namespace WPR
 {
     public class ApplicationPatcher
     {
-        public static int Version => 1;
+        public static int Version => 2;
 
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
@@ -716,8 +717,22 @@ namespace WPR
 
                 try
                 {
-                    PatchDll(filename);
-                    Debug.WriteLine($"[i] Patching DLL with path: {filename}.\n");
+                    bool hasMetadata;
+                    using (var stream = File.OpenRead(filename))
+                    using (var peReader = new PEReader(stream))
+                    {
+                        hasMetadata = peReader.HasMetadata;
+                    }
+
+                    if (hasMetadata)
+                    {
+                        PatchDll(filename);
+                        Debug.WriteLine($"[i] Patching DLL with path: {filename}.\n");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[i] Preserving non-managed DLL with path: {filename}.\n");
+                    }
                 }
                 catch (Exception ex)
                 {
