@@ -83,8 +83,9 @@ namespace WPR.UI.ViewModels
 
                 // So it can hear change. Replace the ref only does
                 // not make it refresh display
-                Applications = 
-                    new ObservableCollection<ApplicationItemViewModel>(enumerable);
+                var updatedApplications = new ObservableCollection<ApplicationItemViewModel>(enumerable);
+                DisposeApplicationIcons();
+                Applications = updatedApplications;
                 this.RaisePropertyChanged(nameof(ShowEmptyHint));
 
                 // Subscribe to UninstallRequested event for each ApplicationItemViewModel
@@ -99,6 +100,7 @@ namespace WPR.UI.ViewModels
                     $"Unable to query application database with exception:\n {ex}");
                 Log.Error(LogCategory.AppList,
                     $"Unable to query application database with exception:\n {ex}");
+                DisposeApplicationIcons();
                 Applications = new ObservableCollection<ApplicationItemViewModel>();
                 this.RaisePropertyChanged(nameof(ShowEmptyHint));
             }
@@ -152,10 +154,18 @@ namespace WPR.UI.ViewModels
             
             private async Task DeleteApplicationAsync(ApplicationItemViewModel app) {
                 // Optional: Show confirmation dialog here before uninstalling
-                ApplicationContext.Current.Applications.Remove(app.Model);
-                await ApplicationContext.Current.SaveChangesAsync(); // Persist the uninstall
+                await ApplicationInstaller.Uninstall(app.Model);
+                app.Dispose();
                 Applications.Remove(app);
                 UpdateApplications();
+            }
+
+            private void DisposeApplicationIcons()
+            {
+                foreach (ApplicationItemViewModel app in Applications)
+                {
+                    app.Dispose();
+                }
             }
     }
 }

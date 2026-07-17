@@ -10,7 +10,7 @@ using System.Reactive;
 
 namespace WPR.UI.ViewModels
 {
-    public class ApplicationItemViewModel : ViewModelBase
+    public class ApplicationItemViewModel : ViewModelBase, IDisposable
     {
         private Application _App;
         private Bitmap? _Icon;
@@ -49,14 +49,12 @@ namespace WPR.UI.ViewModels
         {
             get
             {
-                _Icon = default;
-
                 if (_Icon == null)
                 {
                     try
                     {
                         var iconpath = Configuration.Current!.DataPath(_App.IconPath);
-                        var fs = new FileStream(iconpath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        using var fs = new FileStream(iconpath, FileMode.Open, FileAccess.Read, FileShare.Read);
                         _Icon = Bitmap.DecodeToWidth(fs,
                             IconSize);
                     }
@@ -77,6 +75,12 @@ namespace WPR.UI.ViewModels
         {
             // Trigger the uninstall event so the parent view model can handle it
             UninstallRequested?.Invoke(this, this);
+        }
+
+        public void Dispose()
+        {
+            _Icon?.Dispose();
+            _Icon = null;
         }
     }
 }

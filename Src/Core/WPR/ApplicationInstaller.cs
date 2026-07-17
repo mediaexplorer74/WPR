@@ -354,6 +354,80 @@ namespace WPR
             }
         }
 
+        public static async Task Uninstall(Application app, CancellationToken cancellationToken = default)
+        {
+            if (!Guid.TryParse(app.ProductId, out Guid productId))
+            {
+                throw new InvalidDataException("The installed application's ProductID is not a valid GUID.");
+            }
+
+            string appStoreFolder = Configuration.Current!.DataPath(Application.DataStoreFolder);
+            var movedDirectories = new List<(string Original, string Quarantine)>();
+
+            try
+            {
+                if (Directory.Exists(appStoreFolder))
+                {
+                    foreach (string directory in Directory.EnumerateDirectories(appStoreFolder))
+                    {
+                        string directoryName = Path.GetFileName(directory);
+                        if (!Guid.TryParse(directoryName, out Guid directoryProductId) ||
+                            directoryProductId != productId)
+                        {
+                            continue;
+                        }
+
+                        cancellationToken.ThrowIfCancellationRequested();
+                        string quarantine = Path.Combine(appStoreFolder,
+                            $".uninstall-{productId:D}-{Guid.NewGuid():N}");
+                        Directory.Move(directory, quarantine);
+                        movedDirectories.Add((directory, quarantine));
+                    }
+                }
+
+                await using var transaction = await ApplicationContext.Current.Database
+                    .BeginTransactionAsync(cancellationToken);
+                List<Application> databaseEntries = await ApplicationContext.Current.Applications!
+                    .Where(item => item.Id == app.Id || item.ProductId.ToLower() == productId.ToString("D"))
+                    .ToListAsync(cancellationToken);
+                ApplicationContext.Current.Applications!.RemoveRange(databaseEntries);
+                await ApplicationContext.Current.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                try
+                {
+                    foreach ((string original, string quarantine) in movedDirectories.AsEnumerable().Reverse())
+                    {
+                        if (Directory.Exists(quarantine) && !Directory.Exists(original))
+                        {
+                            Directory.Move(quarantine, original);
+                        }
+                    }
+                }
+                finally
+                {
+                    ApplicationContext.Current.ChangeTracker.Clear();
+                }
+
+                throw;
+            }
+
+            foreach ((string _, string quarantine) in movedDirectories)
+            {
+                try
+                {
+                    Directory.Delete(quarantine, true);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(LogCategory.AppInstall,
+                        $"Uninstalled application files could not be deleted from '{quarantine}':\n{ex}");
+                }
+            }
+        }
+
         public static async Task<ApplicationInstallError> Install(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken cancelSource)
         {
             string stagingFolder = "";
