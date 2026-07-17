@@ -26,6 +26,7 @@ public sealed class PictureCollection : IEnumerable<Picture>, IEnumerable
     private readonly List<Picture> _pictures = [];
 
     public int Count => _pictures.Count;
+    public Picture this[int index] => _pictures[index];
     public IEnumerator<Picture> GetEnumerator() => _pictures.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

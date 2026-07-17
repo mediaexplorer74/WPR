@@ -18,5 +18,6 @@ namespace WPR.XnaCompability.Media
 
         IEnumerator IEnumerable.GetEnumerator() => _Songs.GetEnumerator();
         public int Count => _Songs.Count;
+        public Song this[int index] => _Songs[index];
     }
 }

@@ -16,5 +16,6 @@ namespace WPR.XnaCompability.Media
 
         IEnumerator IEnumerable.GetEnumerator() => _Artists.GetEnumerator();
         public int Count => _Artists.Count;
+        public Artist this[int index] => _Artists[index];
     }
 }

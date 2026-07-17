@@ -259,6 +259,18 @@ namespace WPR
                     NewNamespace = "WPR.XnaCompability.Media"
                 }
                 },
+                { "Microsoft.Xna.Framework.Media.Playlist", new TypePatchInfo()
+                {
+                    Reference = FNACompRef,
+                    NewNamespace = "WPR.XnaCompability.Media"
+                }
+                },
+                { "Microsoft.Xna.Framework.Media.PlaylistCollection", new TypePatchInfo()
+                {
+                    Reference = FNACompRef,
+                    NewNamespace = "WPR.XnaCompability.Media"
+                }
+                },
                 { "System.Windows.Media.SolidColorBrush", new TypePatchInfo()
                 {
                     Reference = WindowsCompRef,
