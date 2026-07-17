@@ -19,8 +19,88 @@ namespace WPR
 {
     public static class ApplicationInstaller
     {
-        private const string TempXmlFile = "temp.xml";
-        private static string TempXmlFileFullPath => Configuration.Current!.DataPath(TempXmlFile);
+        private const int MaxArchiveEntries = 100_000;
+        private const long MaxArchiveUncompressedBytes = 16L * 1024 * 1024 * 1024;
+
+        private static XmlDocument LoadXmlDocument(ZipArchiveEntry entry)
+        {
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Prohibit,
+                XmlResolver = null
+            };
+
+            using Stream stream = entry.Open();
+            using XmlReader reader = XmlReader.Create(stream, settings);
+            var document = new XmlDocument
+            {
+                XmlResolver = null
+            };
+            document.Load(reader);
+            return document;
+        }
+
+        private static string ValidateProductId(string productId)
+        {
+            if (!Guid.TryParse(productId, out Guid parsedProductId))
+            {
+                throw new InvalidDataException("The application ProductID is not a valid GUID.");
+            }
+
+            return parsedProductId.ToString("D");
+        }
+
+        private static string GetSafeExtractionPath(string extractionRoot, string entryName)
+        {
+            if (string.IsNullOrWhiteSpace(entryName) || Path.IsPathFullyQualified(entryName))
+            {
+                throw new InvalidDataException($"Archive entry has an invalid path: '{entryName}'.");
+            }
+
+            string[] pathSegments = entryName.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            if (pathSegments.Length == 0 || pathSegments.Any(segment =>
+                    segment == "." || segment == ".." ||
+                    segment.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
+                    segment.Contains(':')))
+            {
+                throw new InvalidDataException($"Archive entry has an unsafe path: '{entryName}'.");
+            }
+
+            string root = Path.GetFullPath(extractionRoot)
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string normalizedEntryName = string.Join(Path.DirectorySeparatorChar, pathSegments);
+            string destination = Path.GetFullPath(Path.Combine(root, normalizedEntryName));
+            StringComparison comparison = OperatingSystem.IsWindows()
+                ? StringComparison.OrdinalIgnoreCase
+                : StringComparison.Ordinal;
+
+            if (!destination.StartsWith(root, comparison))
+            {
+                throw new InvalidDataException($"Archive entry escapes the application directory: '{entryName}'.");
+            }
+
+            return destination;
+        }
+
+        private static void ValidateArchive(ZipArchive archive, string extractionRoot)
+        {
+            if (archive.Entries.Count > MaxArchiveEntries)
+            {
+                throw new InvalidDataException($"Archive contains more than {MaxArchiveEntries} entries.");
+            }
+
+            long totalUncompressedBytes = 0;
+            foreach (ZipArchiveEntry entry in archive.Entries)
+            {
+                totalUncompressedBytes = checked(totalUncompressedBytes + entry.Length);
+                if (totalUncompressedBytes > MaxArchiveUncompressedBytes)
+                {
+                    throw new InvalidDataException("Archive expands beyond the supported size limit.");
+                }
+
+                GetSafeExtractionPath(extractionRoot, entry.FullName);
+            }
+        }
 
         private static async Task<(ApplicationInstallError, Application?, string)> CreateApplicationEntryAndExtract(Stream fileStream, Action<int> progressSet, Func<Application, IObservable<bool>> deleteExistingApp, CancellationToken canceled)
         {
@@ -29,7 +109,7 @@ namespace WPR
 
             try
             {
-                ZipArchive archive = new ZipArchive(fileStream);
+                using ZipArchive archive = new ZipArchive(fileStream, ZipArchiveMode.Read, leaveOpen: true);
                 ZipArchiveEntry? entry = archive.GetEntry("WMAppManifest.xml");
                 if (entry == null)
                 {
@@ -43,15 +123,12 @@ namespace WPR
 
                 progressSet(3);
 
-                entry.ExtractToFile(TempXmlFileFullPath, true);
-
-                XmlDocument wmManifestDoc = new XmlDocument();
-                wmManifestDoc.Load(TempXmlFileFullPath);
+                XmlDocument wmManifestDoc = LoadXmlDocument(entry);
 
                 XmlElement? root = wmManifestDoc.DocumentElement;
                 XmlNodeList? appNodeList = root!.SelectNodes("//App");
 
-                if (appNodeList == null)
+                if (appNodeList == null || appNodeList.Count == 0)
                 {
                     return ( ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct );
                 }
@@ -68,10 +145,12 @@ namespace WPR
                     return ( ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct );
                 }
 
-                string productTrimmed = productAttrib!.Value.Trim('{').Trim('}');
+                string productTrimmed = ValidateProductId(productAttrib!.Value);
                 string storeFolder = Configuration.Current!.DataPath(Application.DataStoreFolder);
                 string productStoreFolder = Path.Combine(storeFolder, productTrimmed);
                 string productStoreFolderRelative = Path.Combine(Application.DataStoreFolder, productTrimmed);
+
+                ValidateArchive(archive, productStoreFolder);
 
                 List<Application> existingApp = await ApplicationContext.Current.Applications!
                     .Where(a => a.ProductId == productTrimmed)
@@ -105,7 +184,7 @@ namespace WPR
                 XmlNodeList? iconPathNodes = appNode!.SelectNodes("//IconPath");
                 String? iconPath = null;
 
-                if (iconPathNodes != null)
+                if (iconPathNodes != null && iconPathNodes.Count > 0)
                 {
                     iconPath = iconPathNodes[0]!.InnerText;
                 }
@@ -121,10 +200,7 @@ namespace WPR
                     return (ApplicationInstallError.Canceled, app, dataFolderProduct);
                 }
 
-                entry.ExtractToFile(TempXmlFileFullPath, true);
-
-                wmManifestDoc = new XmlDocument();
-                wmManifestDoc.Load(TempXmlFileFullPath);
+                wmManifestDoc = LoadXmlDocument(entry);
 
                 XmlNode? deploymentNode = wmManifestDoc.DocumentElement;
 
@@ -176,9 +252,9 @@ namespace WPR
                         Directory.Delete(productStoreFolder, true);
                         return (ApplicationInstallError.Canceled, app, dataFolderProduct);
                     }
-                    string fileDestinationPath = Path.Combine(productStoreFolder, iterateEntry.FullName);
+                    string fileDestinationPath = GetSafeExtractionPath(productStoreFolder, iterateEntry.FullName);
 
-                    if (Path.GetFileName(fileDestinationPath).Length == 0)
+                    if (iterateEntry.Name.Length == 0)
                     {
                         Directory.CreateDirectory(fileDestinationPath);
                     }
@@ -212,6 +288,11 @@ namespace WPR
                 ApplicationContext.Current.SaveChanges();
 
                 progressSet(60);
+            }
+            catch (InvalidDataException ex)
+            {
+                Log.Error(LogCategory.AppInstall, $"Application archive is invalid: \n{ex}");
+                return (ApplicationInstallError.InvalidManifestFiles, app, dataFolderProduct);
             }
             catch (Exception ex)
             {
