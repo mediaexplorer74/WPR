@@ -87,6 +87,18 @@ namespace WPR
                     Reference = FNACompRef
                 }
                 },
+                { "Microsoft.Xna.Framework.GameTimer", new TypePatchInfo()
+                {
+                    NewNamespace = "WPR.XnaCompability",
+                    Reference = FNACompRef
+                }
+                },
+                { "Microsoft.Xna.Framework.GameTimerEventArgs", new TypePatchInfo()
+                {
+                    NewNamespace = "WPR.XnaCompability",
+                    Reference = FNACompRef
+                }
+                },
                 { "System.Windows.Application", new TypePatchInfo()
                 {
                     Reference = WindowsCompRef,
