@@ -269,6 +269,13 @@ namespace Microsoft.Xna.Framework.Content
 			string standardPath = assetPath + ".xnb";
 			if (string.IsNullOrEmpty(Path.GetExtension(assetName)))
 			{
+				if (IsMissingEggPickupSound(assetName))
+				{
+					return new[] {
+						standardPath,
+						Path.Combine(rootDirectory, "audio", "sfx", "open_egg.xnb")
+					};
+				}
 				return new[] { standardPath };
 			}
 			return new[] { standardPath, Path.ChangeExtension(assetPath, ".xnb") };
@@ -503,6 +510,15 @@ namespace Microsoft.Xna.Framework.Content
 			return string.Equals(
 				Path.GetFileName(assetName),
 				"23999_empty",
+				StringComparison.OrdinalIgnoreCase
+			);
+		}
+
+		internal static bool IsMissingEggPickupSound(string assetName)
+		{
+			return string.Equals(
+				assetName.Replace('\\', '/').TrimStart('/'),
+				"audio/sfx/pick_up_egg",
 				StringComparison.OrdinalIgnoreCase
 			);
 		}
