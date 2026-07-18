@@ -136,6 +136,17 @@ namespace Microsoft.Xna.Framework.GamerServices
         public void EndPageUp(IAsyncResult result) =>
             ((Task<LeaderboardReader>)result).GetAwaiter().GetResult();
 
+        public void PageDown()
+        {
+            // The offline reader has no additional pages. Preserve the synchronous XNA ABI
+            // without fabricating entries or invoking an asynchronous callback.
+        }
+
+        public void PageUp()
+        {
+            // The offline reader always starts at its only empty page.
+        }
+
         //public IAsyncResult TotalLeaderboardSize()
         //{
         //    return StubUtils.ForeverTask;
