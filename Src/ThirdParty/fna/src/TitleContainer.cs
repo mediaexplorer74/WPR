@@ -20,6 +20,8 @@
 
 #region Using Statements
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,6 +31,10 @@ namespace Microsoft.Xna.Framework
 {
 	public static class TitleContainer
 	{
+		private static readonly ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>
+			PackagedFileIndexes = new ConcurrentDictionary<string, Lazy<IReadOnlyDictionary<string, string>>>(
+				OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+
 		#region Public Static Methods
 
 		public static Stream OpenStream(string name)
@@ -83,7 +89,7 @@ namespace Microsoft.Xna.Framework
 
 		#endregion
 
-		private static string ResolvePackagedPath(string path, string titleRoot)
+		internal static string ResolvePackagedPath(string path, string titleRoot)
 		{
 			if (File.Exists(path))
 			{
@@ -126,7 +132,49 @@ namespace Microsoft.Xna.Framework
 				}
 			}
 
+			string fileName = Path.GetFileName(fullPath);
+			if (!string.IsNullOrEmpty(fileName))
+			{
+				IReadOnlyDictionary<string, string> index = PackagedFileIndexes.GetOrAdd(root,
+					static indexedRoot => new Lazy<IReadOnlyDictionary<string, string>>(
+						() => BuildPackagedFileIndex(indexedRoot), true)).Value;
+				if (index.TryGetValue(fileName, out string uniquePath) && !string.IsNullOrEmpty(uniquePath))
+				{
+					return uniquePath;
+				}
+			}
+
 			return path;
+		}
+
+		private static IReadOnlyDictionary<string, string> BuildPackagedFileIndex(string root)
+		{
+			var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			try
+			{
+				foreach (string file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+				{
+					string fileName = Path.GetFileName(file);
+					if (result.ContainsKey(fileName))
+					{
+						result[fileName] = string.Empty;
+					}
+					else
+					{
+						result.Add(fileName, file);
+					}
+				}
+			}
+			catch (IOException)
+			{
+				result.Clear();
+			}
+			catch (UnauthorizedAccessException)
+			{
+				result.Clear();
+			}
+
+			return result;
 		}
 
 		#region Private Static fcaseopen Method
