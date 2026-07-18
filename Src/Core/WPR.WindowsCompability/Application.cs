@@ -26,7 +26,18 @@ namespace WPR.WindowsCompability
 
         internal Application()
         {
-            _Resources = new ResourceDictionary();
+            Media.Color accent = Media.Color.FromArgb(255, 27, 161, 226);
+            Media.Color foreground = Media.Color.FromArgb(255, 255, 255, 255);
+            Media.Color background = Media.Color.FromArgb(255, 0, 0, 0);
+            _Resources = new ResourceDictionary
+            {
+                ["PhoneAccentColor"] = accent,
+                ["PhoneAccentBrush"] = new Media.SolidColorBrush { Color = accent },
+                ["PhoneForegroundColor"] = foreground,
+                ["PhoneForegroundBrush"] = new Media.SolidColorBrush { Color = foreground },
+                ["PhoneBackgroundColor"] = background,
+                ["PhoneBackgroundBrush"] = new Media.SolidColorBrush { Color = background }
+            };
         }
 
         public static Application Current 
