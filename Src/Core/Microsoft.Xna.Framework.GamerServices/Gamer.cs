@@ -11,7 +11,6 @@ namespace Microsoft.Xna.Framework.GamerServices
 {
     public abstract class Gamer : IDisposable
     {
-        private const string OfflinePartnerToken = "<EncryptedData />";
         internal static SignedInGamerCollection _SignedInGamers;
 
         private LeaderboardWriter _LeaderboardWriter;
@@ -92,7 +91,8 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
             var source = new TaskCompletionSource<string>(asyncState,
                 TaskCreationOptions.RunContinuationsAsynchronously);
-            source.SetResult(OfflinePartnerToken);
+            source.SetException(new InvalidOperationException(
+                "The partner-token service is unavailable while running offline."));
             callback?.Invoke(source.Task);
             return source.Task;
         }
