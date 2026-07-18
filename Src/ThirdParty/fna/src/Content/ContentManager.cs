@@ -238,9 +238,15 @@ namespace Microsoft.Xna.Framework.Content
 			Stream stream;
 			try
 			{
-				stream = TitleContainer.OpenStream(
-					Path.Combine(RootDirectory, assetName) + ".xnb"
-				);
+				string[] assetPaths = GetXnbAssetPaths(RootDirectory, assetName);
+				try
+				{
+					stream = TitleContainer.OpenStream(assetPaths[0]);
+				}
+				catch (FileNotFoundException) when (assetPaths.Length > 1)
+				{
+					stream = TitleContainer.OpenStream(assetPaths[1]);
+				}
 			}
 			catch (FileNotFoundException fileNotFound)
 			{
@@ -255,6 +261,17 @@ namespace Microsoft.Xna.Framework.Content
 				throw new ContentLoadException("Opening stream error.", exception);
 			}
 			return stream;
+		}
+
+		internal static string[] GetXnbAssetPaths(string rootDirectory, string assetName)
+		{
+			string assetPath = Path.Combine(rootDirectory, assetName);
+			string standardPath = assetPath + ".xnb";
+			if (string.IsNullOrEmpty(Path.GetExtension(assetName)))
+			{
+				return new[] { standardPath };
+			}
+			return new[] { standardPath, Path.ChangeExtension(assetPath, ".xnb") };
 		}
 
 		protected T ReadAsset<T>(string assetName, Action<IDisposable> recordDisposableObject)
