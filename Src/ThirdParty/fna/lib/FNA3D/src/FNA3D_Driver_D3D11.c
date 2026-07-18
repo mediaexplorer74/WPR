@@ -2604,8 +2604,22 @@ static void D3D11_INTERNAL_CreateBackbuffer(
 		}
 		else
 		{
-			/* Resize the swapchain to the new window size */
+			/* ResizeBuffers requires every context reference to the old
+			 * swapchain buffers to be released first. The backbuffer is the
+			 * default output target, so merely releasing our view leaves the
+			 * immediate context holding an indirect reference and DXGI rejects
+			 * the resize with DXGI_ERROR_INVALID_CALL.
+			 */
+			SDL_LockMutex(renderer->ctxLock);
+			ID3D11DeviceContext_OMSetRenderTargets(
+				renderer->context,
+				0,
+				NULL,
+				NULL
+			);
+			SDL_UnlockMutex(renderer->ctxLock);
 			ID3D11RenderTargetView_Release(swapchainData->swapchainRTView);
+			swapchainData->swapchainRTView = NULL;
 			res = D3D11_PLATFORM_ResizeSwapChain(renderer, swapchainData);
 			ERROR_CHECK_RETURN("Could not resize swapchain",)
 		}

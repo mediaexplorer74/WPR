@@ -153,6 +153,7 @@ namespace Microsoft.Xna.Framework
 		private Game game;
 		private GraphicsDevice graphicsDevice;
 		private bool drawBegun;
+		private bool resettingDevice;
 		private bool disposed;
 		private bool prefsChanged;
 		private bool supportsOrientations;
@@ -297,30 +298,42 @@ namespace Microsoft.Xna.Framework
 			gdi.PresentationParameters = graphicsDevice.PresentationParameters.Clone();
 			INTERNAL_CreateGraphicsDeviceInformation(gdi);
 
-			// Prepare the window...
-			if (supportsOrientations)
+			/* Resizing the native window can synchronously dispatch a paint
+			 * message. Do not let that reentrant redraw use the backbuffer while
+			 * Reset is disposing and recreating it.
+			 */
+			resettingDevice = true;
+			try
 			{
-				game.Window.SetSupportedOrientations(
-					INTERNAL_supportedOrientations
+				// Prepare the window...
+				if (supportsOrientations)
+				{
+					game.Window.SetSupportedOrientations(
+						INTERNAL_supportedOrientations
+					);
+				}
+				game.Window.BeginScreenDeviceChange(
+					gdi.PresentationParameters.IsFullScreen
 				);
+				game.Window.EndScreenDeviceChange(
+					gdi.Adapter.DeviceName,
+					gdi.PresentationParameters.BackBufferWidth,
+					gdi.PresentationParameters.BackBufferHeight
+				);
+
+				// FIXME: Everything below should be before EndScreenDeviceChange! -flibit
+
+				// Reset!
+				graphicsDevice.Reset(
+					gdi.PresentationParameters,
+					gdi.Adapter
+				);
+				prefsChanged = false;
 			}
-			game.Window.BeginScreenDeviceChange(
-				gdi.PresentationParameters.IsFullScreen
-			);
-			game.Window.EndScreenDeviceChange(
-				gdi.Adapter.DeviceName,
-				gdi.PresentationParameters.BackBufferWidth,
-				gdi.PresentationParameters.BackBufferHeight
-			);
-
-			// FIXME: Everything below should be before EndScreenDeviceChange! -flibit
-
-			// Reset!
-			graphicsDevice.Reset(
-				gdi.PresentationParameters,
-				gdi.Adapter
-			);
-			prefsChanged = false;
+			finally
+			{
+				resettingDevice = false;
+			}
 		}
 
 		public void ToggleFullScreen()
@@ -559,7 +572,7 @@ namespace Microsoft.Xna.Framework
 
 		bool IGraphicsDeviceManager.BeginDraw()
 		{
-			if (graphicsDevice == null)
+			if (graphicsDevice == null || resettingDevice)
 			{
 				return false;
 			}
