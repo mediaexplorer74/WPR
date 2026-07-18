@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 using WPR.Common;
@@ -9,6 +10,7 @@ namespace Microsoft.Xna.Framework.GamerServices
 {
     public class LeaderboardReader
     {
+        private const int OfflineCompletionDelayMilliseconds = 10;
         private ReadOnlyCollection<LeaderboardEntry>? _Entries;
         public ReadOnlyCollection<LeaderboardEntry>? Entries => this._Entries;
 
@@ -96,8 +98,7 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
             var source = new TaskCompletionSource<LeaderboardReader>(asyncState,
                 TaskCreationOptions.RunContinuationsAsynchronously);
-            source.SetResult(new LeaderboardReader(leaderboardIdentity, pageStart));
-            callback?.Invoke(source.Task);
+            QueueCompletion(source, new LeaderboardReader(leaderboardIdentity, pageStart), callback);
             return source.Task;
         }
 
@@ -110,9 +111,23 @@ namespace Microsoft.Xna.Framework.GamerServices
         {
             var source = new TaskCompletionSource<LeaderboardReader>(asyncState,
                 TaskCreationOptions.RunContinuationsAsynchronously);
-            source.SetResult(this);
-            callback?.Invoke(source.Task);
+            QueueCompletion(source, this, callback);
             return source.Task;
+        }
+
+        private static void QueueCompletion(
+            TaskCompletionSource<LeaderboardReader> source,
+            LeaderboardReader reader,
+            AsyncCallback? callback)
+        {
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                // Live leaderboard operations cannot complete before Begin* returns. A short
+                // deferral preserves that ordering for titles which prepare callback state next.
+                Thread.Sleep(OfflineCompletionDelayMilliseconds);
+                source.SetResult(reader);
+                callback?.Invoke(source.Task);
+            });
         }
 
         public void EndPageDown(IAsyncResult result) =>
