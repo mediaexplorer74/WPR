@@ -397,6 +397,7 @@ namespace Microsoft.Xna.Framework
 			{
 				DoInitialize();
 				gameTimer = Stopwatch.StartNew();
+				PrimeFirstFixedUpdate();
 				hasInitialized = true;
 			}
 
@@ -434,6 +435,7 @@ namespace Microsoft.Xna.Framework
 			try
 			{
 				gameTimer = Stopwatch.StartNew();
+				PrimeFirstFixedUpdate();
 			}
 			catch (Exception ex) 
 			{
@@ -1029,6 +1031,28 @@ namespace Microsoft.Xna.Framework
 			accumulatedElapsedTime += timeAdvanced;
 			previousTicks = currentTicks;
 			return timeAdvanced;
+		}
+
+		private void PrimeFirstFixedUpdate()
+		{
+			/* Phone titles can start background content workers from LoadContent
+			 * while completing save and service initialization in their first
+			 * Update. Do not give those workers a full target interval before the
+			 * game loop gets its first fixed-step update.
+			 */
+			accumulatedElapsedTime = CalculateFirstUpdateElapsedTime(
+				IsFixedTimeStep,
+				accumulatedElapsedTime,
+				TargetElapsedTime
+			);
+		}
+
+		internal static TimeSpan CalculateFirstUpdateElapsedTime(
+			bool isFixedTimeStep,
+			TimeSpan accumulated,
+			TimeSpan target)
+		{
+			return isFixedTimeStep ? accumulated + target : accumulated;
 		}
 
 		/* To calculate the sleep precision of the OS, we take the worst case
