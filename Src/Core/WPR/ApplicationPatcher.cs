@@ -18,7 +18,7 @@ namespace WPR
 {
     public class ApplicationPatcher
     {
-        public static int Version => 3;
+        public static int Version => 4;
 
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
@@ -181,6 +181,12 @@ namespace WPR
                 }
                 },
                 { "System.Windows.Interop.SilverlightHost", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewNamespace = "WPR.WindowsCompability.Interop"
+                }
+                },
+                { "System.Windows.Interop.Content", new TypePatchInfo()
                 {
                     Reference = WindowsCompRef,
                     NewNamespace = "WPR.WindowsCompability.Interop"

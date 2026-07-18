@@ -2,9 +2,10 @@
 
 namespace Microsoft.Devices.Sensors
 {
-    public abstract class SensorBase<TSensorReading> where TSensorReading : ISensorReading
+    public abstract class SensorBase<TSensorReading> : IDisposable where TSensorReading : ISensorReading
     {
         private TimeSpan _timeBetweenUpdates = TimeSpan.FromMilliseconds(20);
+        private TSensorReading _currentValue = default!;
 
         public event EventHandler<SensorReadingEventArgs<TSensorReading>>? CurrentValueChanged;
 
@@ -23,6 +24,8 @@ namespace Microsoft.Devices.Sensors
 
         public bool IsDataValid { get; protected set; }
 
+        public TSensorReading CurrentValue => _currentValue;
+
         public virtual void Start()
         {
             IsDataValid = false;
@@ -33,8 +36,15 @@ namespace Microsoft.Devices.Sensors
             IsDataValid = false;
         }
 
+        public void Dispose()
+        {
+            Stop();
+            GC.SuppressFinalize(this);
+        }
+
         protected void OnCurrentValueChanged(SensorReadingEventArgs<TSensorReading> reading)
         {
+            _currentValue = reading.SensorReading;
             CurrentValueChanged?.Invoke(this, reading);
         }
     }
