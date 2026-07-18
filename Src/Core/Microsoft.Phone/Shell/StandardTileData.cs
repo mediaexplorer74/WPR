@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Phone.Shell
 {
-    public class StandardTileData
+    public class StandardTileData : ShellTileData
     {
-        public string? Title { get; set; }
         public Uri? BackgroundImage { get; set; }
         public int? Count { get; set; }
         public string? BackContent { get; set; }
