@@ -36,6 +36,17 @@ namespace Microsoft.Xna.Framework.GamerServices
             return source.Task;
         }
 
+        public static IAsyncResult BeginGetFromGamer(
+            Gamer gamer, AsyncCallback? callback, object? asyncState)
+        {
+            ArgumentNullException.ThrowIfNull(gamer);
+            var source = new System.Threading.Tasks.TaskCompletionSource<AvatarDescription>(
+                asyncState, System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
+            source.SetResult(CreateRandom());
+            callback?.Invoke(source.Task);
+            return source.Task;
+        }
+
         public static AvatarDescription EndGetFromGamer(IAsyncResult result)
         {
             return ((System.Threading.Tasks.Task<AvatarDescription>)result).GetAwaiter().GetResult();
