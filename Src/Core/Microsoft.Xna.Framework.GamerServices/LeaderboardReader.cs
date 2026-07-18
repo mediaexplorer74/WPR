@@ -12,9 +12,20 @@ namespace Microsoft.Xna.Framework.GamerServices
         private ReadOnlyCollection<LeaderboardEntry>? _Entries;
         public ReadOnlyCollection<LeaderboardEntry>? Entries => this._Entries;
 
+        public LeaderboardIdentity LeaderboardIdentity { get; private set; }
+
+        public int PageStart { get; private set; }
+
         public LeaderboardReader()
+            : this(default, 0)
+        {
+        }
+
+        private LeaderboardReader(LeaderboardIdentity leaderboardIdentity, int pageStart)
         {
             _Entries = new ReadOnlyCollection<LeaderboardEntry>(new List<LeaderboardEntry>());
+            LeaderboardIdentity = leaderboardIdentity;
+            PageStart = pageStart;
         }
 
         public IAsyncResult BeginPageDown(AsyncCallback callback, object asyncState)
@@ -28,7 +39,7 @@ namespace Microsoft.Xna.Framework.GamerServices
         public static IAsyncResult BeginRead(LeaderboardIdentity leaderb,
             int pageStart, int pageSize, AsyncCallback callback, object asyncState)
         {
-            return CompleteRead(callback, asyncState);
+            return CompleteRead(leaderb, pageStart, callback, asyncState);
         }
 
         public static LeaderboardReader Read(
@@ -45,7 +56,7 @@ namespace Microsoft.Xna.Framework.GamerServices
           AsyncCallback callback,
           object asyncState)
         {
-            return CompleteRead(callback, asyncState);
+            return CompleteRead(leaderboardId, 0, callback, asyncState);
         }
 
         public static LeaderboardReader Read(
@@ -63,7 +74,7 @@ namespace Microsoft.Xna.Framework.GamerServices
           AsyncCallback callback,
           object asyncState)
         {
-            return CompleteRead(callback, asyncState);
+            return CompleteRead(leaderboardId, 0, callback, asyncState);
         }
 
         public static LeaderboardReader Read(
@@ -77,12 +88,17 @@ namespace Microsoft.Xna.Framework.GamerServices
                 callback: null!, asyncState: null!));
         }
 
-        private static IAsyncResult CompleteRead(AsyncCallback? callback, object? asyncState)
+        private static IAsyncResult CompleteRead(
+            LeaderboardIdentity leaderboardIdentity,
+            int pageStart,
+            AsyncCallback? callback,
+            object? asyncState)
         {
-            var reader = new LeaderboardReader();
-            var task = Task.FromResult(reader);
-            callback?.Invoke(task);
-            return task;
+            var source = new TaskCompletionSource<LeaderboardReader>(asyncState,
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            source.SetResult(new LeaderboardReader(leaderboardIdentity, pageStart));
+            callback?.Invoke(source.Task);
+            return source.Task;
         }
 
         public static LeaderboardReader EndRead(IAsyncResult result)

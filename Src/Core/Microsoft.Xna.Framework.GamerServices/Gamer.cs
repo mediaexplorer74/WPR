@@ -20,7 +20,7 @@ namespace Microsoft.Xna.Framework.GamerServices
         internal Gamer()
         {
             _LeaderboardWriter = new LeaderboardWriter();
-            _GamerTag = Configuration.Current.GamerTag ?? "HarryDirk";
+            _GamerTag = Configuration.Current?.GamerTag ?? "HarryDirk";
         }
 
         static Gamer()
@@ -62,6 +62,26 @@ namespace Microsoft.Xna.Framework.GamerServices
         }
 
         public GamerProfile GetProfile() => EndGetProfile(BeginGetProfile(null, null));
+
+        public static IAsyncResult BeginGetFromGamertag(
+            string gamertag,
+            AsyncCallback callback,
+            object asyncState)
+        {
+            var gamer = new SignedInGamer { Gamertag = gamertag };
+            var source = new TaskCompletionSource<Gamer>(asyncState,
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            source.SetResult(gamer);
+            callback?.Invoke(source.Task);
+            return source.Task;
+        }
+
+        public static Gamer EndGetFromGamertag(IAsyncResult result) =>
+            ((Task<Gamer>)result).GetAwaiter().GetResult();
+
+        public static Gamer GetFromGamertag(string gamertag) =>
+            EndGetFromGamertag(BeginGetFromGamertag(
+                gamertag, callback: null!, asyncState: null!));
 
         public override string ToString() => Gamertag;
 
