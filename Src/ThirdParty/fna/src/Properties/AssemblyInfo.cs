@@ -19,6 +19,7 @@ using System.Resources;
 [assembly: AssemblyCopyright("Copyright (c) 2009-2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: InternalsVisibleTo("WPR.IntegrationTests")]
 
 // Mark the assembly as CLS compliant so it can be safely used in other .NET languages
 [assembly: CLSCompliant(false)]

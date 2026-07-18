@@ -956,13 +956,22 @@ namespace Microsoft.Xna.Framework
 				}
 				else if (evt.type == SDL.SDL_EventType.SDL_MOUSEMOTION)
 				{
-					if (TouchPanel.MouseAsTouch)
+					if (TouchPanel.MouseAsTouch && TryGetMouseTouchMotion(
+						evt.motion.state,
+						evt.motion.x,
+						evt.motion.y,
+						evt.motion.xrel,
+						evt.motion.yrel,
+						Mouse.INTERNAL_WindowWidth,
+						Mouse.INTERNAL_WindowHeight,
+						out Vector2 touchPosition,
+						out Vector2 touchDelta))
 					{
 						TouchPanel.INTERNAL_onTouchEvent(1, TouchLocationState.Moved,
-							(float)evt.button.x / Mouse.INTERNAL_WindowWidth,
-							(float)evt.button.y / Mouse.INTERNAL_WindowHeight,
-							(float)evt.motion.x / Mouse.INTERNAL_WindowWidth,
-							(float)evt.motion.y / Mouse.INTERNAL_WindowHeight);
+							touchPosition.X,
+							touchPosition.Y,
+							touchDelta.X,
+							touchDelta.Y);
 					}
 				}
 				else if (evt.type == SDL.SDL_EventType.SDL_MOUSEBUTTONUP)
@@ -2298,6 +2307,30 @@ namespace Microsoft.Xna.Framework
 		#endregion
 
 		#region Touch Methods
+
+		internal static bool TryGetMouseTouchMotion(
+			uint buttonState,
+			int x,
+			int y,
+			int xRelative,
+			int yRelative,
+			int windowWidth,
+			int windowHeight,
+			out Vector2 position,
+			out Vector2 delta)
+		{
+			position = Vector2.Zero;
+			delta = Vector2.Zero;
+
+			if ((buttonState & SDL.SDL_BUTTON_LMASK) == 0 || windowWidth <= 0 || windowHeight <= 0)
+			{
+				return false;
+			}
+
+			position = new Vector2((float)x / windowWidth, (float)y / windowHeight);
+			delta = new Vector2((float)xRelative / windowWidth, (float)yRelative / windowHeight);
+			return true;
+		}
 
 		public static TouchPanelCapabilities GetTouchCapabilities()
 		{
