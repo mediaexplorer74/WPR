@@ -41,6 +41,9 @@ internal static class IsolatedStorageSettingsSerializer
         string directory = Configuration.Current.DataPath(Path.Combine(
             "AppData", parsedProductId.ToString("D"), "IsolatedStorage"));
         Directory.CreateDirectory(directory);
+        Directory.CreateDirectory(Path.Combine(directory, "Shared", "Media"));
+        Directory.CreateDirectory(Path.Combine(directory, "Shared", "ShellContent"));
+        Directory.CreateDirectory(Path.Combine(directory, "Shared", "Transfers"));
         return directory;
     }
 
