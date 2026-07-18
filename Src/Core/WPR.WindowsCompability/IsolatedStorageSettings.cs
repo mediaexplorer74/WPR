@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.IsolatedStorage;
-using System.Runtime.Serialization;
 using WPR.Common;
 
 namespace WPR.WindowsCompability
@@ -16,40 +14,28 @@ namespace WPR.WindowsCompability
         IEnumerable<KeyValuePair<string, object>>, IEnumerable
     {
         private static IsolatedStorageSettings1 _ApplicationSettings;
-        private const string LocalSettingsName = "__LocalSettings";
-
-        private IsolatedStorageFile _Holder;
+        private readonly string? _SettingsPath;
         private Dictionary<string, object> _Settings;
 
-        internal IsolatedStorageSettings1(IsolatedStorageFile file)
+        internal IsolatedStorageSettings1(string? settingsPath)
         {
-            _Holder = file;
-            if (!file.FileExists(LocalSettingsName))
+            _SettingsPath = settingsPath;
+            if (settingsPath == null || !File.Exists(settingsPath))
             {
                 _Settings = new Dictionary<string, object>();
             } else
             {
-                using (IsolatedStorageFileStream fs = file.OpenFile(
-                    LocalSettingsName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (FileStream fs = File.Open(settingsPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    using (StreamReader sr = new StreamReader(fs))
+                    try
                     {
-                        DataContractSerializer reader = new DataContractSerializer(
-                            typeof(Dictionary<string, object>));
-                        try
-                        {
-                            _Settings = (reader.ReadObject(fs) as Dictionary<string, object>)!;
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(LogCategory.Common, 
-                                $"Failed to deserialize isolated settings. Error\n {ex}");
-                        }
-
-                        if (_Settings == null)
-                        {
-                            _Settings = new Dictionary<string, object>();
-                        }
+                        _Settings = IsolatedStorageSettingsSerializer.Deserialize(fs);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(LogCategory.Common,
+                            $"Failed to deserialize isolated settings. Error\n {ex}");
+                        _Settings = new Dictionary<string, object>();
                     }
                 }
             }
@@ -62,10 +48,9 @@ namespace WPR.WindowsCompability
 
         public void Save()
         {
-            using (IsolatedStorageFileStream storage = _Holder.CreateFile(LocalSettingsName))
+            if (_SettingsPath != null)
             {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>));
-                serializer.WriteObject(storage, _Settings);
+                IsolatedStorageSettingsSerializer.Save(_SettingsPath, _Settings);
             }
         }
 
@@ -76,9 +61,8 @@ namespace WPR.WindowsCompability
             {
                 if (_ApplicationSettings == null)
                 {
-                    _ApplicationSettings = new 
-                        IsolatedStorageSettings1(
-                            IsolatedStorageFile.GetUserStoreForApplication());
+                    _ApplicationSettings = new IsolatedStorageSettings1(
+                        IsolatedStorageSettingsSerializer.GetApplicationSettingsPath());
                 }
 
                 return _ApplicationSettings;
