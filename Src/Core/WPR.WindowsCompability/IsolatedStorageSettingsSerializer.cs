@@ -26,6 +26,12 @@ internal static class IsolatedStorageSettingsSerializer
 
     public static string? GetApplicationSettingsPath()
     {
+        string? directory = GetApplicationStoragePath();
+        return directory == null ? null : Path.Combine(directory, "__LocalSettings");
+    }
+
+    public static string? GetApplicationStoragePath()
+    {
         string? productId = Application.Current.ProductId;
         if (Configuration.Current == null || !Guid.TryParse(productId, out Guid parsedProductId))
         {
@@ -35,7 +41,7 @@ internal static class IsolatedStorageSettingsSerializer
         string directory = Configuration.Current.DataPath(Path.Combine(
             "AppData", parsedProductId.ToString("D"), "IsolatedStorage"));
         Directory.CreateDirectory(directory);
-        return Path.Combine(directory, "__LocalSettings");
+        return directory;
     }
 
     public static void Save(string path, Dictionary<string, object> settings)

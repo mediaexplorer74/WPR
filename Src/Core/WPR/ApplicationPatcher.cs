@@ -18,7 +18,7 @@ namespace WPR
 {
     public class ApplicationPatcher
     {
-        public static int Version => 4;
+        public static int Version => 5;
 
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
@@ -263,6 +263,20 @@ namespace WPR
                 {
                     Reference = FNACompRef,
                     NewNamespace = "WPR.XnaCompability.Media"
+                }
+                },
+                { "System.IO.IsolatedStorage.IsolatedStorageFile", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewName = "IsolatedStorageFile2",
+                    NewNamespace = "WPR.WindowsCompability"
+                }
+                },
+                { "System.IO.IsolatedStorage.IsolatedStorageFileStream", new TypePatchInfo()
+                {
+                    Reference = WindowsCompRef,
+                    NewName = "IsolatedStorageFileStream2",
+                    NewNamespace = "WPR.WindowsCompability"
                 }
                 },
                 { "Microsoft.Xna.Framework.Media.Playlist", new TypePatchInfo()
