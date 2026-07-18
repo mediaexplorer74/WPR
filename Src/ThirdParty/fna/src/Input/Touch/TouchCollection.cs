@@ -18,13 +18,15 @@ namespace Microsoft.Xna.Framework.Input.Touch
 	// https://msdn.microsoft.com/en-us/library/microsoft.xna.framework.input.touch.touchcollection.aspx
 	public struct TouchCollection : IList<TouchLocation>, ICollection<TouchLocation>, IEnumerable<TouchLocation>, IEnumerable
 	{
+		private static readonly IReadOnlyList<TouchLocation> EmptyTouches = Array.Empty<TouchLocation>();
+
 		#region Public Properties
 
 		public int Count
 		{
 			get
 			{
-				return touches.Count;
+				return touches?.Count ?? 0;
 			}
 		}
 
@@ -48,12 +50,11 @@ namespace Microsoft.Xna.Framework.Input.Touch
 		{
 			get
 			{
-				return touches[index];
+				return (touches ?? EmptyTouches)[index];
 			}
 			set
 			{
-				// This will cause a runtime exception
-				touches[index] = value;
+				throw new NotSupportedException();
 			}
 		}
 
@@ -83,27 +84,32 @@ namespace Microsoft.Xna.Framework.Input.Touch
 
 		public void Add(TouchLocation item)
 		{
-			touches.Add(item);
+			throw new NotSupportedException();
 		}
 
 		public void Clear()
 		{
-			touches.Clear();
+			throw new NotSupportedException();
 		}
 
 		public bool Contains(TouchLocation item)
 		{
-			return touches.Contains(item);
+			return touches?.Contains(item) ?? false;
 		}
 
 		public void CopyTo(TouchLocation[] array, int arrayIndex)
 		{
+			if (touches == null)
+			{
+				Array.Empty<TouchLocation>().CopyTo(array, arrayIndex);
+				return;
+			}
 			touches.CopyTo(array, arrayIndex);
 		}
 
 		public bool FindById(int id, out TouchLocation touchLocation)
 		{
-			foreach (TouchLocation touch in touches)
+			foreach (TouchLocation touch in touches ?? EmptyTouches)
 			{
 				if (touch.Id == id)
 				{
@@ -126,22 +132,22 @@ namespace Microsoft.Xna.Framework.Input.Touch
 
 		public int IndexOf(TouchLocation item)
 		{
-			return touches.IndexOf(item);
+			return touches?.IndexOf(item) ?? -1;
 		}
 
 		public void Insert(int index, TouchLocation item)
 		{
-			touches.Insert(index, item);
+			throw new NotSupportedException();
 		}
 
 		public bool Remove(TouchLocation item)
 		{
-			return touches.Remove(item);
+			throw new NotSupportedException();
 		}
 
 		public void RemoveAt(int index)
 		{
-			touches.RemoveAt(index);
+			throw new NotSupportedException();
 		}
 
 		#endregion
