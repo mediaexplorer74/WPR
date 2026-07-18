@@ -18,7 +18,7 @@ namespace WPR
 {
     public class ApplicationPatcher
     {
-        public static int Version => 5;
+        public static int Version => 6;
 
         private AssemblyNameReference FNACompRef;
         private AssemblyNameReference FNARef;
@@ -659,9 +659,15 @@ namespace WPR
 
         private void PatchDll(string modulePath, IAssemblyResolver resolver)
         {
+            string pristineModulePath = modulePath + ".original";
+            bool hadPristineModule = File.Exists(pristineModulePath);
+            string sourceModulePath = hadPristineModule
+                ? pristineModulePath
+                : modulePath;
+
             // ReadAssembly
             AssemblyDefinition assemblyData =
-                Mono.Cecil.AssemblyDefinition.ReadAssembly(modulePath, new ReaderParameters
+                Mono.Cecil.AssemblyDefinition.ReadAssembly(sourceModulePath, new ReaderParameters
                 {
                     AssemblyResolver = resolver,
                     InMemory = true,
@@ -669,6 +675,8 @@ namespace WPR
                 });
 
             Mono.Cecil.ModuleDefinition module = assemblyData.MainModule;
+
+            FoldMetadataTokenReads(module);
 
             assemblyData.Name.Name = AssemblyNameStandardization.Process(assemblyData.Name.Name);
 
@@ -865,8 +873,12 @@ namespace WPR
                 throw new IOException($"Patching '{modulePath}' would overwrite '{modulePathNameStandardized}'.");
             }
 
-            // .dll -> .dll.original
-            File.Move(modulePath, modulePathNameStandardized + ".original", true);
+            // Preserve the package assembly once. Version upgrades must always be
+            // regenerated from it rather than compounding prior Cecil rewrites.
+            if (!hadPristineModule)
+            {
+                File.Move(modulePath, modulePathNameStandardized + ".original", true);
+            }
 
             // .dll.new - > .dll
             try
@@ -875,7 +887,7 @@ namespace WPR
             }
             catch
             {
-                if (File.Exists(modulePathNameStandardized + ".original"))
+                if (!hadPristineModule && File.Exists(modulePathNameStandardized + ".original"))
                 {
                     File.Move(modulePathNameStandardized + ".original", modulePath, true);
                 }
@@ -888,6 +900,75 @@ namespace WPR
                 throw;
             }
         }//PatchDll
+
+        internal static int FoldMetadataTokenReads(ModuleDefinition module)
+        {
+            const string metadataTokenGetter =
+                "System.Int32 System.Reflection.MemberInfo::get_MetadataToken()";
+
+            HashSet<MethodDefinition> tokenAccessors = module.GetTypes()
+                .SelectMany(type => type.Methods)
+                .Where(method =>
+                    method.IsStatic &&
+                    method.ReturnType.FullName == module.TypeSystem.Int32.FullName &&
+                    method.Parameters.Count == 1 &&
+                    method.Parameters[0].ParameterType.FullName == "System.Type" &&
+                    method.HasBody &&
+                    method.Body.Instructions.Count(instruction =>
+                        instruction.Operand is MethodReference called &&
+                        called.FullName == metadataTokenGetter) == 1 &&
+                    method.Body.Instructions
+                        .Where(instruction => instruction.Operand is MethodReference)
+                        .All(instruction =>
+                            ((MethodReference)instruction.Operand).FullName == metadataTokenGetter))
+                .ToHashSet();
+
+            if (tokenAccessors.Count == 0)
+            {
+                return 0;
+            }
+
+            int folded = 0;
+            foreach (MethodDefinition method in module.GetTypes().SelectMany(type => type.Methods))
+            {
+                if (!method.HasBody)
+                {
+                    continue;
+                }
+
+                var instructions = method.Body.Instructions;
+                for (int index = 2; index < instructions.Count; index++)
+                {
+                    Instruction tokenLoad = instructions[index - 2];
+                    Instruction typeConversion = instructions[index - 1];
+                    Instruction accessorCall = instructions[index];
+
+                    if (tokenLoad.OpCode != OpCodes.Ldtoken ||
+                        tokenLoad.Operand is not TypeDefinition type ||
+                        type.Module != module ||
+                        type.MetadataToken.TokenType != TokenType.TypeDef ||
+                        type.MetadataToken.RID == 0 ||
+                        typeConversion.Operand is not MethodReference conversion ||
+                        conversion.FullName !=
+                            "System.Type System.Type::GetTypeFromHandle(System.RuntimeTypeHandle)" ||
+                        accessorCall.Operand is not MethodDefinition accessorDefinition ||
+                        !tokenAccessors.Contains(accessorDefinition))
+                    {
+                        continue;
+                    }
+
+                    tokenLoad.OpCode = OpCodes.Nop;
+                    tokenLoad.Operand = null;
+                    typeConversion.OpCode = OpCodes.Nop;
+                    typeConversion.Operand = null;
+                    accessorCall.OpCode = OpCodes.Ldc_I4;
+                    accessorCall.Operand = type.MetadataToken.ToInt32();
+                    folded++;
+                }
+            }
+
+            return folded;
+        }
 
         private static void PatchNeutralResourcesLanguage(ModuleDefinition module)
         {
