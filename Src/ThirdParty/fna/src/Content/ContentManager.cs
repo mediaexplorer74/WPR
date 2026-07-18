@@ -294,6 +294,23 @@ namespace Microsoft.Xna.Framework.Content
 			}
 			catch (Exception e)
 			{
+				if ((typeof(T) == typeof(Texture2D) || typeof(T) == typeof(Texture)) &&
+					IsMissingTransparentTexturePlaceholder(assetName))
+				{
+					var transparentTexture = new Texture2D(GetGraphicsDevice(), 1, 1);
+					transparentTexture.SetData(new[] { Color.Transparent });
+					transparentTexture.Name = assetName;
+					if (recordDisposableObject != null)
+					{
+						recordDisposableObject(transparentTexture);
+					}
+					else
+					{
+						RecordDisposable(transparentTexture);
+					}
+					return (T) (object) transparentTexture;
+				}
+
 				// Okay, so we couldn't open it. Maybe it needs a different extension?
 				// FIXME: This only works for files on the disk, what about custom streams? -flibit
 				modifiedAssetName = MonoGame.Utilities.FileHelpers.NormalizeFilePathSeparators(
@@ -479,6 +496,15 @@ namespace Microsoft.Xna.Framework.Content
 			}
 
 			return (T) result;
+		}
+
+		internal static bool IsMissingTransparentTexturePlaceholder(string assetName)
+		{
+			return string.Equals(
+				Path.GetFileName(assetName),
+				"23999_empty",
+				StringComparison.OrdinalIgnoreCase
+			);
 		}
 
 		#endregion
